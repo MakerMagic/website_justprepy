@@ -42,3 +42,11 @@ Thumbs.db
 
 # Vercel
 .vercel/
+# Generated Next.js declarations
+next-env.d.ts
+
+# Additional local environment files
+.env*
+
+# pnpm debug logs
+.pnpm-debug.log*

@@ -2,12 +2,15 @@
 
 ## Current milestone
 
+Public auth UI previews at `/login` and `/signup`, alongside the Question Bank.
+
 Question Bank frontend at `/` rebuilt around the owner-supplied reference and
 `docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
 workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- Public `/login` and `/signup` auth previews share a responsive form shell, local validation, password visibility controls, and original SVG landscape. Authentication, Google, recovery and legal content remain explicitly unconnected; credentials are never transmitted or persisted.
 - Compact/expanded membership promotion; account-only trigger morph and four-stage content reveal with reduced-motion support. Subscription destination remains an explicit preview notice.
 - Red progress statistics, compact neutral filters, outlined navigation and circular play actions.
 - Collapsed desktop rail with sidebar-owned pointer events, keyboard and touch alternatives; original monogram and full wordmark states.
@@ -20,7 +23,7 @@ workflow guided density, data integrity, responsive behavior and visual review.
 ## Data boundary
 
 `src/modules/questions/question-bank.fixtures.ts` holds temporary profile, sources,
-year availability and question-summary data. No database, API, authentication,
+year availability and question-summary data. No database, API, authentication service,
 question content, grading or persistent user data has been implemented. Unavailable
 navigation opens an explicit preview limitation; account actions remain disabled.
 
@@ -33,7 +36,8 @@ not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
 
-Lint, typecheck, all 34 tests, changed-file formatting and the production build pass.
+Lint, typecheck, all 40 tests, changed-file formatting and the production build pass.
+Auth visual checks cover desktop, tablet and mobile; forms validate locally and use explicit preview feedback instead of account creation.
 Browser checks cover desktop/tablet/mobile interactions and data states, including
 320px layout, focus restoration and conditional years. Production console is clean.
 Repository-wide formatting still flags nine pre-existing documentation files.
@@ -42,4 +46,4 @@ Repository-wide formatting still flags nine pre-existing documentation files.
 
 Replace illustrative view data when authorized services are available. Practice
 sessions, account actions and future navigation destinations remain unconnected.
-Database/provider/ORM, authentication and pipeline integration remain out of scope.
+Database/provider/ORM, authentication services and pipeline integration remain out of scope.

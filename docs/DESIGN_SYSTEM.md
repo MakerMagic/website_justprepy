@@ -2,24 +2,25 @@
 
 ## Source of truth
 
-**Authoritative visual specification:** `docs/design.md` (to be supplied by the project owner).
+**Authoritative visual specification:** `docs/design.md` (supplied by the project owner).
 
 This file is an implementation wrapper for Codex. It does not define the visual identity.
 
-At the time of the initial documentation foundation, the authoritative `design.md` has not been provided. Do not infer its colors, typography, spacing, effects, or component aesthetics.
+The owner-supplied specification is present at `docs/design.md`. Runtime tokens in
+`src/design/tokens.css` implement its palette, typography and spacing foundations.
 
-When `docs/design.md` becomes available, read it for UI/design implementation tasks.
+Read `docs/design.md` before applying specialized design workflows.
 
 ## Authority boundaries
 
-| Concern | Authority |
-|---|---|
-| Visual identity, typography, palette, spacing, visual style | `docs/design.md` |
-| Design implementation and consistency rules | This document |
-| Component ownership and interaction architecture | `FRONTEND.md` |
-| Product behavior and requirements | `PROJECT_SCOPE.md` |
-| Accessibility/security constraints | `FRONTEND.md` and `SECURITY.md` |
-| Implemented runtime tokens/components | Actual application code, aligned with the design specification |
+| Concern                                                     | Authority                                                      |
+| ----------------------------------------------------------- | -------------------------------------------------------------- |
+| Visual identity, typography, palette, spacing, visual style | `docs/design.md`                                               |
+| Design implementation and consistency rules                 | This document                                                  |
+| Component ownership and interaction architecture            | `FRONTEND.md`                                                  |
+| Product behavior and requirements                           | `PROJECT_SCOPE.md`                                             |
+| Accessibility/security constraints                          | `FRONTEND.md` and `SECURITY.md`                                |
+| Implemented runtime tokens/components                       | Actual application code, aligned with the design specification |
 
 Figma and third-party design skills are reference/workflow tools, not replacements for the project's authoritative specification.
 
@@ -78,3 +79,19 @@ Use visual inspection or browser-based checks where tooling is available. Do not
 - Update this wrapper only when design-implementation conventions change.
 - Keep runtime tokens/components synchronized with approved visual decisions.
 - Do not duplicate the full visual specification here.
+
+## Compact promotions and contextual disclosure
+
+- Sidebar promotions use a muted brand-tinted surface (including an explicitly requested soft gradient), a small factual badge,
+  a short title and one full-width ink CTA. Reuse the UI font, 12px supporting
+  text, 13px semibold CTA, existing control/card radius tokens and 44px action height.
+  Use owner-approved copy; do not invent prices or benefits.
+- Rail mode exposes one labelled compact control; expanded promotional content
+  must be inert and hidden from accessibility while collapsed. Keep the profile
+  trigger's vertical position stable during expansion.
+- Contextual disclosure may morph from the measured trigger rectangle to the
+  anchored panel, with four ordered reveal groups: profile/header, Settings, Subscription, then Sign out and helper text. Reverse the stagger on exit; avoid overshoot. Use
+  `--motion-disclosure` and `--ease-disclosure`; keep anchor coordinates separate
+  from animated transforms. Closing must reverse naturally, remain noninteractive
+  during exit, and preserve focus restoration. Skip scripted motion when reduced
+  motion is requested. These account-specific transitions must not alter other popovers.

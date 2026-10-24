@@ -1,54 +1,45 @@
 # Current Work
 
-## Overall product goal
-
-Build JustPrepy as a reliable, scalable entrance-exam preparation platform, initially focused on NUET and question-solving workflows.
-
 ## Current milestone
 
-Pre-feature repository/documentation foundation. Actual implementation status has not been verified from the repository.
+Question Bank frontend at `/` rebuilt around the owner-supplied reference and
+`docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
+workflow guided density, data integrity, responsive behavior and visual review.
 
-## Completed — confirmed
+## Implemented
 
-- Initial product requirements and target architectural approach have been discussed.
-- GitHub repository `MakerMagic/website_justprepy` was created according to the project owner; its current contents and synchronization status are unverified.
+- Compact/expanded membership promotion; account-only trigger morph and four-stage content reveal with reduced-motion support. Subscription destination remains an explicit preview notice.
+- Red progress statistics, compact neutral filters, outlined navigation and circular play actions.
+- Collapsed desktop rail with sidebar-owned pointer events, keyboard and touch alternatives; original monogram and full wordmark states.
+- Anchored account menu; source panels positioned before first paint, resized to available space and updated on scroll.
+- Functional status, saved, difficulty, source and draft/apply year filtering.
+- Only Oxford and BMAT appear as independent source/year selectors. Applied years are preserved per source. Availability remains illustrative; underlying fixture contracts are unchanged.
+- Topic progress and set previews derive from typed fixtures supplied through page props.
+- Header Telegram CTA has a configurable, currently absent destination. Statistics open fixture-derived summaries; topic actions retain previews. Upgrade/account actions remain preview boundaries.
 
-No application features or completed repository setup have been independently verified.
+## Data boundary
 
-## In progress
+`src/modules/questions/question-bank.fixtures.ts` holds temporary profile, sources,
+year availability and question-summary data. No database, API, authentication,
+question content, grading or persistent user data has been implemented. Unavailable
+navigation opens an explicit preview limitation; account actions remain disabled.
 
-- Preparing the initial authoritative documentation for Codex.
-- Aligning development conventions with the target modular-monolith architecture.
+## Local preview
 
-## Immediate task
+The LAN preview at `192.168.1.2:3000` is explicitly allowed in `next.config.ts`.
+Next's dev HMR/debug transport otherwise rejects this origin and React hydration
+stalls: native popovers open at fallback coordinates and React hover handlers do
+not run. Keep this allowance scoped to the actual development host.
 
-Place and verify the documentation foundation in the actual repository; reconcile it with existing files before beginning feature implementation.
+## Validation
 
-## Known blockers / unresolved decisions
+Lint, typecheck, all 34 tests, changed-file formatting and the production build pass.
+Browser checks cover desktop/tablet/mobile interactions and data states, including
+320px layout, focus restoration and conditional years. Production console is clean.
+Repository-wide formatting still flags nine pre-existing documentation files.
 
-- Actual repository contents, installed stack, and validation status are unverified.
-- Exact website-ready question-data schema has not been supplied.
-- Authoritative visual specification `docs/design.md` has not yet been provided.
-- Database implementation, authentication provider, and deployment choices remain unconfirmed.
+## Next / open decisions
 
-## Important current constraints
-
-- Preserve the external educational content-processing pipeline.
-- Prioritize reliable question-solving UX.
-- Maintain stable question identity and historical attempt integrity.
-- Do not invent implemented features, educational contracts, or visual values.
-
-## Next
-
-- Verify repository foundation and existing code.
-- Incorporate the project owner's `design.md` when provided.
-- Confirm representative question-pipeline output before finalizing ingestion contracts.
-- Select the first implementation task only after the foundation is verified.
-
-## Relevant areas
-
-`AGENTS.md`, `docs/`, repository configuration, existing source tree (if present).
-
----
-
-**Maintenance:** Replace stale state after material progress or reprioritization. Do not append historical logs. A new explicit user task overrides the task recorded here.
+Replace illustrative view data when authorized services are available. Practice
+sessions, account actions and future navigation destinations remain unconnected.
+Database/provider/ORM, authentication and pipeline integration remain out of scope.

@@ -1,0 +1,43 @@
+:root {
+  /* Authoritative roles from docs/design.md. */
+  --color-red-600: #d91c23;
+  --color-red-100: #fee2e2;
+  --color-ink-900: #111827;
+  --color-ink-700: #303846;
+  --color-neutral-50: #f4f5f8;
+  --color-neutral-100: #f0f2f6;
+  --color-neutral-300: #d7dae0;
+  --color-neutral-500: #667085;
+  --color-white: #fff;
+  --color-green-600: #166534;
+  --color-green-100: #dcfce7;
+  --color-amber-600: #92400e;
+  --color-amber-100: #fef3c7;
+  --color-text-secondary: var(--color-neutral-500);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-xs: 8px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  --shadow-raised: 0 8px 24px rgb(17 24 39 / 12%);
+  --font-ui: "Segoe UI", Arial, Helvetica, sans-serif;
+  --type-body: 15px;
+  --type-caption: 12px;
+  --type-h1: 28px;
+  --type-h2: 20px;
+  --type-h3: 16px;
+  --rail-width: 72px;
+  --sidebar-width: 256px;
+  --motion-fast: 150ms;
+  --motion-panel: 220ms;
+  --motion-disclosure: 560ms;
+  --ease-disclosure: cubic-bezier(0.2, 0.75, 0.25, 1);
+}

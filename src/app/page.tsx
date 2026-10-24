@@ -1,8 +1,13 @@
+import type { Metadata } from "next";
+import { QuestionBank } from "@/modules/questions/question-bank";
+import { demoQuestionBank } from "@/modules/questions/question-bank.fixtures";
+
+export const metadata: Metadata = {
+  title: "Question bank | JustPrepy",
+  description:
+    "Explore Critical Thinking, Problem Solving and Mathematics topics for NUET preparation.",
+};
+
 export default function Home() {
-  return (
-    <main>
-      <h1>JustPrepy</h1>
-      <p>The application foundation is running.</p>
-    </main>
-  );
+  return <QuestionBank data={demoQuestionBank} />;
 }

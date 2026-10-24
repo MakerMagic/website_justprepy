@@ -1,8 +1,8 @@
 # JustPrepy
 
 JustPrepy helps students prepare for NUET, with possible future examination support.
-This repository contains only the website foundation. Feature implementation has
-not started. The educational pipeline remains in a separate repository.
+The website currently includes a Question Bank frontend preview with replaceable
+demo data. The educational pipeline remains in a separate repository.
 
 ## Setup
 
@@ -33,7 +33,8 @@ Conventions and testing strategy: [Development](docs/DEVELOPMENT.md).
 
 ## Navigation
 
-`src/app/` contains the smoke route, layout and CSS; `tests/` contains foundation
+`src/app/` composes routes; `src/modules/questions/` owns the Question Bank preview;
+`src/design/` holds shared tokens; `tests/` contains foundation
 checks; `docs/` contains authoritative decisions. Start AI-assisted work at
 [AGENTS.md](AGENTS.md). Product context: [Project scope](docs/PROJECT_SCOPE.md).
-Future feature folders are created only with their first implementation.
+Additional feature folders are created only with their first implementation.

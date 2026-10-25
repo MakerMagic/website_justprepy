@@ -18,7 +18,7 @@ const navigation = [
   { label: "Question Bank", icon: "book", href: "/" },
   { label: "Mock Tests", icon: "test", href: "/mock-tests" },
   { label: "Leaderboard", icon: "chart", href: "/leaderboard", group: true },
-  { label: "Contact us", icon: "help" },
+  { label: "Contact us", icon: "help", href: "/contact" },
   { label: "Earn money", icon: "earn" },
 ];
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {

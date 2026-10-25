@@ -2,13 +2,23 @@
 
 ## Current milestone
 
-Leaderboard preview at `/leaderboard`, alongside Mock Tests, Question Bank, `/practice` and public auth previews.
+Reference-matched public Contact Us at `/contact`, alongside Leaderboard, Mock Tests,
+Question Bank, `/practice` and public auth previews.
 
 Question Bank frontend at `/` rebuilt around the owner-supplied reference and
 `docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
 workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
+
+- Public `/contact` follows the supplied compact header, three-channel contact-card
+  grid and pale-pink four-column footer. Its local styles preserve reference button
+  proportions and colors without changing application UI. Header/footer share a
+  reusable transparent PNG derived from the existing logo; the enclosed white `j`
+  is preserved. Confirmed email, Telegram and TikTok destinations are centralized
+  in `contact.config.ts`; the existing sidebar Contact us item links to the page.
+  Unimplemented public, subscription and legal destinations show preview notices.
+  No contact backend or email service is introduced.
 
 - `/leaderboard` reuses the app shell, shared statistics cards, hover scaling and
   dialog behavior. Its cards follow the individual blue/green/red references with
@@ -52,7 +62,10 @@ not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
 
-Lint, typecheck, all 126 tests, changed-source formatting and the production build pass.
+Lint, typecheck, all 130 tests, changed-source formatting and the production build pass.
+Contact layout, compact header controls, footer color treatment and transparent
+logo were compared with the supplied reference; confirmed link destinations,
+preview dialogs, keyboard focus and responsive containment were checked in-browser.
 Leaderboard refinement was visually reviewed at 1440/768/390px: the three card
 references, sourced Lucide icons, lighter comparison pills, grouped controls after
 local refresh, top-three green accuracy pills and unboxed red hard counts were

@@ -14,6 +14,21 @@
   --color-amber-600: #92400e;
   --color-amber-100: #fef3c7;
   --color-text-secondary: var(--color-neutral-500);
+  /* Answer-letter feedback only. Keep option surfaces neutral after checking. */
+  --color-answer-correct-bg: #288363;
+  --color-answer-correct-text: #fff;
+  --color-answer-incorrect-bg: #c84c59;
+  --color-answer-incorrect-text: #fff;
+  /* Session navigator statuses: richer fills, dark numerals, partial uses both halves. */
+  --color-question-status-correct-bg: #76d8a4;
+  --color-question-status-wrong-bg: #f29ba4;
+  --color-question-status-text: var(--color-ink-900);
+  --color-toggle-off: #edf2ff;
+  --color-toggle-on: var(--color-red-600);
+  /* Reference-led review metadata; action controls retain the brand red. */
+  --color-review-accent: #365f91;
+  --color-review-accent-bg: #e3ebff;
+  --color-review-accent-border: #c9d7f0;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;

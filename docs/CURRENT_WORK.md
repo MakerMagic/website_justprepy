@@ -2,7 +2,7 @@
 
 ## Current milestone
 
-Public auth UI previews at `/login` and `/signup`, alongside the Question Bank.
+Mock Tests catalogue preview at `/mock-tests`, alongside Question Bank, `/practice` and public auth previews.
 
 Question Bank frontend at `/` rebuilt around the owner-supplied reference and
 `docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
@@ -10,6 +10,9 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- `/mock-tests` reuses `PracticeShell` and the extracted shared `StatisticCard`; desktop/mobile navigation links to the catalogue with the correct active state. Typed illustrative test records drive completion/type filters, counts, recent-score statistics and full/sectional cards. Start, Analyze and Retake retain explicit unavailable-preview notices; no mock-test engine, analysis route or persisted results are implemented.
+
+- `/practice` reuses the finalized sidebar and extracted header through `PracticeShell`. It provides passage/answers, an elapsed demo timer, per-question selections/bookmarks, demo-only checking, a difficulty/status navigator and a two-pane explanation dialog with isolated answer reveal. Failed evaluations remain retryable; first-attempt success is correct, success after a failed evaluation is partly correct, and unresolved failure remains wrong while selecting a retry. Both dialogs use the same session state; shared content/answer renderers support LaTeX-to-native-MathML and image parts. Topic previews link to it. The owner explicitly requested the existing sidebar/Telegram header here; this preview is an exception to the immersive-shell default, not a new mock-exam policy.
 - Public `/login` and `/signup` auth previews share a responsive form shell, local validation, password visibility controls, and original SVG landscape. Authentication, Google, recovery and legal content remain explicitly unconnected; credentials are never transmitted or persisted.
 - Compact/expanded membership promotion; account-only trigger morph and four-stage content reveal with reduced-motion support. Subscription destination remains an explicit preview notice.
 - Red progress statistics, compact neutral filters, outlined navigation and circular play actions.
@@ -23,8 +26,8 @@ workflow guided density, data integrity, responsive behavior and visual review.
 ## Data boundary
 
 `src/modules/questions/question-bank.fixtures.ts` holds temporary profile, sources,
-year availability and question-summary data. No database, API, authentication service,
-question content, grading or persistent user data has been implemented. Unavailable
+year availability and question-summary data. `practice.fixtures.ts` separately holds three authored demo questions and illustrative local feedback; it is not published exam content or a production grading contract. No database, API, authentication service,
+real-question integration, authoritative grading or persistent user data has been implemented. Unavailable
 navigation opens an explicit preview limitation; account actions remain disabled.
 
 ## Local preview
@@ -36,7 +39,8 @@ not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
 
-Lint, typecheck, all 40 tests, changed-file formatting and the production build pass.
+Lint, typecheck, all 59 tests, changed-file formatting and the production build pass.
+Practice browser checks cover repeated failed attempts, first-attempt success versus eventual partial success, richer navigator statuses, red switches, fully neutral review options with Show Answer off, circle-only feedback, navigator modes/jumps, retained answers, modal scrolling/dismissal/focus cycling, bookmarking, timer continuity and shared-sidebar hover. Desktop/tablet/mobile reviews include a 320px navigator; the updated review composition was inspected at 1440/768/390px. MathML/LaTeX and image rendering have focused regression coverage. Taste inspection passes at 1440/768/390px with zero failures or warnings; screenshots were reviewed.
 Auth visual checks cover desktop, tablet and mobile; forms validate locally and use explicit preview feedback instead of account creation.
 Browser checks cover desktop/tablet/mobile interactions and data states, including
 320px layout, focus restoration and conditional years. Production console is clean.
@@ -44,6 +48,6 @@ Repository-wide formatting still flags nine pre-existing documentation files.
 
 ## Next / open decisions
 
-Replace illustrative view data when authorized services are available. Practice
+Replace illustrative view data when authorized services are available. Real practice
 sessions, account actions and future navigation destinations remain unconnected.
 Database/provider/ORM, authentication services and pipeline integration remain out of scope.

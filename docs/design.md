@@ -333,6 +333,9 @@ When a new reference conflicts with this spec:
 3. If the user explicitly approves a visual change, update this document and affected tokens/components together.
 4. Do not silently apply a new skin to unrelated screens.
 
+G.17 Data-Driven UI and Edge Cases
+All Question Bank and statistics components must support realistic data variations.
+
 ## 13. Codex implementation and QA checklist
 
 For any substantial UI task:

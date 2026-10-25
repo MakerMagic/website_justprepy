@@ -256,30 +256,42 @@
   flex-shrink: 0;
 }
 .telegram-cta {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  min-height: 44px;
-  padding: 8px 14px;
+  gap: 7px;
+  min-height: 31px;
+  padding: 4px 11px;
   border: 1px solid var(--color-neutral-300);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--color-ink-700);
   background: var(--color-white);
   text-align: left;
   text-decoration: none;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 18px;
+  line-height: 15px;
   transition:
     background var(--motion-fast),
     border-color var(--motion-fast),
     transform var(--motion-fast);
 }
+.telegram-cta::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: max(44px, 100%);
+  transform: translateY(-50%);
+}
 .telegram-cta svg {
   flex-shrink: 0;
+  width: 13px;
+  height: 13px;
 }
 .telegram-cta > svg:last-child {
+  width: 11px;
+  height: 11px;
   transition: transform var(--motion-fast);
 }
 .telegram-cta:hover {
@@ -299,7 +311,7 @@
 }
 .subscription-slot {
   position: relative;
-  height: 52px;
+  height: 44px;
   margin-bottom: 12px;
   transition: height var(--motion-panel) var(--ease-disclosure);
 }
@@ -313,10 +325,10 @@
   justify-content: center;
   gap: 2px;
   width: 100%;
-  height: 52px;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: var(--radius-sm);
-  background: var(--color-red-100);
+  height: 44px;
+  border: 2px solid var(--color-ink-900);
+  border-radius: 8px;
+  background: var(--color-white);
   color: var(--color-ink-900);
   transition:
     opacity var(--motion-fast),
@@ -324,9 +336,13 @@
     transform var(--motion-fast);
 }
 .subscription-compact span {
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   line-height: 14px;
+}
+.subscription-compact svg {
+  width: 16px;
+  height: 16px;
 }
 .subscription-compact:hover {
   background: var(--color-neutral-100);

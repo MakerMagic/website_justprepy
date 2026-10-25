@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { flushSync } from "react-dom";
 import type { QuestionBankData } from "./question-bank.types";
 import { Icon } from "./icon";
@@ -14,13 +15,14 @@ function subscribeMobile(callback: () => void) {
   return () => media.removeEventListener("change", callback);
 }
 const navigation = [
-  { label: "Question Bank", icon: "book", active: true },
-  { label: "Mock Tests", icon: "test" },
+  { label: "Question Bank", icon: "book", href: "/" },
+  { label: "Mock Tests", icon: "test", href: "/mock-tests" },
   { label: "Leaderboard", icon: "chart", group: true },
   { label: "Contact us", icon: "help" },
   { label: "Earn money", icon: "earn" },
 ];
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
+  const mockTestsActive = usePathname() === "/mock-tests";
   const [touchOpen, setTouchOpen] = useState(false);
   const [keyboard, setKeyboard] = useState(false);
   const [pointerInside, setPointerInside] = useState(false);
@@ -169,12 +171,17 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
           {navigation.map((item) => (
             <div key={item.label}>
               {item.group && <p className="nav-section extra-label">Extra</p>}
-              {item.active ? (
+              {item.href ? (
                 <Link
-                  className="nav-item is-active"
-                  href="/"
-                  aria-current="page"
+                  className={`nav-item${(item.href === "/mock-tests") === mockTestsActive ? " is-active" : ""}`}
+                  href={item.href}
+                  aria-current={
+                    (item.href === "/mock-tests") === mockTestsActive
+                      ? "page"
+                      : undefined
+                  }
                   title={item.label}
+                  onClick={() => setTouchOpen(false)}
                 >
                   <Icon name={item.icon} />
                   <span className="nav-text">{item.label}</span>
@@ -293,14 +300,17 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
         aria-label="Mobile navigation"
         inert={mobile && touchOpen}
       >
-        <Link href="/" aria-current="page">
+        <Link href="/" aria-current={!mockTestsActive ? "page" : undefined}>
           <Icon name="book" />
           <span>Question Bank</span>
         </Link>
-        <button type="button" onClick={() => setUnavailable("Mock Tests")}>
+        <Link
+          href="/mock-tests"
+          aria-current={mockTestsActive ? "page" : undefined}
+        >
           <Icon name="test" />
           <span>Mock Tests</span>
-        </button>
+        </Link>
         <button
           type="button"
           aria-expanded={touchOpen}

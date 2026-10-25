@@ -1,16 +1,16 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import Link from "next/link";
+import { StatisticCard } from "../../components/statistic-card";
 import type { QuestionBankData } from "./question-bank.types";
 import {
   defaultFilters,
   filterQuestions,
   summarize,
 } from "./question-bank.logic";
-import { Sidebar } from "./sidebar";
+import { PracticeShell } from "./practice-shell";
 import { Filters } from "./filters";
 import { SubjectCard } from "./subject-card";
-import { Popover } from "./popover";
 import { Icon } from "./icon";
 import "./question-bank.css";
 
@@ -34,164 +34,95 @@ export function QuestionBank({ data }: { data: QuestionBankData }) {
   useEffect(() => {
     if (preview && !dialog.current?.open) dialog.current?.showModal();
   }, [preview]);
-  const telegramLabel = (
-    <>
-      <Icon name="community" size={18} />
-      <span>Join Our Telegram Channel</span>
-      <Icon name="arrow" size={15} />
-    </>
-  );
   return (
-    <div className="question-bank-app">
-      <a className="skip-link" href="#main-content">
-        Skip to question bank
-      </a>
-      <Sidebar profile={data.profile} />
-      <div className="workspace">
-        <header className="workspace-header">
-          <div className="header-context">
-            <Image
-              className="mobile-brand"
-              src="/brand/justprepy-logo.png"
-              width={347}
-              height={86}
-              alt="JustPrepy"
-            />
-            <span>NUET Practice</span>
+    <PracticeShell profile={data.profile} telegramUrl={data.telegramUrl}>
+      <main id="main-content" tabIndex={-1} className="bank-content">
+        <section className="page-heading" aria-label="Introductory">
+          <div className="intro-copy">
+            <h1 id="page-title">Question Bank</h1>
+            <p>
+              You can use different filters to choose apt questions to practice
+            </p>
           </div>
-          {data.telegramUrl ? (
-            <a
-              className="telegram-cta"
-              href={data.telegramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {telegramLabel}
-            </a>
-          ) : (
-            <Popover
-              id="telegram-notice"
-              title="Telegram"
-              className="telegram-popover"
-              triggerClassName="telegram-cta"
-              trigger={telegramLabel}
-            >
-              <p className="telegram-note">
-                The Telegram channel link has not been provided yet.
-              </p>
-            </Popover>
+          <div
+            className="practice-stats"
+            role="group"
+            aria-label="Illustrative overall progress"
+            title="Illustrative progress from temporary frontend fixtures"
+          >
+            <StatisticCard
+              label="Questions Solved"
+              value={stats.answered}
+              motif="check"
+              onClick={() =>
+                setPreview({
+                  kind: "statistic",
+                  metric: "solved",
+                  title: "Questions Solved",
+                })
+              }
+            />
+            <StatisticCard
+              label="Accuracy"
+              motif="trend"
+              value={
+                stats.accuracy === null ? (
+                  "—"
+                ) : (
+                  <>
+                    {stats.accuracy}
+                    <span>%</span>
+                  </>
+                )
+              }
+              onClick={() =>
+                setPreview({
+                  kind: "statistic",
+                  metric: "accuracy",
+                  title: "Accuracy",
+                })
+              }
+            />
+          </div>
+        </section>
+        <Filters
+          value={filters}
+          onChange={setFilters}
+          sources={data.sources.filter(
+            (source) => source.id === "tsa-oxford" || source.id === "bmat",
           )}
-        </header>
-        <main id="main-content" tabIndex={-1} className="bank-content">
-          <section className="page-heading" aria-label="Introductory">
-            <div className="intro-copy">
-              <h1 id="page-title">Question Bank</h1>
-              <p>
-                You can use different filters to choose apt questions to
-                practice
-              </p>
-            </div>
-            <div
-              className="practice-stats"
-              role="group"
-              aria-label="Illustrative overall progress"
-              title="Illustrative progress from temporary frontend fixtures"
-            >
+          matching={filtered.length}
+        />
+        <section className="tasks-section" aria-label="Tasks">
+          <h2 className="sr-only">Tasks</h2>
+          {!filtered.length ? (
+            <div className="empty-state" role="status">
+              <Icon name="filter" />
+              <h3>No questions match these filters.</h3>
               <button
                 type="button"
-                className="stat-card"
-                aria-haspopup="dialog"
-                onClick={() =>
-                  setPreview({
-                    kind: "statistic",
-                    metric: "solved",
-                    title: "Questions Solved",
-                  })
-                }
+                className="button secondary"
+                onClick={() => setFilters({ ...defaultFilters })}
               >
-                <span className="stat-label">Questions Solved</span>
-                <span className="stat-value">{stats.answered}</span>
-                <svg
-                  className="stat-motif"
-                  viewBox="0 0 80 80"
-                  aria-hidden="true"
-                >
-                  <circle cx="48" cy="48" r="28" />
-                  <path d="m32 48 11 11 23-26" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="stat-card"
-                aria-haspopup="dialog"
-                onClick={() =>
-                  setPreview({
-                    kind: "statistic",
-                    metric: "accuracy",
-                    title: "Accuracy",
-                  })
-                }
-              >
-                <span className="stat-label">Accuracy</span>
-                <span className="stat-value">
-                  {stats.accuracy === null ? (
-                    "—"
-                  ) : (
-                    <>
-                      {stats.accuracy}
-                      <span>%</span>
-                    </>
-                  )}
-                </span>
-                <svg
-                  className="stat-motif"
-                  viewBox="0 0 80 80"
-                  aria-hidden="true"
-                >
-                  <path d="M16 10v62h60M24 58l17-19 13 10 22-29" />
-                </svg>
+                Reset filters
               </button>
             </div>
-          </section>
-          <Filters
-            value={filters}
-            onChange={setFilters}
-            sources={data.sources.filter(
-              (source) => source.id === "tsa-oxford" || source.id === "bmat",
-            )}
-            matching={filtered.length}
-          />
-          <section className="tasks-section" aria-label="Tasks">
-            <h2 className="sr-only">Tasks</h2>
-            {!filtered.length ? (
-              <div className="empty-state" role="status">
-                <Icon name="filter" />
-                <h3>No questions match these filters.</h3>
-                <button
-                  type="button"
-                  className="button secondary"
-                  onClick={() => setFilters({ ...defaultFilters })}
-                >
-                  Reset filters
-                </button>
-              </div>
-            ) : (
-              <div className="subject-grid">
-                {data.subjects.map((subject) => (
-                  <SubjectCard
-                    key={subject.id}
-                    subject={subject}
-                    questions={filtered}
-                    onSelect={(title, topicIds) =>
-                      setPreview({ kind: "topic", title, topicIds })
-                    }
-                  />
-                ))}
-              </div>
-            )}
-          </section>
-        </main>
-      </div>
+          ) : (
+            <div className="subject-grid">
+              {data.subjects.map((subject) => (
+                <SubjectCard
+                  key={subject.id}
+                  subject={subject}
+                  questions={filtered}
+                  onSelect={(title, topicIds) =>
+                    setPreview({ kind: "topic", title, topicIds })
+                  }
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
       <dialog
         ref={dialog}
         className="topic-dialog"
@@ -263,21 +194,25 @@ export function QuestionBank({ data }: { data: QuestionBankData }) {
               </div>
             </dl>
             <p className="preview-note">
-              Illustrative set. Question content and practice sessions will be
-              connected later.
+              Illustrative set. Try the question-solving interface with demo
+              content.
             </p>
           </>
         )}
-        <button
-          type="button"
-          className="button primary"
-          onClick={() => dialog.current?.close()}
-        >
-          {preview?.kind === "topic"
-            ? "Back to topics"
-            : "Back to Question Bank"}
-        </button>
+        {preview?.kind === "topic" ? (
+          <Link href="/practice" className="button primary">
+            Open demo practice
+          </Link>
+        ) : (
+          <button
+            type="button"
+            className="button primary"
+            onClick={() => dialog.current?.close()}
+          >
+            Back to Question Bank
+          </button>
+        )}
       </dialog>
-    </div>
+    </PracticeShell>
   );
 }

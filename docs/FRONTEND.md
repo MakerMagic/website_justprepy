@@ -81,7 +81,7 @@ Do not create all these components prematurely. Introduce them as the first real
 
 - Render validated native MathML while preserving inline/display context.
 - Do not replace formulas with images.
-- Do not introduce arbitrary runtime LaTeX parsing without a documented contract change.
+- Published content retains the native-MathML delivery contract. The practice view also accepts authored, delimited LaTeX and structured math/image parts: its shared `PracticeContentView` converts LaTeX to native MathML through bounded, untrusted KaTeX rendering. Only generated MathML is inserted; arbitrary source HTML is never injected. This view adapter does not change pipeline/publication schemas.
 - Do not blindly inject educational markup as trusted HTML.
 - Unsupported content must produce a controlled failure/fallback, not altered mathematical meaning.
 - Preserve content block order and asset references defined by `CONTENT_CONTRACT.md`.

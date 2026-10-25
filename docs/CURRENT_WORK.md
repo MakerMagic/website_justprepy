@@ -2,13 +2,26 @@
 
 ## Current milestone
 
-Mock Tests catalogue preview at `/mock-tests`, alongside Question Bank, `/practice` and public auth previews.
+Leaderboard preview at `/leaderboard`, alongside Mock Tests, Question Bank, `/practice` and public auth previews.
 
 Question Bank frontend at `/` rebuilt around the owner-supplied reference and
 `docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
 workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
+
+- `/leaderboard` reuses the app shell, shared statistics cards, hover scaling and
+  dialog behavior. Its cards follow the individual blue/green/red references with
+  lighter comparison pills; weekly change and population percentile labels are
+  explicit demo fixtures, separate from the seven-row ranking sample. Main user
+  metrics still derive from Question Bank fixtures and advancement from the preceding
+  row. Top-three accuracy values share green pills; hard-solved counts are unboxed
+  red text. Updated/Reloaded and Refresh stay together across breakpoints. Refresh,
+  Flame and Trending Up use official Lucide SVG geometry fetched together, with the
+  ISC notice retained in `leaderboard-icons.tsx`; the supplied Figma source was
+  inaccessible and separate SVG attachments were unavailable. Refresh reloads local
+  fixtures only; detailed analytics remains an explicit preview boundary. No ranking
+  backend or analytics infrastructure is implemented.
 
 - `/mock-tests` reuses `PracticeShell` and the extracted shared `StatisticCard`; desktop/mobile navigation links to the catalogue with the correct active state. Typed illustrative test records drive completion/type filters, counts, recent-score statistics and full/sectional cards. Start, Analyze and Retake retain explicit unavailable-preview notices; no mock-test engine, analysis route or persisted results are implemented.
 
@@ -39,7 +52,13 @@ not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
 
-Lint, typecheck, all 59 tests, changed-file formatting and the production build pass.
+Lint, typecheck, all 126 tests, changed-source formatting and the production build pass.
+Leaderboard refinement was visually reviewed at 1440/768/390px: the three card
+references, sourced Lucide icons, lighter comparison pills, grouped controls after
+local refresh, top-three green accuracy pills and unboxed red hard counts were
+checked. Narrow 320px DOM measurements confirm no card or page overflow. Existing
+statistics hover scaling and dialog keyboard/focus behavior remain intact. The
+reduced-motion fallback is preserved; runtime media emulation was unavailable.
 Practice browser checks cover repeated failed attempts, first-attempt success versus eventual partial success, richer navigator statuses, red switches, fully neutral review options with Show Answer off, circle-only feedback, navigator modes/jumps, retained answers, modal scrolling/dismissal/focus cycling, bookmarking, timer continuity and shared-sidebar hover. Desktop/tablet/mobile reviews include a 320px navigator; the updated review composition was inspected at 1440/768/390px. MathML/LaTeX and image rendering have focused regression coverage. Taste inspection passes at 1440/768/390px with zero failures or warnings; screenshots were reviewed.
 Auth visual checks cover desktop, tablet and mobile; forms validate locally and use explicit preview feedback instead of account creation.
 Browser checks cover desktop/tablet/mobile interactions and data states, including

@@ -17,12 +17,14 @@ function subscribeMobile(callback: () => void) {
 const navigation = [
   { label: "Question Bank", icon: "book", href: "/" },
   { label: "Mock Tests", icon: "test", href: "/mock-tests" },
-  { label: "Leaderboard", icon: "chart", group: true },
+  { label: "Leaderboard", icon: "chart", href: "/leaderboard", group: true },
   { label: "Contact us", icon: "help" },
   { label: "Earn money", icon: "earn" },
 ];
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
-  const mockTestsActive = usePathname() === "/mock-tests";
+  const pathname = usePathname();
+  const activeHref =
+    pathname === "/leaderboard" || pathname === "/mock-tests" ? pathname : "/";
   const [touchOpen, setTouchOpen] = useState(false);
   const [keyboard, setKeyboard] = useState(false);
   const [pointerInside, setPointerInside] = useState(false);
@@ -173,13 +175,9 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
               {item.group && <p className="nav-section extra-label">Extra</p>}
               {item.href ? (
                 <Link
-                  className={`nav-item${(item.href === "/mock-tests") === mockTestsActive ? " is-active" : ""}`}
+                  className={`nav-item${item.href === activeHref ? " is-active" : ""}`}
                   href={item.href}
-                  aria-current={
-                    (item.href === "/mock-tests") === mockTestsActive
-                      ? "page"
-                      : undefined
-                  }
+                  aria-current={item.href === activeHref ? "page" : undefined}
                   title={item.label}
                   onClick={() => setTouchOpen(false)}
                 >
@@ -300,13 +298,13 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
         aria-label="Mobile navigation"
         inert={mobile && touchOpen}
       >
-        <Link href="/" aria-current={!mockTestsActive ? "page" : undefined}>
+        <Link href="/" aria-current={activeHref === "/" ? "page" : undefined}>
           <Icon name="book" />
           <span>Question Bank</span>
         </Link>
         <Link
           href="/mock-tests"
-          aria-current={mockTestsActive ? "page" : undefined}
+          aria-current={activeHref === "/mock-tests" ? "page" : undefined}
         >
           <Icon name="test" />
           <span>Mock Tests</span>

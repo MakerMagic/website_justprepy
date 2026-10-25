@@ -243,6 +243,31 @@ All values below are **proposed implementation defaults** derived from screensho
 - Analytics (when implemented): prioritize useful labeled comparisons, readable chart legends, and restrained semantic color; no 3D charts or dashboard wall of KPI widgets.
 - Vocabulary/leaderboard/profile (when implemented): inherit the product shell, typography, cards, and state conventions. Do not invent separate branded experiences without owner approval.
 
+### 6.10 Leaderboard — owner-approved visual exception
+
+- Preserve the shared app shell and statistic-card hover/press behavior. Leaderboard
+  statistics use white rounded cards with blue Questions Solved, green Accuracy Rate
+  and brand-red Hard Questions Solved headings, faint matching corner washes and
+  lighter metric pills. The weekly comparison includes an inline rising-trend icon.
+  This page-specific treatment does not replace the canonical red statistics elsewhere.
+- Use gold, silver and bronze on top-three rank badges, matching soft-green accuracy
+  pills and unboxed red hard-solved counts. Other metric text remains ink, with
+  stronger top-three weight. The current user has a soft red row,
+  a white-on-red rank badge and a compact `YOU` indicator.
+- The UTC freshness pill may gently pulse its green dot; reduced motion makes it
+  static. Keep this pill and Refresh together with an 8px gap at every breakpoint,
+  wrapping only when necessary. Local fixture reloads must not imply a live backend.
+- Keep exactly five table columns and a compact advancement banner with a red
+  lightning mark and red pill-shaped practice CTA. Main metrics and advancement are
+  data-derived; weekly changes and population comparisons must be explicitly supplied
+  through the illustrative fixture boundary, never inferred from seven sample rows.
+- Refresh, Flame and Trending Up use the original geometry from the official
+  [Lucide SVG collection](https://github.com/lucide-icons/lucide/tree/main/icons)
+  (`refresh-cw.svg`, `flame.svg`, `trending-up.svg`), fetched in one batch. Their ISC
+  notice is retained in `leaderboard-icons.tsx`; no icon dependency is required.
+  Separate SVG attachments were not accessible and the supplied Figma file could not
+  be retrieved, so this is the approved fallback source.
+
 ## 7. Educational content presentation
 
 - Content may interleave text, lists, **native MathML**, and image/diagram references. Preserve the published sequence; see `docs/CONTENT_CONTRACT.md`.

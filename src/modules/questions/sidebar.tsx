@@ -17,14 +17,19 @@ function subscribeMobile(callback: () => void) {
 const navigation = [
   { label: "Question Bank", icon: "book", href: "/" },
   { label: "Mock Tests", icon: "test", href: "/mock-tests" },
+  { label: "Vocabulary", icon: "vocabulary", href: "/vocabulary" },
   { label: "Leaderboard", icon: "chart", href: "/leaderboard", group: true },
   { label: "Contact us", icon: "help", href: "/contact" },
-  { label: "Earn money", icon: "earn" },
+  { label: "Earn money", icon: "earn", href: "/earn" },
 ];
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
   const pathname = usePathname();
   const activeHref =
-    pathname === "/leaderboard" || pathname === "/mock-tests" ? pathname : "/";
+    pathname === "/leaderboard" ||
+    pathname === "/mock-tests" ||
+    pathname === "/vocabulary"
+      ? pathname
+      : "/";
   const [touchOpen, setTouchOpen] = useState(false);
   const [keyboard, setKeyboard] = useState(false);
   const [pointerInside, setPointerInside] = useState(false);

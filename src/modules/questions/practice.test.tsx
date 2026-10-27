@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { PracticeAnswers } from "./practice-answers";
 import { QuestionNavigator } from "./question-navigator";
 import { ExplanationModal } from "./explanation-modal";
+import { QuestionSolver } from "./question-solver";
+import { demoQuestionBank } from "./question-bank.fixtures";
 import {
   contentParts,
   latexMathML,
@@ -625,5 +627,47 @@ describe("shared question and explanation content rendering", () => {
         ),
       ).toBe(true);
     }
+  });
+});
+
+describe("focused question practice layout", () => {
+  it("retains practice controls and the exit link without rendering the application navigation", () => {
+    const html = renderToStaticMarkup(
+      <QuestionSolver
+        questions={demoPracticeQuestions}
+        feedback={demoPracticeFeedback}
+        profile={demoQuestionBank.profile}
+        telegramUrl={demoQuestionBank.telegramUrl}
+      />,
+    );
+    expect(html).toContain('class="solver-content"');
+    expect(html).toContain('href="#main-content">Skip to question');
+    expect(html).toContain(
+      'aria-label="Exit practice and return to Question Bank"',
+    );
+    expect(html).toContain('aria-label="Pause practice timer"');
+    expect(html).toContain('aria-label="Question navigation"');
+    expect(html).toContain('aria-label="Question actions"');
+    expect(html).toContain('class="answer-options"');
+    expect(html).not.toContain('class="sidebar"');
+    expect(html).not.toContain('class="workspace"');
+    expect(html).not.toContain('class="workspace-header"');
+    expect(html).not.toContain("NUET Preparation");
+    expect(html).not.toContain("Join Our Telegram Channel");
+  });
+  it("keeps the empty-practice return action available without introducing navigation", () => {
+    const html = renderToStaticMarkup(
+      <QuestionSolver
+        questions={[]}
+        feedback={{}}
+        profile={demoQuestionBank.profile}
+        telegramUrl={null}
+      />,
+    );
+    expect(html).toContain("No questions available");
+    expect(html).toContain('href="/"');
+    expect(html).toContain("Back to Question Bank");
+    expect(html).not.toContain('class="sidebar"');
+    expect(html).not.toContain('class="workspace-header"');
   });
 });

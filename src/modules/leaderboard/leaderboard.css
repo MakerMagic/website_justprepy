@@ -25,7 +25,7 @@
   width: 30px;
   height: 30px;
   flex: none;
-  color: var(--color-red-600);
+  color: var(--color-brand);
 }
 .leaderboard-heading .intro-copy p {
   max-width: 460px;
@@ -367,19 +367,23 @@
   flex: none;
   padding: 1px 5px;
   border-radius: 4px;
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
   font-size: 11px;
   line-height: 17px;
   font-weight: 650;
 }
 .leaderboard-table tr[data-current-user="true"] {
-  background: color-mix(in srgb, var(--color-red-100) 76%, var(--color-white));
+  background: color-mix(
+    in srgb,
+    var(--color-brand-tint) 76%,
+    var(--color-white)
+  );
 }
 .leaderboard-table tr[data-current-user="true"] .leaderboard-avatar,
 .leaderboard-table tr[data-current-user="true"] .leaderboard-rank {
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
 }
 .leaderboard-count {
   font-weight: inherit;
@@ -418,8 +422,8 @@
   height: 48px;
   flex: none;
   border-radius: var(--radius-md);
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
 }
 .leaderboard-advancement-icon svg {
   width: 28px;
@@ -441,7 +445,7 @@
   font-weight: 650;
 }
 .leaderboard-advancement .leaderboard-target-rank {
-  color: var(--color-red-600);
+  color: var(--color-brand-ink);
 }
 .leaderboard-advancement > .button {
   flex-shrink: 0;

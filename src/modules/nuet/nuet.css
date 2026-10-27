@@ -1,9 +1,9 @@
 .nuet-main {
-  --red: #e8191a;
-  --red-d: #c41112;
+  --brand: var(--color-brand);
+  --brand-hover: var(--color-brand-hover);
   --ink: #111;
   --ground: #fff;
-  --soft: #fbe9e9;
+  --soft: var(--color-brand-soft);
   --mute: #f4f4f4;
   --ink2: #333;
   --f:
@@ -25,7 +25,7 @@
   color: inherit;
 }
 .nuet-main :focus-visible {
-  outline: 3px solid var(--red);
+  outline: 3px solid var(--color-brand-focus);
   outline-offset: 3px;
 }
 html:has(.nuet-main) {
@@ -55,11 +55,11 @@ html:has(.nuet-main) {
   color: #fff;
 }
 .nuet-main .b-r {
-  background: var(--red);
-  color: #fff;
+  background: var(--brand);
+  color: var(--color-brand-contrast);
 }
 .nuet-main .b-r:hover {
-  background: var(--red-d);
+  background: var(--brand-hover);
 }
 .nuet-main .b-w {
   background: #fff;
@@ -118,8 +118,8 @@ html:has(.nuet-main) {
   margin-top: 32px;
 }
 .nuet-main .facts {
-  background: var(--red);
-  color: #fff;
+  background: var(--brand);
+  color: var(--color-brand-contrast);
   margin-top: clamp(48px, 7vw, 96px);
   padding-block: clamp(40px, 6vw, 80px);
 }
@@ -277,14 +277,18 @@ html:has(.nuet-main) {
 }
 .nuet-main details[open] .pm {
   transform: rotate(45deg);
-  background: var(--red);
+  background: var(--brand);
 }
 .nuet-main details[open] .pm::before,
 .nuet-main details[open] .pm::after {
-  background: #fff;
+  background: var(--color-brand-contrast);
 }
 .nuet-main summary:hover .pm {
-  background: var(--red);
+  background: var(--brand);
+}
+.nuet-main summary:hover .pm::before,
+.nuet-main summary:hover .pm::after {
+  background: var(--color-brand-contrast);
 }
 .nuet-main .body {
   padding: 0 clamp(22px, 3vw, 36px) clamp(26px, 3vw, 40px);
@@ -331,8 +335,8 @@ html:has(.nuet-main) {
     color 0.15s;
 }
 .nuet-main .src a:hover {
-  background: var(--red);
-  color: #fff;
+  background: var(--brand);
+  color: var(--color-brand-contrast);
 }
 .nuet-main .prep {
   display: grid;
@@ -354,8 +358,8 @@ html:has(.nuet-main) {
   color: #fff;
 }
 .nuet-main .card.jp {
-  background: var(--red);
-  color: #fff;
+  background: var(--brand);
+  color: var(--color-brand-contrast);
 }
 .nuet-main .card h3 {
   font-size: clamp(30px, 3.6vw, 52px);
@@ -389,7 +393,7 @@ html:has(.nuet-main) {
   .nuet-main {
     --ground: #111;
     --ink: #fff;
-    --soft: #2a1a1a;
+    --soft: #172b1e;
     --mute: #1d1d1d;
     --ink2: #ddd;
   }

@@ -45,9 +45,6 @@ export function MockTestCard({
     <article className="mock-card" aria-labelledby={`test-${test.id}`}>
       <header className="mock-card-heading">
         <div>
-          <p className="mock-test-type">
-            {test.type === "full" ? "Full Simulation" : "Sectional Focus"}
-          </p>
           <h3 id={`test-${test.id}`}>{test.title}</h3>
         </div>
         <span className="mock-passed">{test.passedCount} Passed</span>
@@ -171,7 +168,7 @@ export function MockTests({
             </p>
           </div>
           <div
-            className="practice-stats"
+            className="practice-stats progress-stats"
             role="group"
             aria-label="Illustrative mock-test progress"
             title="Illustrative progress from temporary frontend fixtures"

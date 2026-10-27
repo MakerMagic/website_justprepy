@@ -8,7 +8,6 @@ import type {
   PracticeQuestion,
   PracticeResponse,
 } from "./practice.types";
-import { PracticeShell } from "./practice-shell";
 import { Icon } from "./icon";
 import { PracticeContentView } from "./practice-content";
 import { PracticeAnswers } from "./practice-answers";
@@ -22,6 +21,7 @@ import {
   practiceStatus,
   updatePracticeResponse,
 } from "./practice.logic";
+import "./question-bank.css";
 import "./question-solver.css";
 import "./practice-modals.css";
 
@@ -72,8 +72,6 @@ function PracticeTimer() {
 export function QuestionSolver({
   questions,
   feedback,
-  profile,
-  telegramUrl,
 }: {
   questions: PracticeQuestion[];
   feedback: Record<string, DemoPracticeFeedback>;
@@ -141,11 +139,10 @@ export function QuestionSolver({
   }
 
   return (
-    <PracticeShell
-      profile={profile}
-      telegramUrl={telegramUrl}
-      skipLabel="Skip to question"
-    >
+    <div className="question-bank-app">
+      <a className="skip-link" href="#main-content">
+        Skip to question
+      </a>
       {!question ? (
         <main id="main-content" className="practice-empty" tabIndex={-1}>
           <h1>No questions available</h1>
@@ -326,6 +323,6 @@ export function QuestionSolver({
           />
         </main>
       )}
-    </PracticeShell>
+    </div>
   );
 }

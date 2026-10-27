@@ -21,8 +21,8 @@
 | Question review dialog | Question context, answers, explanation, previous/next controls | Use responsive dialog/full-screen treatment; only reveal answers when authorized |
 | Mock Tests | Filter chips, full/sectional test cards, time/sections, result actions | Do not hardcode exam totals, grades, timing, or scores from mockups |
 | Sign-up | Quiet form on left, atmospheric visual on right, single clear submit | Use actual licensed artwork; strong form validation/accessibility |
-| Logo close-up | Red rounded-square `j` mark with black `ustprepy` wordmark | Preserve supplied asset/proportions; do not reconstruct a production logo from pixels |
-| Timer + blue stat experiments | Strong numeric hierarchy, bordered timer capsule | Treat blue as exploratory; red/ink are canonical unless owner approves a palette change |
+| Logo close-up | Green rounded-square `j` mark (owner-approved color migration) with black `ustprepy` wordmark | Preserve supplied asset/proportions; do not reconstruct a production logo from pixels |
+| Timer + blue stat experiments | Strong numeric hierarchy, bordered timer capsule | Treat blue as exploratory; green/ink are canonical after the owner-approved palette change |
 
 **Visual character (Observed/Inferred):** graphic/editorial, high-contrast, bold identity, generous whitespace around dense functional information. **Target:** one unified application, not a generic soft-shadow SaaS kit or a maximalist gaming UI.
 
@@ -34,10 +34,17 @@ All values below are **proposed implementation defaults** derived from screensho
 
 ### 3.1 Color
 
+The owner-approved green palette below supersedes the original red identity.
+Primary `#3DD86D` and footer `#E7F9ED` are exact adopted values.
+
 | Semantic token | Value | Use |
 |---|---|---|
-| `color.brand` / `color.action-accent` | `#D91C23` | Accessible red filled controls, current nav/filter, brand-forward CTA |
-| `color.accent-soft` | `#FEE2E2` | Selected/error tint; not the same as a solid active chip |
+| `color.brand` / `color.action-accent` | `#3DD86D` | Primary green fills, current navigation/filter, brand-forward CTA; pair with ink text |
+| `color.brand-hover` | `#31C460` | Hover fill; retain ink text |
+| `color.brand-ink` | `#176B35` | Readable brand text/icons on white and soft green |
+| `color.brand-focus` | `#218545` | Focus outlines, selected-control borders and progress |
+| `color.brand-tint` / `color.brand-promo` | `#D5F4DE` / `#8BE8A8` | Current-user/selected tints and existing promotional surfaces |
+| `color.accent-soft` / `color.footer-bg` | `#E7F9ED` | Soft brand surfaces and the exact shared public footer background; errors use separate semantic red |
 | `color.ink` | `#111827` | Main text, primary dark buttons, restrained dark panels |
 | `color.ink-secondary` | `#303846` | Secondary dark surface |
 | `color.text-muted` | `#667085` | Secondary readable labels (not tiny low-contrast gray) |
@@ -52,11 +59,11 @@ All values below are **proposed implementation defaults** derived from screensho
 
 **Color rules**
 
-- Use **filled red** for selected interactive controls and exceptional brand-forward CTAs; use **tinted semantic colors** for informational statuses. A `Wrong` *filter* is still an interactive filter, not a static wrong-answer badge.
-- Default primary actions are ink; use accent red for one prominent action within a local action group. A strict “one red element per screen” rule does **not** apply to navigation and multiple selected filters.
-- Preserve red as the primary product accent. **Do not introduce blue stat cards as a default brand system** from the exploratory example.
+- Use **filled green** for selected interactive controls and exceptional brand-forward CTAs; use **tinted semantic colors** for informational statuses. A `Wrong` *filter* is still an interactive filter, not a static wrong-answer badge.
+- Default primary actions are ink; use accent green for one prominent action within a local action group. A strict “one green element per screen” rule does **not** apply to navigation and multiple selected filters.
+- Preserve `#3DD86D` green as the primary product accent. **Do not introduce blue stat cards as a default brand system** from the exploratory example.
 - Do not use pure black everywhere: the strong black outline is part of logo/navigation character, not a mandatory 2px frame around every card.
-- Proposed white-on-`#D91C23` contrast is about **5.07:1**; muted `#667085` on white is about **4.97:1**. Recheck actual token implementations and every other foreground/background combination. Never rely on raw brand-red sampled from a screenshot for accessible button text.
+- Use ink `#111827` on bright green fills; white on `#3DD86D` does not meet normal-text contrast. Use `#176B35` for brand text on light surfaces and `#218545` for focus/selection edges. Preserve semantic red for validation errors, incorrect answers, hard difficulty and destructive actions. Existing success/warning colors, medal ranks and third-party brand colors remain independent of the green identity. Dark NUET soft surfaces use `#172B1E`. Preserve all layout, typography, motion and interaction rules during this color migration.
 
 ### 3.2 Typography
 
@@ -109,7 +116,7 @@ All values below are **proposed implementation defaults** derived from screensho
 **Observed desktop:** fixed left sidebar + slim top header + pale content canvas + white section surfaces. Main panel typically contains a page heading, optional metrics/filter area, then a grid/list.
 
 - Desktop sidebar: logo → PRACTICE links → EXTRA links → lower account/social/subscription content when relevant.
-- Preserve active red nav pill and high-contrast outlines for inactive navigation, but avoid redundant branding/promo blocks.
+- Preserve active green nav pill and high-contrast outlines for inactive navigation, but avoid redundant branding/promo blocks.
 - The top header provides section context. A community CTA may appear on browsing/marketing surfaces, **not during active examination work**.
 - Header content and page headings must not compete: avoid large duplicated titles.
 - Use functional section whitespace rather than decorative dividers everywhere.
@@ -133,14 +140,14 @@ All values below are **proposed implementation defaults** derived from screensho
 
 | Component | Anatomy and visual behavior | Interaction and restrictions |
 |---|---|---|
-| Button | `Primary` ink, `Accent` red, `Secondary` outline, `Ghost` quiet; 44px desktop / 48px mobile min height, radius.sm | Distinct disabled/loading/focus states; no decorative arrow appended by default |
-| Sidebar nav item | Icon + label, strong outline; selected red filled | Keyboard accessible, current-page semantic state; active and hovered distinct |
-| Filter chip | Compact pill/rounded control, neutral outline unselected, filled red selected | Multiple selections permitted where model allows; label + selected state programmatic |
+| Button | `Primary` ink, `Accent` green, `Secondary` outline, `Ghost` quiet; 44px desktop / 48px mobile min height, radius.sm | Distinct disabled/loading/focus states; no decorative arrow appended by default |
+| Sidebar nav item | Icon + label, strong outline; selected green filled with ink text | Keyboard accessible, current-page semantic state; active and hovered distinct |
+| Filter chip | Compact pill/rounded control, neutral outline unselected, filled green selected | Multiple selections permitted where model allows; label + selected state programmatic |
 | Status badge | Soft semantic tint with text/icon | Non-interactive; not visually identical to a filter |
 | Flat card | Heading, optional metadata, content, optional actions | No default drop shadow; whole-card clickable only if semantically one action |
 | Raised panel | Heading/close where appropriate, content, optional footer actions | Focus/dismissal/scroll management; anchored within viewport |
 | Progress bar | Neutral track, consistent fill, number/fraction label | Never imply progress when denominator unknown; accessible value/label |
-| Stat card | Large number + short metric caption; optional understated graphic motif | Red variant is canonical; do not hardcode sample numbers |
+| Stat card | Large number + short metric caption; optional understated graphic motif | Green variant is canonical; do not hardcode sample numbers |
 | Text field | Label, optional icon, neutral border, clear error/helper | Real label association, accessible error, visible focus |
 | Account popover | Account label, nickname, optional status, settings/subscription, separated sign-out | No hardcoded `PRO`; escape/outside dismiss, keyboard control, mobile-safe layout |
 | Modal/dialog | Raised panel, visible heading and close; content scrolls as needed | Trap/manage focus, restore trigger focus, block unintended background interaction |
@@ -165,7 +172,7 @@ All values below are **proposed implementation defaults** derived from screensho
 
 ### 6.2 Years multi-select popover
 
-**Observed anatomy:** Years title + calendar icon; close and Apply; selected count; Select All/Clear; scrollable year grid with selected red controls and checkmarks.
+**Observed anatomy:** Years title + calendar icon; close and Apply; selected count; Select All/Clear; scrollable year grid with selected green controls and checkmarks.
 
 **Proposed interaction contract:** selected values are edited as a draft until **Apply**. Clear and Select All edit the draft; closing without Apply discards changes. The selected-count label reflects the draft. Available years are data-driven, not a hardcoded 2004–2024 sequence.
 
@@ -180,7 +187,7 @@ All values below are **proposed implementation defaults** derived from screensho
 
 - The full row is the hit target; letter, text, math, and image belong to the same selectable control.
 - Variable option count and order; letter is presentation, not persistent option identity.
-- **Before grading:** neutral → selected with red border/tint and visible marker. **Do not show correct/incorrect feedback while answers must remain hidden.**
+- **Before grading:** neutral → selected with green border/tint and visible marker. **Do not show correct/incorrect feedback while answers must remain hidden.**
 - **After authorized grading:** correct option uses green-tint label/border, student's wrong selection uses red-tint label/border, partial result (if supported by assessment) uses warning treatment. Show explicit text/symbol, not hue alone.
 - During timed mock mode, answer reveal and explanation follow exam-state permissions; visual reference is not authorization.
 - Never crop math, images, or long options merely to maintain a fixed card height.
@@ -230,7 +237,7 @@ All values below are **proposed implementation defaults** derived from screensho
 
 ### 6.8 Authentication
 
-**Observed:** quiet two-column sign-up; form labels; federated sign-in control; email, username, password/confirmation; terms checkbox; strong red submission; atmospheric right illustration.
+**Observed:** quiet two-column sign-up; form labels; federated sign-in control; email, username, password/confirmation; terms checkbox; strong green submission; atmospheric right illustration.
 
 - Preserve a clear form hierarchy and readable validation/help messages.
 - Actual sign-in methods/required fields are product/security decisions, **not established by the screenshot**. Do not implement Google sign-in or terms behavior solely because they appear in the reference.
@@ -239,7 +246,7 @@ All values below are **proposed implementation defaults** derived from screensho
 ### 6.9 Account, stats, analytics, vocabulary, and other future screens
 
 - Account: anchored Raised menu shown in reference; account status from data, never hardcoded.
-- Stats: large label-paired numbers and calm progress bars. The **red** statistic treatment is the default; the blue example is not a second design system.
+- Stats: large label-paired numbers and calm progress bars. The **green** statistic treatment is the default; the blue example is not a second design system.
 - Analytics (when implemented): prioritize useful labeled comparisons, readable chart legends, and restrained semantic color; no 3D charts or dashboard wall of KPI widgets.
 - Vocabulary/leaderboard/profile (when implemented): inherit the product shell, typography, cards, and state conventions. Do not invent separate branded experiences without owner approval.
 
@@ -247,18 +254,20 @@ All values below are **proposed implementation defaults** derived from screensho
 
 - Preserve the shared app shell and statistic-card hover/press behavior. Leaderboard
   statistics use white rounded cards with blue Questions Solved, green Accuracy Rate
-  and brand-red Hard Questions Solved headings, faint matching corner washes and
+  and red Hard Questions Solved headings, faint matching corner washes and
   lighter metric pills. The weekly comparison includes an inline rising-trend icon.
-  This page-specific treatment does not replace the canonical red statistics elsewhere.
+  The Hard Questions Solved card and top-three Hard Solved counts are owner-approved
+  red exceptions (`#D91C23`, with `#FEE2E2` card tints). The title trophy uses exact
+  primary green `#3DD86D`. This does not replace the canonical green statistics elsewhere.
 - Use gold, silver and bronze on top-three rank badges, matching soft-green accuracy
   pills and unboxed red hard-solved counts. Other metric text remains ink, with
-  stronger top-three weight. The current user has a soft red row,
-  a white-on-red rank badge and a compact `YOU` indicator.
+  stronger top-three weight. The current user has a soft green row,
+  a ink-on-green rank badge and a compact `YOU` indicator.
 - The UTC freshness pill may gently pulse its green dot; reduced motion makes it
   static. Keep this pill and Refresh together with an 8px gap at every breakpoint,
   wrapping only when necessary. Local fixture reloads must not imply a live backend.
-- Keep exactly five table columns and a compact advancement banner with a red
-  lightning mark and red pill-shaped practice CTA. Main metrics and advancement are
+- Keep exactly five table columns and a compact advancement banner with a green
+  lightning mark and green pill-shaped practice CTA. Main metrics and advancement are
   data-derived; weekly changes and population comparisons must be explicitly supplied
   through the illustrative fixture boundary, never inferred from seven sample rows.
 - Refresh, Flame and Trending Up use the original geometry from the official
@@ -304,7 +313,7 @@ All values below are **proposed implementation defaults** derived from screensho
 
 - Meet WCAG 2.2 AA as an implementation target where applicable; verify actual rendered contrast, keyboard flows, and focus handling. Body text >=4.5:1, large text/UI indicators >=3:1 as applicable.
 - Use real buttons, links, fields, radio/checkbox semantics, labels, and grouped answer controls. Avoid click-handled generic `<div>` controls.
-- Visible focus indicator: proposed 2px red outline with 2px offset; verify contrast against the actual adjacent surfaces.
+- Visible focus indicator: 2px deep-green outline with 2px offset; verify contrast against the actual adjacent surfaces.
 - Communicate selected, saved, answered, correct, incorrect, difficulty, and disabled states via text/shape/icon/semantics in addition to color.
 - Dialogs/popovers require accessible names, Escape behavior when safe, focus placement/restoration, and scroll containment.
 - Errors describe recovery; loading is announced appropriately without excessive live updates; prevent duplicate submissions.

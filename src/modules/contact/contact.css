@@ -1,7 +1,7 @@
 .contact-page {
   --contact-ink: #18181b;
   --contact-muted: #52525b;
-  --contact-red: #eb1d1d;
+  --contact-brand: var(--color-brand);
   --contact-telegram: #0ea5e9;
   min-height: 100svh;
   display: flex;
@@ -85,8 +85,8 @@
   padding-inline: 16px;
 }
 .contact-page .contact-account-actions .accent {
-  background: var(--contact-red);
-  color: var(--color-white);
+  background: var(--contact-brand);
+  color: var(--color-brand-contrast);
   min-width: 90px;
 }
 .contact-page .contact-account-actions .primary {
@@ -102,7 +102,7 @@
     color: var(--contact-ink);
   }
   .contact-page .contact-account-actions .accent:hover {
-    background: #d5181d;
+    background: var(--color-brand-hover);
   }
   .contact-page .contact-account-actions .primary:hover {
     background: var(--contact-ink);
@@ -125,8 +125,8 @@
   padding: 2px 10px;
   border: 1px solid var(--contact-ink);
   border-radius: var(--radius-full);
-  background: var(--contact-red);
-  color: var(--color-white);
+  background: var(--contact-brand);
+  color: var(--color-brand-contrast);
   font-size: 10px;
   line-height: 14px;
   font-weight: 500;
@@ -171,8 +171,8 @@
   position: absolute;
   top: -9px;
   right: 20px;
-  background: var(--contact-red);
-  color: var(--color-white);
+  background: var(--contact-brand);
+  color: var(--color-brand-contrast);
   border: 1px solid var(--contact-ink);
   border-radius: var(--radius-full);
   padding: 1px 8px;
@@ -258,7 +258,7 @@
   background: #0796d5;
 }
 .contact-footer {
-  background: #fbe9e9;
+  background: var(--color-brand-soft);
   border-top: 1px solid rgb(0 0 0 / 6%);
 }
 .contact-footer-inner {
@@ -345,7 +345,7 @@
 }
 .contact-footer nav a:hover,
 .contact-footer nav button:hover {
-  color: #b01b1b;
+  color: var(--color-brand-ink);
 }
 .contact-footer-bottom {
   border-top: 1px solid rgb(0 0 0 / 8%);

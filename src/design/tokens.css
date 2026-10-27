@@ -1,5 +1,14 @@
 :root {
   /* Authoritative roles from docs/design.md. */
+  --color-brand: #3dd86d;
+  --color-brand-hover: #31c460;
+  --color-brand-ink: #176b35;
+  --color-brand-focus: #218545;
+  --color-brand-soft: #e7f9ed;
+  --color-brand-tint: #d5f4de;
+  --color-brand-promo: #8be8a8;
+  --color-brand-contrast: var(--color-ink-900);
+  /* Red is reserved for semantic errors, hard difficulty and destructive actions. */
   --color-red-600: #d91c23;
   --color-red-100: #fee2e2;
   --color-ink-900: #111827;
@@ -24,8 +33,8 @@
   --color-question-status-wrong-bg: #f29ba4;
   --color-question-status-text: var(--color-ink-900);
   --color-toggle-off: #edf2ff;
-  --color-toggle-on: var(--color-red-600);
-  /* Reference-led review metadata; action controls retain the brand red. */
+  --color-toggle-on: var(--color-brand);
+  /* Reference-led review metadata; action controls use brand green. */
   --color-review-accent: #365f91;
   --color-review-accent-bg: #e3ebff;
   --color-review-accent-border: #c9d7f0;

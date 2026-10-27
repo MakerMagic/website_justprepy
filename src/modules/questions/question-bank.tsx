@@ -45,7 +45,7 @@ export function QuestionBank({ data }: { data: QuestionBankData }) {
             </p>
           </div>
           <div
-            className="practice-stats"
+            className="practice-stats progress-stats"
             role="group"
             aria-label="Illustrative overall progress"
             title="Illustrative progress from temporary frontend fixtures"

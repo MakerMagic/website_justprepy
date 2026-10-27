@@ -95,13 +95,13 @@
 }
 .practice-switch input:checked + .switch-track {
   background: var(--color-toggle-on);
-  border-color: var(--color-white);
-  outline: 2px solid var(--color-toggle-on);
+  border-color: var(--color-brand-focus);
+  outline: 2px solid var(--color-brand-focus);
   outline-offset: 1px;
 }
 .practice-switch input:checked + .switch-track::after {
   transform: translateX(18px);
-  background: var(--color-white);
+  background: var(--color-brand-contrast);
 }
 .practice-switch:hover input:not(:checked) + .switch-track {
   border-color: var(--color-ink-900);
@@ -168,7 +168,7 @@
   transform: scale(0.97);
 }
 .navigator-question:focus-visible {
-  outline-color: var(--color-red-600);
+  outline-color: var(--color-brand-focus);
 }
 .navigator-legend {
   display: flex;
@@ -366,8 +366,8 @@
   transform: rotate(180deg);
 }
 .practice-dialog .practice-dialog-close:hover {
-  color: var(--color-white);
-  background: var(--color-red-600);
+  color: var(--color-brand-contrast);
+  background: var(--color-brand);
 }
 .review-columns {
   flex: 1;
@@ -455,7 +455,7 @@
   color: var(--color-review-accent);
 }
 .review-explanation h3 svg {
-  color: var(--color-red-600);
+  color: var(--color-brand-ink);
 }
 .review-explanation-content {
   padding: 18px;

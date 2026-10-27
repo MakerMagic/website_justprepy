@@ -91,8 +91,8 @@
   align-items: center;
   padding: 12px;
   border-radius: var(--radius-md);
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
   border: 0;
   transition:
     transform var(--motion-fast),
@@ -101,7 +101,7 @@
 @media (hover: hover) {
   .stat-card:hover {
     transform: scale(1.025);
-    background: #c71920;
+    background: var(--color-brand-hover);
   }
 }
 .stat-card:active {
@@ -234,8 +234,8 @@
   height: 16.2px;
 }
 .nav-item.is-active {
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
 }
 .nav-item:not(.is-active):hover {
   background: var(--color-neutral-100);
@@ -361,7 +361,7 @@
   padding: 10px 14px;
   border: 1px solid var(--color-neutral-300);
   border-radius: var(--radius-lg);
-  background-color: #ff676d;
+  background-color: var(--color-brand-promo);
   opacity: 0;
   visibility: hidden;
   transform: translateY(4px);
@@ -378,12 +378,16 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background-color: color-mix(in srgb, var(--color-red-100) 60%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--color-brand-tint) 60%,
+    transparent
+  );
   clip-path: ellipse(116% 64% at 14% 128%);
   transition: background-color 240ms ease;
 }
 .subscription-promo::after {
-  background-color: color-mix(in srgb, var(--color-red-600) 13%, transparent);
+  background-color: color-mix(in srgb, var(--color-brand) 13%, transparent);
   clip-path: ellipse(112% 60% at 86% 136%);
 }
 .sidebar[data-expanded="true"] .subscription-promo::before {
@@ -394,11 +398,11 @@
 }
 .subscription-promo:hover,
 .subscription-promo:focus-within {
-  background-color: var(--color-red-600);
+  background-color: var(--color-brand);
 }
 .subscription-promo:hover::before,
 .subscription-promo:focus-within::before {
-  background: color-mix(in srgb, var(--color-red-600) 14%, transparent);
+  background: color-mix(in srgb, var(--color-brand) 14%, transparent);
 }
 .subscription-promo:hover::after,
 .subscription-promo:focus-within::after {
@@ -412,7 +416,7 @@
 .subscription-promo:hover p,
 .subscription-promo:focus-within h2,
 .subscription-promo:focus-within p {
-  color: var(--color-white);
+  color: var(--color-brand-contrast);
 }
 @keyframes subscription-wave-forward {
   from {
@@ -682,12 +686,12 @@
 }
 .chip[aria-pressed="true"],
 .filter-value[aria-pressed="true"] {
-  color: var(--color-white);
+  color: var(--color-brand-contrast);
 }
 .chip[aria-pressed="true"]::before,
 .filter-value[aria-pressed="true"]::before {
-  background: var(--color-red-600);
-  border-color: var(--color-red-600);
+  background: var(--color-brand);
+  border-color: var(--color-brand-focus);
 }
 .source-year-count {
   font-size: 11px;
@@ -929,11 +933,11 @@
   background: var(--color-ink-700);
 }
 .button.accent {
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
 }
 .button.accent:hover {
-  background: #b91c1c;
+  background: var(--color-brand-hover);
 }
 .button.secondary {
   border-color: var(--color-neutral-300);
@@ -954,7 +958,7 @@
   font-weight: 550;
 }
 .text-button {
-  color: var(--color-red-600);
+  color: var(--color-brand-ink);
 }
 .text-button:hover,
 .year-select-all:hover,
@@ -1020,9 +1024,9 @@
   background: var(--color-neutral-50);
 }
 .year-option[aria-pressed="true"] {
-  border-color: var(--color-red-600);
-  background: var(--color-red-600);
-  color: var(--color-white);
+  border-color: var(--color-brand-focus);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
 }
 .year-note {
   padding: 0 16px 12px;
@@ -1443,7 +1447,7 @@
     line-height: 16px;
   }
   .mobile-navigation [aria-current] {
-    color: var(--color-red-600);
+    color: var(--color-brand-ink);
     font-weight: 650;
   }
   .floating-panel {
@@ -1497,5 +1501,71 @@
   .stat-label {
     font-size: 11px;
     white-space: nowrap;
+  }
+}
+
+/* Paired Question Bank and Mock Tests statistics follow the Vocabulary cards. */
+.progress-stats {
+  gap: 16px;
+}
+.progress-stats .stat-card {
+  width: 160px;
+  min-height: 124px;
+  padding: 16px;
+  gap: 12px;
+  border-radius: 20px;
+  align-items: center;
+  text-align: center;
+  color: var(--color-white);
+  background: linear-gradient(135deg, #3dd86d, #16a34a);
+  box-shadow: 0 6px 14px rgb(61 216 109 / 12%);
+}
+.progress-stats .stat-card:last-child {
+  background: linear-gradient(135deg, #059669, #065f46);
+  box-shadow: none;
+}
+.progress-stats .stat-value {
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 800;
+}
+.progress-stats .stat-label {
+  margin-top: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+  white-space: normal;
+}
+.progress-stats .stat-value span {
+  font-size: inherit;
+}
+.progress-stats .stat-motif {
+  position: absolute;
+  right: auto;
+  left: -8px;
+  bottom: -20px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.14;
+  z-index: -1;
+}
+.progress-stats .stat-card:last-child .stat-motif {
+  left: -4px;
+  bottom: -12px;
+}
+@media (max-width: 639px) {
+  .progress-stats .stat-card {
+    width: 100%;
+    min-height: 112px;
+    padding: 12px;
+    gap: 10px;
+  }
+  .progress-stats .stat-value {
+    font-size: 36px;
+    line-height: 40px;
+  }
+  .progress-stats .stat-label {
+    font-size: 12px;
+    line-height: 18px;
   }
 }

@@ -37,7 +37,7 @@ input {
   touch-action: manipulation;
 }
 :focus-visible {
-  outline: 2px solid var(--color-red-600);
+  outline: 2px solid var(--color-brand-focus);
   outline-offset: 2px;
 }
 button:disabled {
@@ -74,18 +74,18 @@ progress {
   border-radius: var(--radius-full);
   overflow: hidden;
   background: var(--color-neutral-100);
-  accent-color: var(--color-red-600);
+  accent-color: var(--color-brand-focus);
 }
 progress::-webkit-progress-bar {
   background: var(--color-neutral-100);
   border-radius: var(--radius-full);
 }
 progress::-webkit-progress-value {
-  background: var(--color-red-600);
+  background: var(--color-brand-focus);
   border-radius: var(--radius-full);
 }
 progress::-moz-progress-bar {
-  background: var(--color-red-600);
+  background: var(--color-brand-focus);
   border-radius: var(--radius-full);
 }
 @media (prefers-reduced-motion: reduce) {

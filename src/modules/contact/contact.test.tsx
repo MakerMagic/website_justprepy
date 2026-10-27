@@ -66,13 +66,13 @@ describe("public contact page", () => {
       "/login",
       "/mock-tests",
       "/what-is-nuet",
+      "/earn",
     ])
       expect(html).toContain(`href="${href}"`);
     for (const label of [
       "Features",
       "Subscribe",
       "Subscription",
-      "Earn money",
       "Privacy Policy",
       "Terms of service",
     ])

@@ -1,0 +1,290 @@
+.vocabulary-content .intro-copy p {
+  max-width: 560px;
+}
+.vocabulary-stats {
+  gap: 16px;
+}
+.vocabulary-stats .stat-card {
+  width: 160px;
+  min-height: 124px;
+  padding: 16px;
+  gap: 12px;
+  border-radius: 20px;
+  align-items: center;
+  text-align: center;
+  color: var(--color-white);
+  background: linear-gradient(135deg, #3dd86d, #16a34a);
+  box-shadow: 0 6px 14px rgb(61 216 109 / 12%);
+}
+.vocabulary-stats .stat-card:last-child {
+  background: linear-gradient(135deg, #059669, #065f46);
+  box-shadow: none;
+}
+.vocabulary-stats .stat-value {
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 800;
+}
+.vocabulary-stats .stat-label {
+  margin-top: 0;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 700;
+}
+.vocabulary-stats .stat-decoration {
+  position: absolute;
+  left: -8px;
+  bottom: -20px;
+  width: 80px;
+  height: 80px;
+  opacity: 0.14;
+  z-index: -1;
+}
+.vocabulary-stats .stat-decoration svg {
+  width: 100%;
+  height: 100%;
+}
+.vocabulary-book-motif {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.vocabulary-book-motif svg {
+  fill: currentColor;
+  stroke: none;
+}
+.vocabulary-stats .stat-card:last-child .stat-decoration {
+  left: -4px;
+  bottom: -12px;
+}
+.vocabulary-presets-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 16px;
+}
+.vocabulary-presets-heading > svg {
+  color: #334155;
+}
+.vocabulary-presets-heading h2 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.25px;
+}
+.vocabulary-availability {
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: #e2e8f0;
+  color: var(--color-ink-700);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.vocabulary-grid {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+.vocabulary-preset {
+  min-width: 0;
+  min-height: 332px;
+  display: flex;
+  flex-direction: column;
+  padding: 28px;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  background: var(--color-white);
+  box-shadow: 0 1px 3px rgb(15 23 42 / 5%);
+  transition:
+    border-color var(--motion-fast),
+    background var(--motion-fast);
+}
+.vocabulary-preset[data-selected="true"] {
+  padding: 27px;
+  border: 2px solid var(--color-brand);
+  background: #f4fbf6;
+}
+.vocabulary-preset-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 64px;
+}
+.vocabulary-preset h3 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 700;
+  letter-spacing: -0.45px;
+}
+.vocabulary-preset label {
+  cursor: pointer;
+}
+.vocabulary-custom-label {
+  margin-bottom: 4px;
+  color: #1fa84c;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.vocabulary-selection {
+  position: relative;
+  flex: 0 0 32px;
+  height: 32px;
+}
+.vocabulary-selection input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.vocabulary-selection-indicator {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-full);
+  color: var(--color-white);
+  background: var(--color-white);
+}
+.vocabulary-selection-indicator svg {
+  visibility: hidden;
+}
+.vocabulary-selection input:checked + .vocabulary-selection-indicator {
+  border-color: var(--color-brand);
+  background: var(--color-brand);
+}
+.vocabulary-selection input:checked + .vocabulary-selection-indicator svg {
+  visibility: visible;
+}
+.vocabulary-selection input:focus-visible + .vocabulary-selection-indicator {
+  outline: 2px solid var(--color-brand-focus);
+  outline-offset: 3px;
+}
+.vocabulary-preset-description {
+  margin-top: 12px;
+  margin-bottom: 28px;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  line-height: 24px;
+}
+.vocabulary-preset-footer {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #edf2f7;
+}
+.vocabulary-word-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.vocabulary-word-count svg,
+.vocabulary-inspect svg {
+  color: #94a3b8;
+}
+.vocabulary-preset[data-selected="true"] .vocabulary-word-count svg {
+  color: #1fa84c;
+}
+.vocabulary-preset .vocabulary-inspect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-color: #e2e8f0;
+  border-radius: 16px;
+  background: #f8fafc;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 700;
+}
+.vocabulary-preset[data-selected="true"] .vocabulary-inspect {
+  background: var(--color-white);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 6%);
+}
+.vocabulary-content .vocabulary-inspect:hover {
+  background: #f1f5f9;
+}
+.vocabulary-practice {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 11px 28px;
+  margin-top: 28px;
+  border-radius: 14px;
+  background: #059669;
+  color: var(--color-white);
+  box-shadow: 0 2px 3px rgb(15 23 42 / 8%);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+}
+.vocabulary-practice:hover {
+  background: #047857;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .vocabulary-intro {
+    flex-wrap: wrap;
+  }
+  .vocabulary-preset {
+    padding: 20px;
+  }
+  .vocabulary-preset[data-selected="true"] {
+    padding: 19px;
+  }
+  .vocabulary-grid {
+    gap: 16px;
+  }
+  .vocabulary-preset h3 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+  .vocabulary-preset-description {
+    font-size: 14px;
+    line-height: 22px;
+  }
+}
+@media (max-width: 767px) {
+  .vocabulary-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+@media (max-width: 639px) {
+  .vocabulary-stats .stat-card {
+    width: 100%;
+    min-height: 112px;
+    padding: 12px;
+    gap: 10px;
+  }
+  .vocabulary-stats .stat-value {
+    font-size: 36px;
+    line-height: 40px;
+  }
+  .vocabulary-stats .stat-label {
+    font-size: 12px;
+    line-height: 18px;
+  }
+}

@@ -13,14 +13,20 @@ import {
 import "../modules/questions/question-bank.css";
 import "../modules/contact/contact.css";
 
-function ContactBrand({ priority = false }: { priority?: boolean }) {
+function ContactBrand({
+  priority = false,
+  brandName = "JustPrepy",
+}: {
+  priority?: boolean;
+  brandName?: string;
+}) {
   return (
-    <Link href="/" className="contact-brand" aria-label="JustPrepy home">
+    <Link href="/" className="contact-brand" aria-label={brandName + " home"}>
       <Image
         src="/brand/justprepy-logo-transparent.png"
         width={351}
         height={90}
-        alt="JustPrepy"
+        alt={brandName}
         priority={priority}
       />
     </Link>
@@ -32,9 +38,27 @@ export function PublicSiteShell({
   page,
 }: {
   children: ReactNode;
-  page: "contact" | "nuet";
+  page: "contact" | "nuet" | "creators";
 }) {
   const isContact = page === "contact";
+  const brandName = page === "creators" ? "justprepy" : "JustPrepy";
+  const pageContext = {
+    contact: {
+      main: "#contact-main",
+      skip: "Skip to contact information",
+      back: "Back to Contact Us",
+    },
+    nuet: {
+      main: "#nuet-main",
+      skip: "Skip to NUET information",
+      back: "Back to What is NUET?",
+    },
+    creators: {
+      main: "#creators-main",
+      skip: "Skip to creator program",
+      back: "Back to Creator Program",
+    },
+  }[page];
   const [notice, setNotice] = useState<ContactNotice | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
@@ -49,11 +73,8 @@ export function PublicSiteShell({
 
   return (
     <div className="contact-page">
-      <a
-        className="skip-link"
-        href={isContact ? "#contact-main" : "#nuet-main"}
-      >
-        {isContact ? "Skip to contact information" : "Skip to NUET information"}
+      <a className="skip-link" href={pageContext.main}>
+        {pageContext.skip}
       </a>
       <header className="contact-header">
         <div className="contact-header-inner">
@@ -70,7 +91,7 @@ export function PublicSiteShell({
               Contact Us
             </Link>
           </nav>
-          <ContactBrand priority />
+          <ContactBrand priority brandName={brandName} />
           <div className="contact-account-actions">
             <Link href="/login" className="button primary">
               Log In
@@ -86,7 +107,7 @@ export function PublicSiteShell({
         <div className="contact-footer-inner">
           <div className="contact-footer-grid">
             <div className="contact-footer-brand">
-              <ContactBrand />
+              <ContactBrand brandName={brandName} />
               <p>Unofficial NUET preparation platform.</p>
               <div className="contact-footer-socials">
                 {contactChannels
@@ -98,7 +119,7 @@ export function PublicSiteShell({
                       href={channel.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      aria-label={`JustPrepy on ${channel.id === "telegram" ? "Telegram" : "TikTok"}`}
+                      aria-label={`${brandName} on ${channel.id === "telegram" ? "Telegram" : "TikTok"}`}
                     >
                       {channel.id === "telegram" ? (
                         <svg
@@ -121,14 +142,19 @@ export function PublicSiteShell({
               <h2 id="contact-offers-title">Offers</h2>
               <Link href="/">Question Bank</Link>
               {preview("subscription", "Subscription")}
-              {preview("earn", "Earn money")}
+              <Link
+                href="/earn"
+                aria-current={page === "creators" ? "page" : undefined}
+              >
+                Earn money
+              </Link>
               <Link href="/mock-tests">Mock Tests</Link>
             </nav>
             <nav aria-labelledby="contact-info-title">
               <h2 id="contact-info-title">Info</h2>
               <Link
                 href="/what-is-nuet"
-                aria-current={!isContact ? "page" : undefined}
+                aria-current={page === "nuet" ? "page" : undefined}
               >
                 What is NUET
               </Link>
@@ -182,7 +208,7 @@ export function PublicSiteShell({
           className="button primary"
           onClick={() => dialog.current?.close()}
         >
-          {isContact ? "Back to Contact Us" : "Back to What is NUET?"}
+          {pageContext.back}
         </button>
       </dialog>
     </div>

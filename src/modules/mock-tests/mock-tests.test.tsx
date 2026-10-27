@@ -91,7 +91,6 @@ describe("mock-test catalogue", () => {
       <MockTestCard test={demoMockTests[2]} onAction={() => {}} />,
     );
     for (const text of [
-      "Sectional Focus",
       "Critical Thinking",
       "Problem Solving",
       "Mathematics",
@@ -118,10 +117,23 @@ describe("mock-test catalogue", () => {
       <MockTestCard test={demoMockTests[3]} onAction={() => {}} />,
     );
     expect(html).toContain('data-completed="true"');
-    for (const text of ["211", "240", "Analyze", "Retake", "Full Simulation"])
+    for (const text of ["211", "240", "Analyze", "Retake"])
       expect(html).toContain(text);
     expect(html).not.toContain("Start Test");
     expect(mockTestActions(demoMockTests[3])).toEqual(["analyze", "retake"]);
+  });
+  it("omits simulation labels from every card while retaining test titles and counts", () => {
+    for (const test of demoMockTests) {
+      const html = renderToStaticMarkup(
+        <MockTestCard test={test} onAction={() => {}} />,
+      );
+      expect(html).toContain(test.title);
+      expect(html).toContain(test.passedCount + " Passed");
+      expect(html).not.toContain("mock-test-type");
+      expect(html).not.toMatch(
+        /Full Simulation|Sectional Simulation|Sectional Focus/i,
+      );
+    }
   });
   it("links only provided action destinations", () => {
     const test = {

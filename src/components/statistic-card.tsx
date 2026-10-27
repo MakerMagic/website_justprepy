@@ -14,15 +14,16 @@ export function StatisticCard({
   label: string;
   value: ReactNode;
   motif: "check" | "trend";
-  onClick: () => void;
+  onClick?: () => void;
   secondary?: ReactNode;
   decoration?: ReactNode;
 }) {
+  const Container = onClick ? "button" : "div";
   return (
-    <button
-      type="button"
+    <Container
+      type={onClick ? "button" : undefined}
       className="stat-card"
-      aria-haspopup="dialog"
+      aria-haspopup={onClick ? "dialog" : undefined}
       onClick={onClick}
     >
       <span className="stat-label">{label}</span>
@@ -44,6 +45,6 @@ export function StatisticCard({
           )}
         </svg>
       )}
-    </button>
+    </Container>
   );
 }

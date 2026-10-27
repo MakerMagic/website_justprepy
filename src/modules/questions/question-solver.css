@@ -5,8 +5,8 @@
   --practice-answer-weight: 450;
   --practice-section-weight: 650;
   --practice-difficulty-weight: 700;
-  height: calc(100dvh - 64px);
-  min-height: calc(100dvh - 64px);
+  height: 100dvh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--color-white);
@@ -65,8 +65,8 @@
 .question-topic {
   padding: 5px 10px;
   border-radius: 6px;
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
   font-size: 11px;
   font-weight: 650;
   text-transform: uppercase;
@@ -83,8 +83,8 @@
   transform: scale(0.96);
 }
 .save-question[aria-pressed="true"] {
-  color: var(--color-red-600);
-  background: var(--color-red-100);
+  color: var(--color-brand-ink);
+  background: var(--color-brand-tint);
 }
 .bookmark-animation {
   position: absolute;
@@ -211,13 +211,13 @@
   cursor: default;
 }
 .answer-option[data-result="correct"] .answer-letter {
-  border-color: var(--color-answer-correct-bg);
-  background: var(--color-answer-correct-bg);
+  border-color: #32cc11;
+  background: #32cc11;
   color: var(--color-answer-correct-text);
 }
 .answer-option[data-result="wrong"] .answer-letter {
-  border-color: var(--color-answer-incorrect-bg);
-  background: var(--color-answer-incorrect-bg);
+  border-color: #e0283b;
+  background: #e0283b;
   color: var(--color-answer-incorrect-text);
 }
 .solver-actions {
@@ -364,8 +364,7 @@
 }
 @media (max-width: 639px) {
   .solver-content {
-    min-height: calc(100dvh - 64px);
-    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    min-height: 100dvh;
   }
   .solver-toolbar {
     min-height: 116px;
@@ -407,10 +406,11 @@
   }
   .solver-actions {
     position: sticky;
-    bottom: calc(64px + env(safe-area-inset-bottom));
+    bottom: 0;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
     padding: 12px 20px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
   }
   .question-navigation {
     grid-column: 1 / -1;

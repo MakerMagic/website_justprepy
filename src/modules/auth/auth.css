@@ -159,9 +159,10 @@
     box-shadow var(--motion-fast);
 }
 .auth-input-wrap:focus-within {
-  border-color: var(--color-red-600);
+  border-color: var(--color-brand-focus);
   background: var(--color-white);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-red-600) 8%, transparent);
+  box-shadow: 0 0 0 3px
+    color-mix(in srgb, var(--color-brand-focus) 8%, transparent);
 }
 .auth-input-wrap[data-invalid="true"] {
   border-color: var(--color-red-600);
@@ -227,7 +228,7 @@
   width: 15px;
   height: 15px;
   margin: 0;
-  accent-color: var(--color-red-600);
+  accent-color: var(--color-brand-ink);
   cursor: pointer;
 }
 .auth-checkbox::before {
@@ -266,8 +267,8 @@
   padding: 12px 20px;
   border: 0;
   border-radius: var(--radius-sm);
-  background: var(--color-red-600);
-  color: var(--color-white);
+  background: var(--color-brand);
+  color: var(--color-brand-contrast);
   font-size: 14px;
   font-weight: 600;
   transition:
@@ -278,7 +279,7 @@
   transition: transform var(--motion-fast);
 }
 .auth-submit:hover {
-  background: #be171e;
+  background: var(--color-brand-hover);
 }
 .auth-submit:hover svg {
   transform: translateX(3px);

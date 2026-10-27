@@ -61,8 +61,8 @@
   border-color: transparent;
 }
 .mock-filter-controls .chip[aria-pressed="true"]::before {
-  background: var(--color-red-600);
-  border-color: var(--color-red-600);
+  background: var(--color-brand);
+  border-color: var(--color-brand-focus);
 }
 .mock-filter-controls .chip:hover:not([aria-pressed="true"])::before {
   border-color: var(--color-neutral-300);
@@ -91,7 +91,7 @@
   font-size: 11px;
   line-height: 16px;
   font-weight: 700;
-  color: #b4171d;
+  color: var(--color-brand-ink);
 }
 .mock-card h3 {
   font-size: 20px;

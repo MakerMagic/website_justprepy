@@ -13,6 +13,13 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- Shared subscription plans open above the current page from public Subscribe/footer
+  Subscription, sidebar Pro/Try Now and account Subscription. The supplied Free/Pro
+  design, Inter typography, 0 ₸ / 10,000 ₸ prices and 1.7s button shimmer are retained.
+  A native dialog coordinates a 600ms spatial entrance, staggered cards, progressive
+  backdrop blur/dimming and 220ms exit, with reduced motion, focus restoration and
+  scroll locking. Checkout remains unconnected and reports that explicitly.
+
 - Vocabulary at /vocabulary recreates the screenshot with the existing PracticeShell
   sidebar and NUET Preparation header, platform typography and two centered shared
   statistic cards retaining check/trend motifs. Three screenshot-derived demo
@@ -63,7 +70,7 @@ workflow guided density, data integrity, responsive behavior and visual review.
   reusable transparent PNG derived from the existing logo; the enclosed white `j`
   is preserved. Confirmed email, Telegram and TikTok destinations are centralized
   in `contact.config.ts`; the existing sidebar Contact us item links to the page.
-  Unimplemented public, subscription and legal destinations show preview notices.
+  Unimplemented public and legal destinations show preview notices.
   No contact backend or email service is introduced.
 
 - `/leaderboard` reuses the app shell, shared statistics cards, hover scaling and
@@ -83,21 +90,21 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 - `/practice` reuses the finalized sidebar and extracted header through `PracticeShell`. It provides passage/answers, an elapsed demo timer, per-question selections/bookmarks, demo-only checking, a difficulty/status navigator and a two-pane explanation dialog with isolated answer reveal. Failed evaluations remain retryable; first-attempt success is correct, success after a failed evaluation is partly correct, and unresolved failure remains wrong while selecting a retry. Both dialogs use the same session state; shared content/answer renderers support LaTeX-to-native-MathML and image parts. Topic previews link to it. The owner explicitly requested the existing sidebar/Telegram header here; this preview is an exception to the immersive-shell default, not a new mock-exam policy.
 - Public `/login` and `/signup` auth previews share a responsive form shell, local validation, password visibility controls, and original SVG landscape. Authentication, Google, recovery and legal content remain explicitly unconnected; credentials are never transmitted or persisted.
-- Compact/expanded membership promotion; account-only trigger morph and four-stage content reveal with reduced-motion support. Subscription destination remains an explicit preview notice.
+- Compact/expanded membership promotion; account-only trigger morph and four-stage content reveal with reduced-motion support. Subscription actions open the shared plan modal.
 - Green progress statistics, compact neutral filters, outlined navigation and circular play actions.
 - Collapsed desktop rail with sidebar-owned pointer events, keyboard and touch alternatives; original monogram and full wordmark states.
 - Anchored account menu; source panels positioned before first paint, resized to available space and updated on scroll.
 - Functional status, saved, difficulty, source and draft/apply year filtering.
 - Only Oxford and BMAT appear as independent source/year selectors. Applied years are preserved per source. Availability remains illustrative; underlying fixture contracts are unchanged.
 - Topic progress and set previews derive from typed fixtures supplied through page props.
-- Header Telegram CTA has a configurable, currently absent destination. Statistics open fixture-derived summaries; topic actions retain previews. Upgrade/account actions remain preview boundaries.
+- Header Telegram CTA has a configurable, currently absent destination. Statistics open fixture-derived summaries; topic actions retain previews. Subscription plans open in a modal; Settings/sign-out remain unavailable.
 
 ## Data boundary
 
 `src/modules/questions/question-bank.fixtures.ts` holds temporary profile, sources,
 year availability and question-summary data. `practice.fixtures.ts` separately holds three authored demo questions and illustrative local feedback; it is not published exam content or a production grading contract. No database, API, authentication service,
 real-question integration, authoritative grading or persistent user data has been implemented. Unavailable
-navigation opens an explicit preview limitation; account actions remain disabled.
+navigation opens an explicit preview limitation; Settings/sign-out remain disabled and checkout is unconnected.
 
 ## Local preview
 
@@ -107,6 +114,13 @@ stalls: native popovers open at fallback coordinates and React hover handlers do
 not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
+
+Subscription plans are checked against all 145 ported reference CSS declarations,
+all feature copy and unchanged shimmer keyframes. Desktop/tablet/mobile browser
+checks cover the five existing triggers, spatial entrance/exit, focus cycling,
+Escape/X, hover shimmer, internal scrolling and preserved underlying page state.
+The 12 new lifecycle/integration tests include reduced motion and interrupted exits;
+checkout remains explicitly unavailable.
 
 Vocabulary practice browser checks at 1440/768/390/320px cover source flip/slide
 motion, Space/arrow/1/2 controls, self-assessment, early/final completion, missed-only
@@ -140,7 +154,7 @@ logo checks preserve dimensions, alpha and every pixel outside the original red 
 Bookmark timing and geometry are unchanged. Ink on primary green measures 9.50:1. The local HTML reference could
 not be opened by browser policy and was compared through its supplied source.
 
-Lint, typecheck, all 199 tests, changed-source formatting and the production build pass.
+Lint, typecheck, all 214 tests, changed-source formatting and the production build pass.
 Contact layout, compact header controls, footer color treatment and transparent
 logo were compared with the supplied reference; confirmed link destinations,
 preview dialogs, keyboard focus and responsive containment were checked in-browser.
@@ -159,5 +173,5 @@ Repository-wide formatting still flags nine pre-existing documentation files.
 ## Next / open decisions
 
 Replace illustrative view data when authorized services are available. Real practice
-sessions, account actions and future navigation destinations remain unconnected.
+sessions, Settings/sign-out, checkout and future navigation destinations remain unconnected.
 Database/provider/ORM, authentication services and pipeline integration remain out of scope.

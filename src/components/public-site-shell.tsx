@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AuthIcon } from "../modules/auth/auth-icon";
 import { PublicChannelIcon } from "./public-channel-icon";
@@ -12,6 +13,14 @@ import {
 } from "../modules/contact/contact.config";
 import "../modules/questions/question-bank.css";
 import "../modules/contact/contact.css";
+
+const SubscriptionModal = dynamic(
+  () =>
+    import("../modules/subscription/subscription-modal").then(
+      (module) => module.SubscriptionModal,
+    ),
+  { ssr: false },
+);
 
 function ContactBrand({
   priority = false,
@@ -60,13 +69,21 @@ export function PublicSiteShell({
     },
   }[page];
   const [notice, setNotice] = useState<ContactNotice | null>(null);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     if (notice && !dialog.current?.open) dialog.current?.showModal();
   }, [notice]);
   const currentNotice = notice ? contactNotices[notice] : null;
   const preview = (key: ContactNotice, label: string, className?: string) => (
-    <button type="button" className={className} onClick={() => setNotice(key)}>
+    <button
+      type="button"
+      className={className}
+      onClick={() => {
+        if (key === "subscription") setSubscriptionOpen(true);
+        else setNotice(key);
+      }}
+    >
       {label}
     </button>
   );
@@ -183,6 +200,10 @@ export function PublicSiteShell({
         </div>
       </footer>
 
+      <SubscriptionModal
+        open={subscriptionOpen}
+        onClose={() => setSubscriptionOpen(false)}
+      />
       <dialog
         ref={dialog}
         className="contact-preview-dialog"

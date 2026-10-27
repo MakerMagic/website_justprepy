@@ -1,0 +1,387 @@
+/* Reference plan surfaces are scoped; only dialog lifecycle motion is new. */
+.subscription-overlay {
+  --g: #3dd86d;
+  --gd: #2fc25d;
+  --ink: #0e0e0e;
+  --paper: #fff;
+  --soft: #f3f3f1;
+  --mute: #5a5a58;
+  --f:
+    var(--font-subscription), Inter, system-ui, -apple-system, "Segoe UI",
+    Arial, sans-serif;
+  --subscription-origin-y: 32px;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  padding: max(16px, env(safe-area-inset-top)) 16px
+    max(16px, env(safe-area-inset-bottom));
+  background: transparent;
+  color: var(--ink);
+  font: 400 16px/1.5 var(--f);
+  overflow: hidden;
+}
+.subscription-overlay[open] {
+  display: grid;
+  place-items: center;
+}
+.subscription-overlay::backdrop {
+  background: rgba(14, 14, 14, 0.55);
+  backdrop-filter: blur(4px);
+}
+.subscription-overlay,
+.subscription-overlay *,
+.subscription-overlay *::before,
+.subscription-overlay *::after {
+  box-sizing: border-box;
+}
+.subscription-overlay h3 {
+  line-height: 1.5;
+}
+
+.subscription-overlay .subscription-window {
+  position: relative;
+  width: min(780px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  background: var(--paper);
+  border-radius: 30px;
+  padding: clamp(20px, 2.4vw, 28px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+}
+.subscription-overlay .subscription-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--soft);
+  color: var(--ink);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s;
+}
+.subscription-overlay .subscription-close:hover {
+  background: #e6e6e3;
+}
+.subscription-overlay .subscription-close:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+.subscription-overlay .subscription-close svg {
+  width: 18px;
+  height: 18px;
+}
+.subscription-overlay h2 {
+  margin: 0;
+  font-size: clamp(24px, 2.6vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  padding-right: 56px;
+}
+.subscription-overlay .subscription-heading-description {
+  margin: 8px 0 0;
+  color: var(--mute);
+  font-size: 14px;
+}
+.subscription-overlay .subscription-plans {
+  display: grid;
+  grid-template-columns: 1fr 1.18fr;
+  gap: 14px;
+  margin-top: 20px;
+  align-items: stretch;
+}
+.subscription-overlay .subscription-plan {
+  border-radius: 24px;
+  padding: clamp(20px, 2.1vw, 24px);
+  display: flex;
+  flex-direction: column;
+}
+.subscription-overlay .subscription-free {
+  background: var(--soft);
+}
+.subscription-overlay .subscription-pro {
+  background: var(--ink);
+  color: #fff;
+}
+.subscription-overlay .subscription-plan h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.subscription-overlay .subscription-price {
+  margin: 10px 0 18px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  font-size: clamp(40px, 4.2vw, 48px);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.subscription-overlay .subscription-price span {
+  font-weight: 600;
+  letter-spacing: 0;
+  margin-left: 0.12em;
+  font-size: 0.62em;
+}
+.subscription-overlay .subscription-pro .subscription-price {
+  font-size: clamp(46px, 5vw, 56px);
+}
+.subscription-overlay .subscription-pro .subscription-price span {
+  color: var(--g);
+}
+.subscription-overlay ul {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  flex: 1;
+  align-content: start;
+}
+.subscription-overlay li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+  font-size: 14px;
+  line-height: 1.35;
+}
+.subscription-overlay .subscription-free li {
+  color: #3a3a38;
+}
+.subscription-overlay .subscription-free li i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #b9b9b5;
+  margin: 7px 0 0 7px;
+}
+.subscription-overlay .subscription-pro li {
+  font-size: 15px;
+  font-weight: 500;
+}
+.subscription-overlay .subscription-pro li svg {
+  width: 20px;
+  height: 20px;
+  margin-top: -1px;
+}
+.subscription-overlay .subscription-current {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 999px;
+  background: #fff;
+  color: #7a7a77;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: default;
+  user-select: none;
+}
+.subscription-overlay .subscription-subscribe {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--g);
+  color: var(--ink);
+  font: 700 15px var(--f);
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.12s;
+}
+.subscription-overlay .subscription-subscribe span {
+  position: relative;
+  z-index: 2;
+}
+.subscription-overlay .subscription-subscribe::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 42%;
+  transform: translateX(-140%) skewX(-18deg);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+.subscription-overlay .subscription-subscribe:hover,
+.subscription-overlay .subscription-subscribe:focus-visible {
+  background: #46e07a;
+}
+.subscription-overlay .subscription-subscribe:hover::after,
+.subscription-overlay .subscription-subscribe:focus-visible::after {
+  animation: subscription-shimmer 1.7s ease-in-out infinite;
+}
+.subscription-overlay .subscription-subscribe:active {
+  background: var(--gd);
+  transform: scale(0.985);
+}
+.subscription-overlay .subscription-subscribe:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+@keyframes subscription-shimmer {
+  0% {
+    transform: translateX(-140%) skewX(-18deg);
+  }
+  70%,
+  100% {
+    transform: translateX(360%) skewX(-18deg);
+  }
+}
+.subscription-overlay .subscription-status {
+  min-height: 18px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  color: #c9c9c6;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .subscription-overlay,
+  .subscription-overlay .subscription-window,
+  .subscription-overlay .subscription-subscribe,
+  .subscription-overlay .subscription-close {
+    transition: none;
+  }
+  .subscription-overlay .subscription-subscribe:hover::after,
+  .subscription-overlay .subscription-subscribe:focus-visible::after {
+    animation: none;
+  }
+}
+@media (max-width: 720px) {
+  .subscription-overlay .subscription-plans {
+    grid-template-columns: 1fr;
+  }
+  .subscription-overlay .subscription-pro {
+    order: -1;
+  }
+  .subscription-overlay {
+    align-items: end;
+    padding: 0;
+  }
+  .subscription-overlay .subscription-window {
+    border-radius: 26px 26px 0 0;
+    max-height: 94dvh;
+    width: 100%;
+  }
+}
+
+.subscription-overlay[data-state="opening"]::backdrop {
+  animation: subscription-backdrop-in 440ms ease-out both;
+}
+.subscription-overlay[data-state="opening"] .subscription-window {
+  animation: subscription-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.subscription-overlay[open] .subscription-plan {
+  animation: subscription-card-in 440ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  animation-delay: 70ms;
+}
+.subscription-overlay[open] .subscription-pro {
+  animation-delay: 110ms;
+}
+.subscription-overlay[data-state="closing"]::backdrop {
+  animation: subscription-backdrop-out 220ms ease-out both;
+}
+.subscription-overlay[data-state="closing"] .subscription-window {
+  animation: subscription-exit 210ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+@keyframes subscription-enter {
+  0% {
+    opacity: var(--subscription-enter-opacity, 0);
+    transform: var(
+      --subscription-enter-transform,
+      translateY(var(--subscription-origin-y)) scale(0.94)
+    );
+  }
+  55% {
+    opacity: 1;
+  }
+  70% {
+    transform: translateY(-2px) scale(1.008);
+  }
+  86% {
+    transform: translateY(0.5px) scale(0.999);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes subscription-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes subscription-exit {
+  from {
+    opacity: var(--subscription-exit-opacity, 1);
+    transform: var(--subscription-exit-transform, none);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+@keyframes subscription-backdrop-in {
+  from {
+    background: var(--subscription-backdrop-enter-color, rgba(14, 14, 14, 0));
+    backdrop-filter: var(--subscription-backdrop-enter-blur, blur(0));
+  }
+  to {
+    background: rgba(14, 14, 14, 0.55);
+    backdrop-filter: blur(4px);
+  }
+}
+@keyframes subscription-backdrop-out {
+  from {
+    background: var(--subscription-backdrop-exit-color, rgba(14, 14, 14, 0.55));
+    backdrop-filter: var(--subscription-backdrop-exit-blur, blur(4px));
+  }
+  to {
+    background: rgba(14, 14, 14, 0);
+    backdrop-filter: blur(0);
+  }
+}
+@media (max-width: 720px) {
+  .subscription-overlay {
+    --subscription-origin-y: 40px;
+  }
+  .subscription-overlay[open] {
+    align-items: end;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .subscription-overlay[open]::backdrop,
+  .subscription-overlay[open] .subscription-window,
+  .subscription-overlay[open] .subscription-plan {
+    animation: none;
+  }
+}

@@ -2,12 +2,21 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { flushSync } from "react-dom";
 import type { QuestionBankData } from "./question-bank.types";
 import { Icon } from "./icon";
 import { Popover } from "./popover";
 import { SubscriptionCard } from "./subscription-card";
+
+const SubscriptionModal = dynamic(
+  () =>
+    import("../subscription/subscription-modal").then(
+      (module) => module.SubscriptionModal,
+    ),
+  { ssr: false },
+);
 
 function subscribeMobile(callback: () => void) {
   const media = window.matchMedia("(max-width: 639px)");
@@ -36,6 +45,8 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
   const [focusInside, setFocusInside] = useState(false);
   const [unavailable, setUnavailable] = useState<string | null>(null);
   const notice = useRef<HTMLDialogElement>(null);
+  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
+  const subscriptionOrigin = useRef<"promotion" | "account">("promotion");
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
       if (event.key === "Tab") setKeyboard(true);
@@ -91,6 +102,21 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
     };
   }, [mobile, touchOpen]);
   const expanded = pointerInside || (keyboard && focusInside) || touchOpen;
+
+  function restoreSubscriptionFocus() {
+    if (keyboard) {
+      flushSync(() => setFocusInside(true));
+    }
+    const selector =
+      subscriptionOrigin.current === "account"
+        ? ".profile-trigger"
+        : keyboard || expanded
+          ? ".subscription-action"
+          : ".subscription-compact";
+    aside.current
+      ?.querySelector<HTMLButtonElement>(selector)
+      ?.focus({ preventScroll: true });
+  }
   return (
     <>
       {touchOpen && (
@@ -205,7 +231,10 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
         <div className="sidebar-bottom">
           <SubscriptionCard
             expanded={expanded}
-            onExplore={() => setUnavailable("JustPrepy Pro")}
+            onExplore={() => {
+              subscriptionOrigin.current = "promotion";
+              setSubscriptionOpen(true);
+            }}
           />
           <Popover
             id="account-menu"
@@ -233,7 +262,19 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
                   { name: "Subscription", icon: "card" },
                   { name: "Sign out", icon: "logout" },
                 ].map((item) => (
-                  <button key={item.name} type="button" disabled>
+                  <button
+                    key={item.name}
+                    type="button"
+                    disabled={item.name !== "Subscription"}
+                    onClick={(event) => {
+                      if (item.name !== "Subscription") return;
+                      subscriptionOrigin.current = "account";
+                      event.currentTarget
+                        .closest<HTMLElement>("[popover]")
+                        ?.hidePopover();
+                      setSubscriptionOpen(true);
+                    }}
+                  >
                     <Icon name={item.icon} />
                     <span>{item.name}</span>
                     <Icon name="chevron" size={16} />
@@ -241,37 +282,22 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
                 ))}
               </div>
               <p className="unavailable-note">
-                Account actions are unavailable in this demo.
+                Settings and sign out are unavailable in this demo.
               </p>
             </>
           </Popover>
         </div>
       </aside>
+      <SubscriptionModal
+        open={subscriptionOpen}
+        onClose={() => setSubscriptionOpen(false)}
+        onAfterClose={restoreSubscriptionFocus}
+      />
       <dialog
         ref={notice}
         className="topic-dialog"
         aria-labelledby="unavailable-title"
-        onClose={() => {
-          const subscription = unavailable === "JustPrepy Pro";
-          if (subscription && keyboard) {
-            // Reveal the keyboard target before restoring focus into an inert card.
-            flushSync(() => {
-              setUnavailable(null);
-              setFocusInside(true);
-            });
-            aside.current
-              ?.querySelector<HTMLButtonElement>(".subscription-action")
-              ?.focus({ preventScroll: true });
-          } else {
-            setUnavailable(null);
-            if (subscription)
-              aside.current
-                ?.querySelector<HTMLButtonElement>(
-                  expanded ? ".subscription-action" : ".subscription-compact",
-                )
-                ?.focus({ preventScroll: true });
-          }
-        }}
+        onClose={() => setUnavailable(null)}
       >
         <div className="popover-heading">
           <h2 id="unavailable-title">{unavailable}</h2>
@@ -286,9 +312,7 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
           </button>
         </div>
         <p className="preview-note">
-          {unavailable === "JustPrepy Pro"
-            ? "Subscription options are not available in this frontend preview."
-            : "This feature is not available in the frontend preview."}
+          This feature is not available in the frontend preview.
         </p>
         <button
           type="button"

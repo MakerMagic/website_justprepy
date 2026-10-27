@@ -785,6 +785,7 @@
   font-variant-numeric: tabular-nums;
 }
 .subject-progress progress {
+  --color-brand-focus: #13ac4a;
   height: 5px;
 }
 .topic-list {

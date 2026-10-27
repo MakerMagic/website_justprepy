@@ -55,19 +55,24 @@ describe("public contact page", () => {
     }
     expect(
       html.match(/target="_blank" rel="noopener noreferrer"/g),
-    ).toHaveLength(2);
+    ).toHaveLength(4);
   });
 
   it("uses existing routes and exposes unimplemented public destinations as preview actions", () => {
     const html = renderToStaticMarkup(<ContactPage />);
-    for (const href of ["/", "/contact", "/login", "/mock-tests"])
+    for (const href of [
+      "/",
+      "/contact",
+      "/login",
+      "/mock-tests",
+      "/what-is-nuet",
+    ])
       expect(html).toContain(`href="${href}"`);
     for (const label of [
       "Features",
       "Subscribe",
       "Subscription",
       "Earn money",
-      "What is NUET",
       "Privacy Policy",
       "Terms of service",
     ])
@@ -80,6 +85,23 @@ describe("public contact page", () => {
     expect(sidebar).toMatch(
       /<a(?=[^>]*href="\/contact")(?=[^>]*title="Contact us")[^>]*>/,
     );
+  });
+
+  it("orders Log In before Subscribe and reuses the confirmed social URLs under the footer brand", () => {
+    const html = renderToStaticMarkup(<ContactPage />);
+    const header = html.split("<header")[1].split("</header>")[0];
+    expect(header.indexOf("Log In")).toBeLessThan(header.indexOf("Subscribe"));
+    expect(header).toMatch(
+      /<a(?=[^>]*href="\/login")(?=[^>]*class="button primary")[^>]*>Log In<\/a>/,
+    );
+    const socials = html
+      .split('class="contact-footer-socials"')[1]
+      .split("</div>")[0];
+    expect(socials.match(/<a\b/g)).toHaveLength(2);
+    expect(socials).toContain('aria-label="JustPrepy on Telegram"');
+    expect(socials).toContain('href="https://t.me/justprepy"');
+    expect(socials).toContain('aria-label="JustPrepy on TikTok"');
+    expect(socials).toContain('href="https://www.tiktok.com/@justprepy_"');
   });
 
   it("ships the reusable logo as an RGBA PNG with clean transparent bounds", () => {

@@ -1,0 +1,434 @@
+.nuet-main {
+  --red: #e8191a;
+  --red-d: #c41112;
+  --ink: #111;
+  --ground: #fff;
+  --soft: #fbe9e9;
+  --mute: #f4f4f4;
+  --ink2: #333;
+  --f:
+    var(--font-nuet), Inter, system-ui, -apple-system, "Segoe UI", Arial,
+    sans-serif;
+  --m: clamp(16px, 4vw, 56px);
+  width: 100%;
+  color: var(--ink);
+  background: var(--ground);
+  font: 400 17px/1.55 var(--f);
+  padding-bottom: clamp(96px, 12vw, 180px);
+}
+.nuet-main .w {
+  padding-inline: var(--m);
+  max-width: 1320px;
+  margin-inline: auto;
+}
+.nuet-main a {
+  color: inherit;
+}
+.nuet-main :focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+html:has(.nuet-main) {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+.nuet-main .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 999px;
+  border: 0;
+  font: 600 15px var(--f);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    background 0.15s;
+}
+.nuet-main .btn:active {
+  transform: scale(0.97);
+}
+.nuet-main .b-k {
+  background: #111;
+  color: #fff;
+}
+.nuet-main .b-r {
+  background: var(--red);
+  color: #fff;
+}
+.nuet-main .b-r:hover {
+  background: var(--red-d);
+}
+.nuet-main .b-w {
+  background: #fff;
+  color: #111;
+}
+.nuet-main .b-w:hover {
+  background: var(--soft);
+}
+
+.nuet-main .b-mute {
+  background: var(--mute);
+}
+.nuet-main h1,
+.nuet-main h2,
+.nuet-main h3 {
+  margin: 0;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.nuet-main h1 {
+  font-size: clamp(44px, 9vw, 128px);
+  font-weight: 800;
+}
+.nuet-main h2 {
+  font-size: clamp(34px, 5.4vw, 76px);
+  font-weight: 800;
+}
+.nuet-main h3 {
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.nuet-main p {
+  margin: 0;
+}
+.nuet-main section {
+  padding-block: clamp(72px, 11vw, 160px) 0;
+}
+.nuet-main .lead {
+  font-size: clamp(18px, 1.9vw, 24px);
+  line-height: 1.45;
+  max-width: 36em;
+}
+.nuet-main .hero {
+  padding-top: clamp(40px, 6vw, 88px);
+}
+.nuet-main .hero .lead {
+  font-size: clamp(16px, 1.6vw, 20px);
+  margin-top: 28px;
+}
+.nuet-main .hero .cta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+.nuet-main .facts {
+  background: var(--red);
+  color: #fff;
+  margin-top: clamp(48px, 7vw, 96px);
+  padding-block: clamp(40px, 6vw, 80px);
+}
+.nuet-main .facts .g {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 28px;
+}
+.nuet-main .facts b {
+  display: block;
+  font-size: clamp(40px, 5.5vw, 80px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  white-space: nowrap;
+}
+.nuet-main .facts span {
+  display: block;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.nuet-main .two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+}
+.nuet-main .two .t p + p {
+  margin-top: 16px;
+}
+.nuet-main .stack {
+  display: grid;
+  gap: 12px;
+}
+.nuet-main .stack div {
+  background: var(--mute);
+  padding: 24px 26px;
+  border-radius: 18px;
+}
+.nuet-main .stack b {
+  display: block;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.nuet-main .bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 48px;
+}
+.nuet-main .seg {
+  border-radius: 22px;
+  padding: clamp(24px, 3vw, 40px);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 36px;
+}
+.nuet-main .seg.m {
+  background: #111;
+  color: #fff;
+}
+.nuet-main .seg.c {
+  background: var(--soft);
+  color: #111;
+}
+.nuet-main .seg .n {
+  font-size: clamp(64px, 9vw, 128px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+}
+.nuet-main .seg ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+  font-size: 17px;
+}
+.nuet-main .tl {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 15px;
+}
+.nuet-main .notes {
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+}
+.nuet-main .notes b {
+  display: block;
+  font-size: 19px;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.nuet-main .subj {
+  margin-top: 48px;
+  display: grid;
+  gap: 12px;
+}
+.nuet-main details {
+  background: var(--mute);
+  border-radius: 22px;
+  overflow: hidden;
+}
+.nuet-main details[open] {
+  background: var(--soft);
+}
+.nuet-main summary {
+  list-style: none;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: clamp(22px, 3vw, 36px);
+}
+.nuet-main summary::-webkit-details-marker {
+  display: none;
+}
+.nuet-main summary p {
+  margin-top: 8px;
+  max-width: 44em;
+  color: var(--ink2);
+}
+.nuet-main .pm {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--ink);
+  position: relative;
+  transition:
+    transform 0.25s,
+    background 0.2s;
+}
+.nuet-main .pm::before,
+.nuet-main .pm::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: 21px;
+  width: 18px;
+  height: 2px;
+  background: var(--ground);
+}
+.nuet-main .pm::after {
+  transform: rotate(90deg);
+}
+.nuet-main details[open] .pm {
+  transform: rotate(45deg);
+  background: var(--red);
+}
+.nuet-main details[open] .pm::before,
+.nuet-main details[open] .pm::after {
+  background: #fff;
+}
+.nuet-main summary:hover .pm {
+  background: var(--red);
+}
+.nuet-main .body {
+  padding: 0 clamp(22px, 3vw, 36px) clamp(26px, 3vw, 40px);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 32px;
+}
+.nuet-main .body div {
+  padding: 18px 0;
+}
+.nuet-main .body b {
+  display: block;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.nuet-main .body .full {
+  grid-column: 1/-1;
+}
+.nuet-main .note {
+  font-size: 15px;
+  color: var(--ink2);
+  margin-top: 20px;
+  max-width: 56em;
+}
+.nuet-main .src {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+.nuet-main .src a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  background: var(--mute);
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.nuet-main .src a:hover {
+  background: var(--red);
+  color: #fff;
+}
+.nuet-main .prep {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 48px;
+}
+.nuet-main .card {
+  border-radius: 26px;
+  padding: clamp(28px, 4vw, 56px);
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 40px;
+}
+.nuet-main .card.tg {
+  background: #111;
+  color: #fff;
+}
+.nuet-main .card.jp {
+  background: var(--red);
+  color: #fff;
+}
+.nuet-main .card h3 {
+  font-size: clamp(30px, 3.6vw, 52px);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.nuet-main .card p {
+  margin-top: 16px;
+  max-width: 26em;
+  font-size: 18px;
+}
+
+.nuet-main .nuet-about-copy {
+  margin-top: 28px;
+}
+.nuet-main .nuet-subject-lead {
+  margin-top: 24px;
+}
+.nuet-main.nuet-reveal-ready .rv {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+.nuet-main.nuet-reveal-ready .rv.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-color-scheme: dark) {
+  .nuet-main {
+    --ground: #111;
+    --ink: #fff;
+    --soft: #2a1a1a;
+    --mute: #1d1d1d;
+    --ink2: #ddd;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.nuet-main) {
+    scroll-behavior: auto;
+  }
+  .nuet-main.nuet-reveal-ready .rv {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .nuet-main .pm,
+  .nuet-main .btn {
+    transition: none;
+  }
+}
+@media (max-width: 900px) {
+  .nuet-main .facts .g {
+    grid-template-columns: 1fr 1fr;
+  }
+  .nuet-main .two,
+  .nuet-main .bar,
+  .nuet-main .prep,
+  .nuet-main .notes {
+    grid-template-columns: 1fr;
+  }
+  .nuet-main .body {
+    grid-template-columns: 1fr;
+  }
+  .nuet-main .seg,
+  .nuet-main .card {
+    min-height: 0;
+  }
+}
+@media (max-width: 640px) {
+  .nuet-main .hero .cta .btn,
+  .nuet-main .card .btn {
+    width: 100%;
+  }
+}

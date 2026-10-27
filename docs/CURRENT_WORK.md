@@ -2,14 +2,24 @@
 
 ## Current milestone
 
-Reference-matched public Contact Us at `/contact`, alongside Leaderboard, Mock Tests,
-Question Bank, `/practice` and public auth previews.
+Reference-matched public Contact Us at `/contact` and the supplied What is NUET
+content at `/what-is-nuet`, alongside Leaderboard, Mock Tests, Question Bank,
+`/practice` and public auth previews.
 
 Question Bank frontend at `/` rebuilt around the owner-supplied reference and
 `docs/design.md`: exactly Introductory, Filters and Tasks sections. Taste's app-screen
 workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
+
+- Public `/what-is-nuet` ports the owner-supplied Claude HTML main content: all five
+  sections, complete topic disclosures, official source links, Inter typography,
+  responsive layouts and one-shot scroll reveals. It shares the exact existing
+  public header/footer with Contact through `PublicSiteShell`; their CSS is unchanged.
+  The footer links to this route, Telegram reuses the configured official channel,
+  and Start Practicing uses the existing Question Bank route `/`. Native disclosures
+  work without JavaScript, and reveals support reduced motion and missing-observer
+  fallback. No exam-content research, backend or dependencies are added.
 
 - Public `/contact` follows the supplied compact header, three-channel contact-card
   grid and pale-pink four-column footer. Its local styles preserve reference button
@@ -62,7 +72,17 @@ not run. Keep this allowance scoped to the actual development host.
 
 ## Validation
 
-Lint, typecheck, all 130 tests, changed-source formatting and the production build pass.
+NUET main-content text matches the supplied HTML except the owner-requested
+removal of the 2015 specification note and link, verified through a complete
+decoded-text hash check. Desktop browser review covers the hero, exam structure, native topic
+disclosures with Enter/Space and visible focus, scroll-reveal timing, anchor CTAs,
+the Start Practicing destination, shared preview dialog and footer/social links.
+The unchanged Contact stylesheet hash is verified. Browser viewport overrides did
+not apply, so narrow-viewport visual verification remains unavailable for this
+page; its source responsive rules are preserved. The local HTML reference could
+not be opened by browser policy and was compared through its supplied source.
+
+Lint, typecheck, all 135 tests, changed-source formatting and the production build pass.
 Contact layout, compact header controls, footer color treatment and transparent
 logo were compared with the supplied reference; confirmed link destinations,
 preview dialogs, keyboard focus and responsive containment were checked in-browser.

@@ -28,6 +28,7 @@ const navigation = [
   { label: "Mock Tests", icon: "test", href: "/mock-tests" },
   { label: "Vocabulary", icon: "vocabulary", href: "/vocabulary" },
   { label: "Leaderboard", icon: "chart", href: "/leaderboard", group: true },
+  { label: "Analytics", icon: "chart", href: "/analytics" },
   { label: "Contact us", icon: "help", href: "/contact" },
   { label: "Earn money", icon: "earn", href: "/earn" },
 ];
@@ -36,7 +37,8 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
   const activeHref =
     pathname === "/leaderboard" ||
     pathname === "/mock-tests" ||
-    pathname === "/vocabulary"
+    pathname === "/vocabulary" ||
+    pathname === "/analytics"
       ? pathname
       : "/";
   const [touchOpen, setTouchOpen] = useState(false);

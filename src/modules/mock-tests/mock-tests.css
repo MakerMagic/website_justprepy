@@ -54,18 +54,28 @@
 .mock-filter-controls .chip {
   font-size: 12px;
   padding-inline: 12px;
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.12s;
+}
+.mock-filter-controls .chip:active {
+  transform: scale(0.96);
 }
 .mock-filter-controls .chip::before {
   border-radius: var(--radius-full);
   background: var(--color-neutral-100);
   border-color: transparent;
+  transition:
+    background 0.18s,
+    border-color 0.18s;
 }
 .mock-filter-controls .chip[aria-pressed="true"]::before {
   background: var(--color-brand);
-  border-color: var(--color-brand-focus);
+  border-color: transparent;
 }
 .mock-filter-controls .chip:hover:not([aria-pressed="true"])::before {
-  border-color: var(--color-neutral-300);
+  border-color: #cbd0d8;
 }
 .mock-grid {
   display: grid;
@@ -76,9 +86,27 @@
 .mock-card {
   min-width: 0;
   padding: 18px;
-  border: 1px solid var(--color-neutral-300);
+  border: 1px solid #e5e7eb;
   border-radius: var(--radius-lg);
   background: var(--color-white);
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
+  /* Release the entrance transform when it ends so hover remains responsive. */
+  animation: mock-card-up 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+.mock-card[data-completed="false"]:hover {
+  border-color: #cbd0d8;
+  transform: translateY(-2px);
+}
+.mock-card[data-completed="true"] {
+  border-color: color-mix(in srgb, var(--color-brand) 55%, #e5e7eb);
+}
+@keyframes mock-card-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
 }
 .mock-card-heading {
   display: flex;
@@ -102,11 +130,11 @@
 .mock-passed {
   flex: none;
   border-radius: var(--radius-full);
-  background: var(--color-review-accent-bg);
-  color: #3b8aea;
-  padding: 3px 8px;
+  background: #dce8ff;
+  color: #2f6feb;
+  padding: 6px 10px;
   font-size: 11px;
-  line-height: 16px;
+  line-height: 1;
   font-weight: 600;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -172,23 +200,42 @@
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin: 12px -8px;
-  padding: 4px 10px;
-  border-radius: var(--radius-xs);
-  background: var(--color-neutral-100);
+  margin: 12px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f1f2f5;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 13px;
 }
 .mock-score strong {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 24px;
   letter-spacing: -0.3px;
   font-weight: 750;
   font-variant-numeric: tabular-nums;
 }
+.mock-score strong > span {
+  font-size: 15px;
+  font-weight: 600;
+}
+.mock-score-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.mock-score-tick {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand);
+  color: #0b2a14;
+}
 .mock-score[data-completed="true"] {
-  background: var(--color-green-100);
-  color: var(--color-green-600);
+  background: #e3f9ea;
+  color: #117a3a;
 }
 .mock-card-actions {
   display: flex;
@@ -210,6 +257,63 @@
 }
 .mock-card-actions .button:active {
   transform: scale(0.97);
+}
+.mock-card[data-completed="true"] .mock-card-actions {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 8px;
+}
+.mock-card[data-completed="true"] .mock-card-actions .button {
+  border-radius: 12px;
+  font-size: 14px;
+  gap: 8px;
+  transition:
+    background 0.18s,
+    border-color 0.18s,
+    transform 0.12s;
+}
+.mock-card[data-completed="true"] .mock-card-actions .button:active {
+  transform: scale(0.98);
+}
+.mock-card[data-completed="true"] .mock-card-actions svg {
+  flex: none;
+  transition: transform 0.2s;
+}
+.mock-card[data-completed="true"] .mock-card-actions .accent {
+  border-color: var(--color-brand);
+  color: #0b2a14;
+}
+.mock-card[data-completed="true"] .mock-card-actions .accent:hover {
+  border-color: #34c862;
+  background: #34c862;
+}
+.mock-card[data-completed="true"] .mock-card-actions .secondary {
+  border-color: #cbd0d8;
+}
+.mock-card[data-completed="true"] .mock-card-actions .secondary:hover {
+  border-color: #14171f;
+  background: #f1f2f5;
+}
+.mock-card[data-completed="true"] .mock-card-actions .secondary:hover svg {
+  transform: rotate(-90deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mock-card {
+    animation: none;
+    transition: none;
+  }
+  .mock-card[data-completed="false"]:hover,
+  .mock-filter-controls .chip:active,
+  .mock-card[data-completed="true"] .mock-card-actions .button:active,
+  .mock-card[data-completed="true"] .mock-card-actions .secondary:hover svg {
+    transform: none;
+  }
+  .mock-filter-controls .chip,
+  .mock-filter-controls .chip::before,
+  .mock-card[data-completed="true"] .mock-card-actions .button,
+  .mock-card[data-completed="true"] .mock-card-actions svg {
+    transition: none;
+  }
 }
 .mock-preview {
   width: 460px;

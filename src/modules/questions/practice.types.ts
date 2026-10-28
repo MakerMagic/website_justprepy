@@ -27,13 +27,14 @@ export interface PracticeQuestion {
 }
 
 export interface PracticeResponse {
+  /** Temporary selection for the current visit, cleared on question navigation. */
   selected: string | null;
   /** Whether the current selection has been evaluated, not whether the question is resolved. */
   checked: boolean;
   saved: boolean;
-  /** Completed demo evaluations in order; choosing or previewing an answer adds nothing. */
+  /** Current-visit demo evaluations in order; choosing or previewing adds nothing. */
   attempts: string[];
-  /** Last completed evaluation, retained while preparing a retry. */
+  /** Persistent latest evaluated result; navigation and unchecked selections never change it. */
   outcome?: "correct" | "partial" | "wrong";
 }
 

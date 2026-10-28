@@ -18,12 +18,15 @@ export function practiceStatus(
   response: PracticeResponse | undefined,
   feedback: DemoPracticeFeedback | undefined,
 ): PracticeStatus {
-  if (!response?.attempts.length || !feedback) return "unanswered";
-  return attemptOutcome(response.attempts, feedback.correctOptionId);
+  if (!response || !feedback) return "unanswered";
+  return response.outcome ?? "unanswered";
 }
 
 export function practiceResolved(response: PracticeResponse) {
-  return response.outcome === "correct" || response.outcome === "partial";
+  return (
+    response.attempts.length > 0 &&
+    (response.outcome === "correct" || response.outcome === "partial")
+  );
 }
 
 export function optionResult(
@@ -35,6 +38,19 @@ export function optionResult(
   if (!visible || !feedback || !response.attempts.includes(optionId))
     return undefined;
   return optionId === feedback.correctOptionId ? "correct" : "wrong";
+}
+
+/** Leaving a question clears only its visit; the last evaluated result and bookmark persist. */
+export function resetPracticeVisit(
+  responses: Record<string, PracticeResponse>,
+  id: string,
+) {
+  const current = responses[id];
+  if (!current) return responses;
+  return {
+    ...responses,
+    [id]: { ...current, selected: null, checked: false, attempts: [] },
+  };
 }
 
 /** Changing a failed selection prepares a retry without erasing completed attempts. */

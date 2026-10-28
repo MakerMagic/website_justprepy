@@ -54,13 +54,7 @@ export function QuestionBank({ data }: { data: QuestionBankData }) {
               label="Questions Solved"
               value={stats.answered}
               motif="check"
-              onClick={() =>
-                setPreview({
-                  kind: "statistic",
-                  metric: "solved",
-                  title: "Questions Solved",
-                })
-              }
+              pressable
             />
             <StatisticCard
               label="Accuracy"
@@ -75,13 +69,7 @@ export function QuestionBank({ data }: { data: QuestionBankData }) {
                   </>
                 )
               }
-              onClick={() =>
-                setPreview({
-                  kind: "statistic",
-                  metric: "accuracy",
-                  title: "Accuracy",
-                })
-              }
+              pressable
             />
           </div>
         </section>

@@ -211,8 +211,8 @@
   cursor: default;
 }
 .answer-option[data-result="correct"] .answer-letter {
-  border-color: #32cc11;
-  background: #32cc11;
+  border-color: #32ab57;
+  background: #32ab57;
   color: var(--color-answer-correct-text);
 }
 .answer-option[data-result="wrong"] .answer-letter {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { PracticeResponse } from "./practice.types";
 import { renderToStaticMarkup } from "react-dom/server";
 import { PracticeAnswers } from "./practice-answers";
 import { QuestionNavigator } from "./question-navigator";
@@ -17,6 +18,7 @@ import {
   optionResult,
   practiceResolved,
   practiceStatus,
+  resetPracticeVisit,
   updatePracticeResponse,
 } from "./practice.logic";
 import {
@@ -250,49 +252,20 @@ describe("practice answer and navigation state", () => {
       'aria-label="Question 1, partial, current question"',
     );
   });
-  it("derives status from completed history rather than selection or a stale outcome cache", () => {
+  it("reads the saved evaluated result independently of the current visit's selection", () => {
     expect(practiceStatus(undefined, feedback)).toBe("unanswered");
-    expect(
-      practiceStatus(
-        {
-          ...emptyPracticeResponse,
-          selected: "C",
-          checked: true,
-          attempts: ["C"],
-        },
-        feedback,
-      ),
-    ).toBe("correct");
-    expect(
-      practiceStatus(
-        {
-          ...emptyPracticeResponse,
-          selected: "C",
-          checked: false,
-          attempts: ["A"],
-          outcome: "correct",
-        },
-        feedback,
-      ),
-    ).toBe("wrong");
-    expect(
-      practiceStatus(
-        { ...emptyPracticeResponse, selected: "A", outcome: "partial" },
-        feedback,
-      ),
-    ).toBe("unanswered");
-    expect(
-      practiceStatus(
-        {
-          ...emptyPracticeResponse,
-          selected: "A",
-          checked: true,
-          outcome: "partial",
-          attempts: ["A", "C"],
-        },
-        feedback,
-      ),
-    ).toBe("partial");
+    expect(practiceStatus(emptyPracticeResponse, feedback)).toBe("unanswered");
+    const evaluated = checkedResponse(["A", "C"]);
+    const revisited = resetPracticeVisit(
+      { [question.id]: evaluated },
+      question.id,
+    );
+    expect(practiceStatus(revisited[question.id], feedback)).toBe("partial");
+    const selected = updatePracticeResponse(revisited, question.id, {
+      selected: "C",
+    });
+    expect(practiceStatus(selected[question.id], feedback)).toBe("partial");
+    expect(selected[question.id].attempts).toEqual([]);
   });
   it("supports grid keyboard movement with variable counts and viewport columns", () => {
     expect(navigatorTarget(2, "ArrowRight", 3, 10)).toBe(2);
@@ -355,6 +328,151 @@ describe("practice answer and navigation state", () => {
     expect(html).not.toContain('checked=""');
     expect(html).not.toContain("Correct answer.");
     expect(failed[question.id].outcome).toBe("wrong");
+  });
+});
+
+describe("fresh practice visits and persistent latest results", () => {
+  it.each([
+    [["C"], "correct"],
+    [["A", "B"], "wrong"],
+    [["A", "C"], "partial"],
+  ] as const)(
+    "clears temporary answers after %j while retaining %s and bookmarks",
+    (choices, status) => {
+      const original = { ...checkedResponse([...choices]), saved: true };
+      const before = JSON.stringify(original);
+      const responses = resetPracticeVisit(
+        { [question.id]: original },
+        question.id,
+      );
+      const fresh = responses[question.id];
+      expect(fresh).toEqual({
+        selected: null,
+        checked: false,
+        saved: true,
+        attempts: [],
+        outcome: status,
+      });
+      expect(practiceStatus(fresh, feedback)).toBe(status);
+      expect(practiceResolved(fresh)).toBe(false);
+      expect(JSON.stringify(original)).toBe(before);
+      for (const option of question.options)
+        expect(optionResult(option.id, fresh, feedback)).toBeUndefined();
+      const answers = renderToStaticMarkup(
+        <PracticeAnswers
+          question={question}
+          response={fresh}
+          feedback={feedback}
+          revealed={false}
+        />,
+      );
+      expect(checkedValues(answers)).toEqual([]);
+      expect(answers).not.toContain('data-selected="true"');
+      expect(answers).not.toContain("data-result=");
+      expect(answers).not.toContain('disabled=""');
+      const navigator = renderToStaticMarkup(
+        <QuestionNavigator
+          open={false}
+          onClose={() => {}}
+          questions={[question]}
+          current={0}
+          responses={responses}
+          feedback={demoPracticeFeedback}
+          onNavigate={() => {}}
+        />,
+      );
+      expect(navigator).toContain(
+        'aria-label="Question 1, ' + status + ', current question"',
+      );
+    },
+  );
+  it.each([
+    [["A", "C"], ["C"], "correct"],
+    [["C"], ["A"], "wrong"],
+    [["A"], ["B", "C"], "partial"],
+  ] as const)(
+    "overwrites the old result from %j with the fresh sequence %j as %s",
+    (previous, next, expected) => {
+      let responses = resetPracticeVisit(
+        { [question.id]: checkedResponse([...previous]) },
+        question.id,
+      );
+      for (const selected of next) {
+        const saved = responses[question.id].outcome;
+        responses = updatePracticeResponse(responses, question.id, {
+          selected,
+        });
+        expect(responses[question.id].outcome).toBe(saved);
+        expect(
+          optionResult(selected, responses[question.id], feedback),
+        ).toBeUndefined();
+        responses = checkPracticeResponse(responses, question.id, feedback);
+      }
+      expect(practiceStatus(responses[question.id], feedback)).toBe(expected);
+      expect(responses[question.id].attempts).toEqual(next);
+      expect(responses[question.id].checked).toBe(true);
+    },
+  );
+  it("does not change the saved result when selecting, leaving or checking an empty visit", () => {
+    let responses = resetPracticeVisit(
+      { [question.id]: checkedResponse(["C"]) },
+      question.id,
+    );
+    expect(checkPracticeResponse(responses, question.id, feedback)).toBe(
+      responses,
+    );
+    responses = updatePracticeResponse(responses, question.id, {
+      selected: "A",
+    });
+    expect(practiceStatus(responses[question.id], feedback)).toBe("correct");
+    expect(responses[question.id].checked).toBe(false);
+    responses = resetPracticeVisit(responses, question.id);
+    expect(practiceStatus(responses[question.id], feedback)).toBe("correct");
+    expect(responses[question.id].selected).toBeNull();
+    expect(checkPracticeResponse(responses, question.id, undefined)).toBe(
+      responses,
+    );
+  });
+  it("keeps results isolated across multiple questions and repeat navigation", () => {
+    let responses: Record<string, PracticeResponse> = {};
+    const sequences = [["C"], ["A"], ["A", "D"]];
+    const expected = ["correct", "wrong", "partial"];
+    demoPracticeQuestions.forEach((item, i) => {
+      for (const selected of sequences[i]) {
+        responses = updatePracticeResponse(responses, item.id, { selected });
+        responses = checkPracticeResponse(
+          responses,
+          item.id,
+          demoPracticeFeedback[item.id],
+        );
+      }
+      responses = resetPracticeVisit(responses, item.id);
+    });
+    for (const item of [...demoPracticeQuestions].reverse()) {
+      const before = responses;
+      responses = updatePracticeResponse(responses, item.id, { selected: "E" });
+      responses = resetPracticeVisit(responses, item.id);
+      demoPracticeQuestions.forEach((other, i) => {
+        const response = responses[other.id];
+        expect(practiceStatus(response, demoPracticeFeedback[other.id])).toBe(
+          expected[i],
+        );
+        expect(response.selected).toBeNull();
+        expect(response.attempts).toEqual([]);
+        if (other.id !== item.id) expect(response).toBe(before[other.id]);
+      });
+    }
+  });
+  it("never turns an unchecked selection into a result and leaves absent questions alone", () => {
+    const empty = {};
+    expect(resetPracticeVisit(empty, question.id)).toBe(empty);
+    const selection = updatePracticeResponse(empty, question.id, {
+      selected: "C",
+    });
+    const fresh = resetPracticeVisit(selection, question.id);
+    expect(practiceStatus(fresh[question.id], feedback)).toBe("unanswered");
+    expect(fresh[question.id].outcome).toBeUndefined();
+    expect(fresh[question.id].attempts).toEqual([]);
   });
 });
 

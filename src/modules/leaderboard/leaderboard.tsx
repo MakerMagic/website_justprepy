@@ -183,7 +183,7 @@ export function Leaderboard({
               motif="check"
               secondary={highlights.solved}
               decoration={<LeaderboardSymbol name="solved" />}
-              onClick={() => setPreview("solved")}
+              pressable
             />
             <StatisticCard
               label="Accuracy Rate"
@@ -197,7 +197,7 @@ export function Leaderboard({
                 </>
               }
               decoration={<LeaderboardIcon name="trend" />}
-              onClick={() => setPreview("accuracy")}
+              pressable
             />
             <StatisticCard
               label="Hard Questions Solved"
@@ -214,19 +214,14 @@ export function Leaderboard({
               motif="check"
               secondary={highlights.hard}
               decoration={<LeaderboardIcon name="flame" />}
-              onClick={() => setPreview("hard")}
+              pressable
             />
           </div>
           <div className="leaderboard-analytics">
-            <button
-              type="button"
-              className="button secondary"
-              aria-haspopup="dialog"
-              onClick={() => setPreview("analytics")}
-            >
+            <Link href="/analytics" className="button secondary">
               More Analytics
               <Icon name="arrow" size={15} />
-            </button>
+            </Link>
           </div>
         </section>
         <section

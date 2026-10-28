@@ -37,12 +37,19 @@ type Preview =
 export function MockTestCard({
   test,
   onAction,
+  entranceDelay = 0,
 }: {
   test: MockTest;
   onAction: (test: MockTest, action: MockAction) => void;
+  entranceDelay?: number;
 }) {
   return (
-    <article className="mock-card" aria-labelledby={`test-${test.id}`}>
+    <article
+      className="mock-card"
+      aria-labelledby={`test-${test.id}`}
+      data-completed={test.result !== null}
+      style={{ animationDelay: `${entranceDelay}ms` }}
+    >
       <header className="mock-card-heading">
         <div>
           <h3 id={`test-${test.id}`}>{test.title}</h3>
@@ -84,7 +91,25 @@ export function MockTestCard({
         <span>{test.questionCount} Questions</span>
       </div>
       <div className="mock-score" data-completed={test.result !== null}>
-        <span>Your Score</span>
+        <span className="mock-score-label">
+          {test.result !== null && (
+            <span className="mock-score-tick" aria-hidden="true">
+              <svg
+                width="11"
+                height="11"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="m5 12 5 5 9-10" />
+              </svg>
+            </span>
+          )}
+          Your Score
+        </span>
         <strong>
           {test.result?.score ?? "?"}
           <span> / {test.maxScore}</span>
@@ -93,11 +118,33 @@ export function MockTestCard({
       <div className="mock-card-actions">
         {mockTestActions(test).map((action) => {
           const label = actionLabels[action];
-          const className = `button ${action === "analyze" ? "secondary" : action === "retake" ? "accent" : "primary"}`;
+          const className = `button ${action === "analyze" ? "accent" : action === "retake" ? "secondary" : "primary"}`;
           const contents = (
             <>
               {label}
-              <Icon name="arrow" size={15} />
+              {action === "start" ? (
+                <Icon name="arrow" size={15} />
+              ) : (
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d={
+                      action === "analyze"
+                        ? "M5 20V11M12 20V4M19 20v-6"
+                        : "M4 12a8 8 0 1 0 3-6.2M4 4v5h5"
+                    }
+                  />
+                </svg>
+              )}
             </>
           );
           const destination = test.destinations?.[action];
@@ -134,10 +181,17 @@ export function MockTests({
   const [filters, setFilters] = useState<MockFilters>({
     ...defaultMockFilters,
   });
+  const [filterRevision, setFilterRevision] = useState(0);
+  const changeFilters = (
+    next: MockFilters | ((current: MockFilters) => MockFilters),
+  ) => {
+    setFilters(next);
+    setFilterRevision((current) => current + 1);
+  };
   const [preview, setPreview] = useState<Preview | null>(null);
   const filtered = filterMockTests(tests, filters);
   const stats = summarizeMockTests(tests);
-  const reset = () => setFilters({ ...defaultMockFilters });
+  const reset = () => changeFilters({ ...defaultMockFilters });
   const previewTitle =
     preview?.kind === "stat"
       ? preview.metric === "completed"
@@ -177,13 +231,13 @@ export function MockTests({
               label="Tests Passed"
               value={stats.completed}
               motif="check"
-              onClick={() => setPreview({ kind: "stat", metric: "completed" })}
+              pressable
             />
             <StatisticCard
               label="Average Last 3"
               value={stats.average ?? "—"}
               motif="trend"
-              onClick={() => setPreview({ kind: "stat", metric: "average" })}
+              pressable
             />
           </div>
         </section>
@@ -222,7 +276,7 @@ export function MockTests({
                     className="chip"
                     aria-pressed={filters.status === status}
                     onClick={() =>
-                      setFilters((current) => ({
+                      changeFilters((current) => ({
                         ...current,
                         status: current.status === status ? "all" : status,
                       }))
@@ -250,7 +304,7 @@ export function MockTests({
                     className="chip"
                     aria-pressed={filters.type === type}
                     onClick={() =>
-                      setFilters((current) => ({
+                      changeFilters((current) => ({
                         ...current,
                         type: current.type === type ? "all" : type,
                       }))
@@ -264,11 +318,12 @@ export function MockTests({
           </div>
           <h2 className="sr-only">Available mock tests</h2>
           {filtered.length ? (
-            <div className="mock-grid">
-              {filtered.map((test) => (
+            <div className="mock-grid" key={filterRevision}>
+              {filtered.map((test, index) => (
                 <MockTestCard
                   key={test.id}
                   test={test}
+                  entranceDelay={index * 50}
                   onAction={(test, action) =>
                     setPreview({ kind: "action", test, action })
                   }

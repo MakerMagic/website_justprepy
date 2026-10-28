@@ -107,6 +107,12 @@
 .stat-card:active {
   transform: scale(0.975);
 }
+@media (prefers-reduced-motion: reduce) {
+  .stat-card[data-pressable]:hover,
+  .stat-card[data-pressable]:active {
+    transform: none;
+  }
+}
 .stat-value {
   font-size: 36px;
   line-height: 1.1;

@@ -19,6 +19,7 @@ import {
   checkPracticeResponse,
   practiceResolved,
   practiceStatus,
+  resetPracticeVisit,
   updatePracticeResponse,
 } from "./practice.logic";
 import "./question-bank.css";
@@ -127,6 +128,9 @@ export function QuestionSolver({
   }
   function navigate(index: number, keepReview = false) {
     if (index < 0 || index >= questions.length) return;
+    if (index !== current && question) {
+      setResponses((previous) => resetPracticeVisit(previous, question.id));
+    }
     setCurrent(index);
     if (!keepReview) setModal(null);
     setReviewReveal(false);

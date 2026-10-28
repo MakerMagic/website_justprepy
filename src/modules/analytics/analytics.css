@@ -1,0 +1,508 @@
+.analytics-page {
+  --ground: #fafafa;
+  --surface: #fff;
+  --sunken: #f4f4f5;
+  --ink: #18181b;
+  --muted: #6b6b73;
+  --line: #e4e4e7;
+  --line2: #d4d4d8;
+  --accent: #3dd86d;
+  --accent-ink: #0b2a14;
+  --c-solved: #2f7de1;
+  --c-acc: #1a9f4b;
+  --c-vocab: #0e9aa7;
+  --up: #1a9f4b;
+  --down: #d92d20;
+  --same: #8a8a93;
+  --h0: #eeeef0;
+  --h1: #f6a55b;
+  --h2: #e5584f;
+  --h3: #7b4fd0;
+  --ok: #2dbe5d;
+  --mid: #f2a03d;
+  --bad: #e5584f;
+  color-scheme: light;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  .analytics-page:not([data-theme="light"]) {
+    --ground: #141416;
+    --surface: #1c1c1f;
+    --sunken: #26262a;
+    --ink: #f4f4f5;
+    --muted: #a1a1aa;
+    --line: #2c2c30;
+    --line2: #3a3a40;
+    --c-solved: #6aa6f5;
+    --c-acc: #3dd86d;
+    --c-vocab: #35c6d3;
+    --up: #3dd86d;
+    --down: #ff6b63;
+    --h0: #26262a;
+    --h1: #f29a38;
+    --h2: #f0675c;
+    --h3: #a98bf0;
+    --ok: #3dd86d;
+    --mid: #f2a64a;
+    --bad: #f0675c;
+    color-scheme: dark;
+  }
+}
+.analytics-page[data-theme="dark"] {
+  --ground: #141416;
+  --surface: #1c1c1f;
+  --sunken: #26262a;
+  --ink: #f4f4f5;
+  --muted: #a1a1aa;
+  --line: #2c2c30;
+  --line2: #3a3a40;
+  --c-solved: #6aa6f5;
+  --c-acc: #3dd86d;
+  --c-vocab: #35c6d3;
+  --up: #3dd86d;
+  --down: #ff6b63;
+  --h0: #26262a;
+  --h1: #f29a38;
+  --h2: #f0675c;
+  --h3: #a98bf0;
+  --ok: #3dd86d;
+  --mid: #f2a64a;
+  --bad: #f0675c;
+  color-scheme: dark;
+}
+.analytics-page * {
+  box-sizing: border-box;
+}
+.analytics-page {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+.analytics-page {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font:
+    400 15px/1.5 var(--font-analytics),
+    Inter,
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+.analytics-page button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.analytics-page :focus-visible {
+  outline: 2px solid var(--c-acc);
+  outline-offset: 2px;
+}
+.analytics-page .pg {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+.analytics-page h1 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.analytics-page h2 {
+  margin: 0;
+  font-size: 22px;
+  letter-spacing: -0.015em;
+}
+.analytics-page h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.analytics-page .note {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.analytics-page section {
+  margin-top: 72px;
+}
+.analytics-page .sh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.analytics-page .sub {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.analytics-page .panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 22px 24px;
+  margin-top: 16px;
+}
+.analytics-page .ph {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.analytics-page .seg {
+  display: inline-flex;
+  background: var(--sunken);
+  border-radius: 99px;
+  padding: 3px;
+}
+.analytics-page .seg button {
+  border: 0;
+  background: none;
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+.analytics-page .seg button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.analytics-page .segs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.analytics-page .vm {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 99px;
+  border: 1px solid var(--line2);
+  background: var(--surface);
+  font-size: 14px;
+  font-weight: 600;
+  transition:
+    border-color 0.2s,
+    transform 0.12s;
+}
+.analytics-page .vm:hover {
+  border-color: var(--ink);
+}
+.analytics-page .vm:active {
+  transform: scale(0.97);
+}
+.analytics-page section[aria-labelledby="h-mt"] .vm {
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.analytics-page .lg {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.analytics-page .lg span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.analytics-page .sw {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.analytics-page .lc {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+.analytics-page .scx {
+  overflow-x: auto;
+}
+.analytics-page .cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-top: 16px;
+}
+.analytics-page .card {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 18px 20px;
+  min-height: 140px;
+}
+.analytics-page .card .l {
+  font-size: 14px;
+  color: var(--muted);
+}
+.analytics-page .card .v {
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-top: 2px;
+}
+.analytics-page .card .d {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.analytics-page .card svg.w {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  width: 88px;
+  height: 88px;
+  opacity: 0.07;
+  color: var(--ink);
+}
+.analytics-page .card.t {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.analytics-page .card.t .l,
+.analytics-page .card.t .d {
+  color: var(--accent-ink);
+  opacity: 0.75;
+}
+.analytics-page .card.t svg.w {
+  color: var(--accent-ink);
+  opacity: 0.14;
+}
+.analytics-page .card.t .v {
+  font-size: 30px;
+}
+.analytics-page .vs {
+  margin-top: 10px;
+  height: 30px;
+  padding: 0 14px;
+  border-radius: 99px;
+  border: 0;
+  background: var(--sunken);
+  font-size: 13px;
+  position: relative;
+  z-index: 1;
+}
+.analytics-page .vs:hover {
+  background: var(--line);
+}
+.analytics-page .up {
+  color: var(--up);
+}
+.analytics-page .dn {
+  color: var(--down);
+}
+.analytics-page .hmw {
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.analytics-page .hlg {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.analytics-page .hlg i {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.analytics-page .hlg .g {
+  width: 8px;
+}
+.analytics-page .br {
+  display: grid;
+  grid-template-columns: minmax(120px, 210px) 1fr 44px;
+  gap: 12px;
+  align-items: center;
+  padding: 7px 0;
+  border-radius: 8px;
+}
+.analytics-page .br:hover,
+.analytics-page .br:focus-visible {
+  background: var(--sunken);
+}
+.analytics-page .bn {
+  font-size: 14px;
+}
+.analytics-page .bt {
+  height: 14px;
+  border-radius: 99px;
+  background: var(--sunken);
+  position: relative;
+}
+.analytics-page .br:hover .bt {
+  background: var(--line);
+}
+.analytics-page .bt::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -3px;
+  bottom: -3px;
+  width: 1px;
+  background: var(--line2);
+}
+.analytics-page .bt i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: 99px;
+  background: var(--ok);
+  transition: width 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+  z-index: 1;
+}
+.analytics-page .bt i[data-l="o"] {
+  background: var(--mid);
+}
+.analytics-page .bt i[data-l="r"] {
+  background: var(--bad);
+}
+.analytics-page .br b {
+  font-size: 14px;
+  text-align: right;
+}
+.analytics-page .bax {
+  display: grid;
+  grid-template-columns: minmax(120px, 210px) 1fr 44px;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+.analytics-page .bax div {
+  display: flex;
+  justify-content: space-between;
+}
+.analytics-page .ins {
+  margin: 14px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.analytics-page .ins b {
+  color: var(--ink);
+}
+.analytics-page .cap {
+  font-size: 13px;
+  color: var(--muted);
+}
+.analytics-page .ax {
+  fill: var(--muted);
+  font-size: 12px;
+}
+.analytics-page .gl {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.analytics-page .mk {
+  cursor: pointer;
+}
+.analytics-page .mk:focus-visible {
+  outline: none;
+}
+.analytics-page .mk:focus-visible rect.b,
+.analytics-page .mk:hover rect.b {
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+.analytics-page .analytics-tooltip {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  background: var(--ink);
+  color: var(--surface);
+  padding: 9px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  max-width: 260px;
+}
+.analytics-page .analytics-tooltip.on {
+  opacity: 1;
+  transform: none;
+}
+.analytics-page .analytics-tooltip .r {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+@media (max-width: 900px) {
+  .analytics-page .cards {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 560px) {
+  .analytics-page .cards {
+    grid-template-columns: 1fr;
+  }
+  .analytics-page .panel {
+    padding: 18px 16px;
+  }
+  .analytics-page .br,
+  .analytics-page .bax {
+    grid-template-columns: 1fr 44px;
+    gap: 4px 8px;
+  }
+  .analytics-page .bax span:first-child {
+    display: none;
+  }
+  .analytics-page .bn {
+    grid-column: 1/-1;
+  }
+  .analytics-page .bt {
+    grid-column: 1;
+  }
+  .analytics-page .bax {
+    grid-template-columns: 1fr 44px;
+  }
+  .analytics-page h1 {
+    font-size: 26px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .analytics-page * {
+    transition-duration: 0.001ms !important;
+    animation-duration: 0.001ms !important;
+  }
+}
+
+.analytics-page {
+  min-height: calc(100dvh - 64px);
+}
+.analytics-page h2,
+.analytics-page h3 {
+  line-height: 1.5;
+}

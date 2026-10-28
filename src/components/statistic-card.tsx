@@ -8,6 +8,7 @@ export function StatisticCard({
   value,
   motif,
   onClick,
+  pressable = false,
   secondary,
   decoration,
 }: {
@@ -15,14 +16,17 @@ export function StatisticCard({
   value: ReactNode;
   motif: "check" | "trend";
   onClick?: () => void;
+  pressable?: boolean;
   secondary?: ReactNode;
   decoration?: ReactNode;
 }) {
-  const Container = onClick ? "button" : "div";
+  const interactive = Boolean(onClick) || pressable;
+  const Container = interactive ? "button" : "div";
   return (
     <Container
-      type={onClick ? "button" : undefined}
+      type={interactive ? "button" : undefined}
       className="stat-card"
+      data-pressable={pressable || undefined}
       aria-haspopup={onClick ? "dialog" : undefined}
       onClick={onClick}
     >

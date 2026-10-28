@@ -13,6 +13,17 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- Analytics at `/analytics` ports the supplied illustrative data, SVG charts and
+  four sections inside PracticeShell. Existing sidebar navigation includes Analytics;
+  period/subject controls, dual-axis tooltips, annual activity heatmap, topic-fill
+  transitions and per-configuration Mock Test comparisons follow the source.
+  The three section View more buttons open source-matched Analytics dialogs with
+  outcome/accuracy bars, per-configuration scores, error radars and vocabulary charts.
+  Source controls, chart/modal motion, focus restoration and underlying page state
+  are preserved; pop-up data remains illustrative. Ranking retains its existing route.
+  Styles and source light/dark palettes are scoped
+  to Analytics; no real student analytics or backend is introduced.
+
 - Shared subscription plans open above the current page from public Subscribe/footer
   Subscription, sidebar Pro/Try Now and account Subscription. The supplied Free/Pro
   design, Inter typography, 0 ₸ / 10,000 ₸ prices and 1.7s button shimmer are retained.

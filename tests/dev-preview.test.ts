@@ -23,8 +23,13 @@ function checkHydrationOrigin(
 }
 
 describe("development preview hydration transport", () => {
-  it("accepts the actual LAN preview origin so React can initialize", () => {
+  it("accepts the actual LAN preview origins so React can initialize", () => {
     expect(checkHydrationOrigin("http://192.168.1.2:3000")).toEqual({
+      blocked: false,
+      status: 200,
+      ended: false,
+    });
+    expect(checkHydrationOrigin("http://192.168.1.4:3000")).toEqual({
       blocked: false,
       status: 200,
       ended: false,
@@ -32,6 +37,11 @@ describe("development preview hydration transport", () => {
   });
   it("reproduces the old rejection when the LAN allowance is absent", () => {
     expect(checkHydrationOrigin("http://192.168.1.2:3000", [])).toEqual({
+      blocked: true,
+      status: 403,
+      ended: true,
+    });
+    expect(checkHydrationOrigin("http://192.168.1.4:3000", [])).toEqual({
       blocked: true,
       status: 403,
       ended: true,

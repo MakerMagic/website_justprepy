@@ -416,28 +416,29 @@ describe("source-matched subscription plans", () => {
 });
 
 describe("existing subscription entry points", () => {
-  it("opens from both public actions without replacing or navigating the page", () => {
-    for (const label of ["Subscribe", "Subscription"]) {
-      const page = mountBoundary(() =>
-        PublicSiteShell({
-          page: "contact",
-          children: <main>Underlying page state</main>,
-        }),
-      );
-      expect(modalBoundary(page.nodes).props.open).toBe(false);
-      findButton(page.nodes, label).props.onClick!();
-      let nodes = page.render();
-      expect(modalBoundary(nodes).props.open).toBe(true);
-      expect(
-        nodes.some(
-          (node) =>
-            node.type === "main" && text(node) === "Underlying page state",
-        ),
-      ).toBe(true);
-      modalBoundary(nodes).props.onClose!();
-      nodes = page.render();
-      expect(modalBoundary(nodes).props.open).toBe(false);
-    }
+  it("sends the public Subscribe and Subscription controls to the dedicated page instead of the pop-up", () => {
+    const page = mountBoundary(() =>
+      PublicSiteShell({
+        page: "contact",
+        children: <main>Underlying page state</main>,
+      }),
+    );
+    const links = page.nodes.filter(
+      (node) =>
+        (node.props as { href?: string }).href === "/subscription" &&
+        ["Subscribe", "Subscription"].includes(text(node.props.children)),
+    );
+    expect(links.map((node) => text(node.props.children))).toEqual([
+      "Subscribe",
+      "Subscription",
+    ]);
+    expect(
+      page.nodes.some(
+        (node) =>
+          node.type === "button" &&
+          ["Subscribe", "Subscription"].includes(text(node.props.children)),
+      ),
+    ).toBe(false);
   });
   it("connects the existing compact Pro and expanded Try Now promotion through their shared callback", () => {
     const page = mountBoundary(() =>

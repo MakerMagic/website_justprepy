@@ -10,7 +10,7 @@ import "./question-bank.css";
 
 export function PracticeShell({
   profile,
-  telegramUrl,
+  telegramUrl = "https://t.me/justprepy",
   children,
   skipLabel = "Skip to question bank",
 }: {
@@ -19,6 +19,7 @@ export function PracticeShell({
   children: ReactNode;
   skipLabel?: string;
 }) {
+  const resolvedTelegramUrl = telegramUrl ?? "https://t.me/justprepy";
   const telegramLabel = (
     <>
       <Icon name="community" size={18} />
@@ -44,10 +45,10 @@ export function PracticeShell({
             />
             <span>NUET Preparation</span>
           </div>
-          {telegramUrl ? (
+          {resolvedTelegramUrl ? (
             <a
               className="telegram-cta"
-              href={telegramUrl}
+              href={resolvedTelegramUrl}
               target="_blank"
               rel="noopener noreferrer"
             >

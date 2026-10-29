@@ -324,7 +324,7 @@
   font-weight: var(--practice-section-weight);
 }
 .review-difficulty {
-  font-weight: var(--practice-difficulty-weight);
+  font-weight: var(--practice-difficulty-weight, 700);
   text-transform: capitalize;
 }
 .review-difficulty[data-state="hard"] {

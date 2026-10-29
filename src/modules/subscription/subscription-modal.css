@@ -33,13 +33,13 @@
   background: rgba(14, 14, 14, 0.55);
   backdrop-filter: blur(4px);
 }
-.subscription-overlay,
-.subscription-overlay *,
-.subscription-overlay *::before,
-.subscription-overlay *::after {
+:is(.subscription-overlay, .subscription-page),
+:is(.subscription-overlay, .subscription-page) *,
+:is(.subscription-overlay, .subscription-page) *::before,
+:is(.subscription-overlay, .subscription-page) *::after {
   box-sizing: border-box;
 }
-.subscription-overlay h3 {
+:is(.subscription-overlay, .subscription-page) h3 {
   line-height: 1.5;
 }
 
@@ -92,33 +92,33 @@
   color: var(--mute);
   font-size: 14px;
 }
-.subscription-overlay .subscription-plans {
+:is(.subscription-overlay, .subscription-page) .subscription-plans {
   display: grid;
   grid-template-columns: 1fr 1.18fr;
   gap: 14px;
   margin-top: 20px;
   align-items: stretch;
 }
-.subscription-overlay .subscription-plan {
+:is(.subscription-overlay, .subscription-page) .subscription-plan {
   border-radius: 24px;
   padding: clamp(20px, 2.1vw, 24px);
   display: flex;
   flex-direction: column;
 }
-.subscription-overlay .subscription-free {
+:is(.subscription-overlay, .subscription-page) .subscription-free {
   background: var(--soft);
 }
-.subscription-overlay .subscription-pro {
+:is(.subscription-overlay, .subscription-page) .subscription-pro {
   background: var(--ink);
   color: #fff;
 }
-.subscription-overlay .subscription-plan h3 {
+:is(.subscription-overlay, .subscription-page) .subscription-plan h3 {
   margin: 0;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
-.subscription-overlay .subscription-price {
+:is(.subscription-overlay, .subscription-page) .subscription-price {
   margin: 10px 0 18px;
   font-weight: 800;
   letter-spacing: -0.05em;
@@ -127,19 +127,24 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.subscription-overlay .subscription-price span {
+:is(.subscription-overlay, .subscription-page) .subscription-price span {
   font-weight: 600;
   letter-spacing: 0;
   margin-left: 0.12em;
   font-size: 0.62em;
 }
-.subscription-overlay .subscription-pro .subscription-price {
+:is(.subscription-overlay, .subscription-page)
+  .subscription-pro
+  .subscription-price {
   font-size: clamp(46px, 5vw, 56px);
 }
-.subscription-overlay .subscription-pro .subscription-price span {
+:is(.subscription-overlay, .subscription-page)
+  .subscription-pro
+  .subscription-price
+  span {
   color: var(--g);
 }
-.subscription-overlay ul {
+:is(.subscription-overlay, .subscription-page) ul {
   list-style: none;
   margin: 0 0 20px;
   padding: 0;
@@ -148,7 +153,7 @@
   flex: 1;
   align-content: start;
 }
-.subscription-overlay li {
+:is(.subscription-overlay, .subscription-page) li {
   display: grid;
   grid-template-columns: 20px 1fr;
   gap: 10px;
@@ -156,26 +161,26 @@
   font-size: 14px;
   line-height: 1.35;
 }
-.subscription-overlay .subscription-free li {
+:is(.subscription-overlay, .subscription-page) .subscription-free li {
   color: #3a3a38;
 }
-.subscription-overlay .subscription-free li i {
+:is(.subscription-overlay, .subscription-page) .subscription-free li i {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: #b9b9b5;
   margin: 7px 0 0 7px;
 }
-.subscription-overlay .subscription-pro li {
+:is(.subscription-overlay, .subscription-page) .subscription-pro li {
   font-size: 15px;
   font-weight: 500;
 }
-.subscription-overlay .subscription-pro li svg {
+:is(.subscription-overlay, .subscription-page) .subscription-pro li svg {
   width: 20px;
   height: 20px;
   margin-top: -1px;
 }
-.subscription-overlay .subscription-current {
+:is(.subscription-overlay, .subscription-page) .subscription-current {
   width: 100%;
   min-height: 44px;
   border-radius: 999px;
@@ -189,7 +194,7 @@
   cursor: default;
   user-select: none;
 }
-.subscription-overlay .subscription-subscribe {
+:is(.subscription-overlay, .subscription-page) .subscription-subscribe {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -206,11 +211,11 @@
     background 0.2s,
     transform 0.12s;
 }
-.subscription-overlay .subscription-subscribe span {
+:is(.subscription-overlay, .subscription-page) .subscription-subscribe span {
   position: relative;
   z-index: 2;
 }
-.subscription-overlay .subscription-subscribe::after {
+:is(.subscription-overlay, .subscription-page) .subscription-subscribe::after {
   content: "";
   position: absolute;
   z-index: 1;
@@ -227,19 +232,23 @@
   );
   pointer-events: none;
 }
-.subscription-overlay .subscription-subscribe:hover,
-.subscription-overlay .subscription-subscribe:focus-visible {
+:is(.subscription-overlay, .subscription-page) .subscription-subscribe:hover,
+:is(.subscription-overlay, .subscription-page)
+  .subscription-subscribe:focus-visible {
   background: #46e07a;
 }
-.subscription-overlay .subscription-subscribe:hover::after,
-.subscription-overlay .subscription-subscribe:focus-visible::after {
+:is(.subscription-overlay, .subscription-page)
+  .subscription-subscribe:hover::after,
+:is(.subscription-overlay, .subscription-page)
+  .subscription-subscribe:focus-visible::after {
   animation: subscription-shimmer 1.7s ease-in-out infinite;
 }
-.subscription-overlay .subscription-subscribe:active {
+:is(.subscription-overlay, .subscription-page) .subscription-subscribe:active {
   background: var(--gd);
   transform: scale(0.985);
 }
-.subscription-overlay .subscription-subscribe:focus-visible {
+:is(.subscription-overlay, .subscription-page)
+  .subscription-subscribe:focus-visible {
   outline: 3px solid #fff;
   outline-offset: 3px;
 }
@@ -252,7 +261,7 @@
     transform: translateX(360%) skewX(-18deg);
   }
 }
-.subscription-overlay .subscription-status {
+:is(.subscription-overlay, .subscription-page) .subscription-status {
   min-height: 18px;
   margin: 8px 0 0;
   font-size: 12px;
@@ -260,22 +269,24 @@
   text-align: center;
 }
 @media (prefers-reduced-motion: reduce) {
-  .subscription-overlay,
-  .subscription-overlay .subscription-window,
-  .subscription-overlay .subscription-subscribe,
-  .subscription-overlay .subscription-close {
+  :is(.subscription-overlay, .subscription-page),
+  :is(.subscription-overlay, .subscription-page) .subscription-window,
+  :is(.subscription-overlay, .subscription-page) .subscription-subscribe,
+  :is(.subscription-overlay, .subscription-page) .subscription-close {
     transition: none;
   }
-  .subscription-overlay .subscription-subscribe:hover::after,
-  .subscription-overlay .subscription-subscribe:focus-visible::after {
+  :is(.subscription-overlay, .subscription-page)
+    .subscription-subscribe:hover::after,
+  :is(.subscription-overlay, .subscription-page)
+    .subscription-subscribe:focus-visible::after {
     animation: none;
   }
 }
 @media (max-width: 720px) {
-  .subscription-overlay .subscription-plans {
+  :is(.subscription-overlay, .subscription-page) .subscription-plans {
     grid-template-columns: 1fr;
   }
-  .subscription-overlay .subscription-pro {
+  :is(.subscription-overlay, .subscription-page) .subscription-pro {
     order: -1;
   }
   .subscription-overlay {

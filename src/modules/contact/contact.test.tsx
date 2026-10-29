@@ -67,15 +67,12 @@ describe("public contact page", () => {
       "/mock-tests",
       "/what-is-nuet",
       "/earn",
+      "/subscription",
     ])
       expect(html).toContain(`href="${href}"`);
-    for (const label of [
-      "Features",
-      "Subscribe",
-      "Subscription",
-      "Privacy Policy",
-      "Terms of service",
-    ])
+    expect(html).toMatch(/<a[^>]*href="\/subscription"[^>]*>Subscribe<\/a>/);
+    expect(html).toMatch(/<a[^>]*href="\/subscription"[^>]*>Subscription<\/a>/);
+    for (const label of ["Features", "Privacy Policy", "Terms of service"])
       expect(html).toMatch(new RegExp(`<button[^>]*>${label}<\\/button>`));
     for (const notice of Object.values(contactNotices))
       expect(notice.text).toMatch(/not available|not been published/);

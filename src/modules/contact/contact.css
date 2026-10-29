@@ -129,7 +129,7 @@
   color: var(--color-brand-contrast);
   font-size: 10px;
   line-height: 14px;
-  font-weight: 500;
+  font-weight: 650;
 }
 .contact-support-label > span {
   width: 6px;
@@ -178,7 +178,7 @@
   padding: 1px 8px;
   font-size: 8px;
   line-height: 12px;
-  font-weight: 600;
+  font-weight: 800;
   text-transform: uppercase;
 }
 .contact-channel-icon {

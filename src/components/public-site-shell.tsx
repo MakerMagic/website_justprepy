@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AuthIcon } from "../modules/auth/auth-icon";
 import { PublicChannelIcon } from "./public-channel-icon";
@@ -13,14 +12,6 @@ import {
 } from "../modules/contact/contact.config";
 import "../modules/questions/question-bank.css";
 import "../modules/contact/contact.css";
-
-const SubscriptionModal = dynamic(
-  () =>
-    import("../modules/subscription/subscription-modal").then(
-      (module) => module.SubscriptionModal,
-    ),
-  { ssr: false },
-);
 
 function ContactBrand({
   priority = false,
@@ -47,7 +38,7 @@ export function PublicSiteShell({
   page,
 }: {
   children: ReactNode;
-  page: "contact" | "nuet" | "creators";
+  page: "contact" | "nuet" | "creators" | "subscription";
 }) {
   const isContact = page === "contact";
   const brandName = page === "creators" ? "justprepy" : "JustPrepy";
@@ -67,23 +58,20 @@ export function PublicSiteShell({
       skip: "Skip to creator program",
       back: "Back to Creator Program",
     },
+    subscription: {
+      main: "#subscription-main",
+      skip: "Skip to subscription plans",
+      back: "Back to Subscription",
+    },
   }[page];
   const [notice, setNotice] = useState<ContactNotice | null>(null);
-  const [subscriptionOpen, setSubscriptionOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     if (notice && !dialog.current?.open) dialog.current?.showModal();
   }, [notice]);
   const currentNotice = notice ? contactNotices[notice] : null;
   const preview = (key: ContactNotice, label: string, className?: string) => (
-    <button
-      type="button"
-      className={className}
-      onClick={() => {
-        if (key === "subscription") setSubscriptionOpen(true);
-        else setNotice(key);
-      }}
-    >
+    <button type="button" className={className} onClick={() => setNotice(key)}>
       {label}
     </button>
   );
@@ -113,7 +101,13 @@ export function PublicSiteShell({
             <Link href="/login" className="button primary">
               Log In
             </Link>
-            {preview("subscription", "Subscribe", "button accent")}
+            <Link
+              href="/subscription"
+              className="button accent"
+              aria-current={page === "subscription" ? "page" : undefined}
+            >
+              Subscribe
+            </Link>
           </div>
         </div>
       </header>
@@ -158,7 +152,12 @@ export function PublicSiteShell({
             <nav aria-labelledby="contact-offers-title">
               <h2 id="contact-offers-title">Offers</h2>
               <Link href="/">Question Bank</Link>
-              {preview("subscription", "Subscription")}
+              <Link
+                href="/subscription"
+                aria-current={page === "subscription" ? "page" : undefined}
+              >
+                Subscription
+              </Link>
               <Link
                 href="/earn"
                 aria-current={page === "creators" ? "page" : undefined}
@@ -200,10 +199,6 @@ export function PublicSiteShell({
         </div>
       </footer>
 
-      <SubscriptionModal
-        open={subscriptionOpen}
-        onClose={() => setSubscriptionOpen(false)}
-      />
       <dialog
         ref={dialog}
         className="contact-preview-dialog"

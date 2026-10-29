@@ -212,6 +212,8 @@
   margin-top: 21.6px;
 }
 .nav-item {
+  position: relative;
+  isolation: isolate;
   height: 39.6px;
   width: 100%;
   padding: 0 11px;
@@ -229,9 +231,7 @@
   overflow: hidden;
   font-size: 12.6px;
   font-weight: 550;
-  transition:
-    background var(--motion-fast),
-    color var(--motion-fast);
+  transition: color 0.5s;
   line-height: 21.6px;
 }
 .nav-item svg {
@@ -239,12 +239,70 @@
   flex-shrink: 0;
   height: 16.2px;
 }
-.nav-item.is-active {
-  background: var(--color-brand);
+.nav-item[data-highlighted="true"] {
   color: var(--color-brand-contrast);
 }
-.nav-item:not(.is-active):hover {
-  background: var(--color-neutral-100);
+.nav-fill-definitions {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+.nav-fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.nav-fill-blobs {
+  position: relative;
+  display: block;
+  height: 100%;
+}
+.nav-fill-blob {
+  position: absolute;
+  top: 2px;
+  width: 25%;
+  height: 100%;
+  background: var(--color-brand);
+  border-radius: 100%;
+  transform: translate3d(0, 150%, 0) scale(1.7);
+  transition: transform 0.45s;
+}
+.nav-fill-blob:nth-child(1) {
+  left: 0;
+  transition-delay: 0s;
+}
+.nav-fill-blob:nth-child(2) {
+  left: 30%;
+  transition-delay: 0.08s;
+}
+.nav-fill-blob:nth-child(3) {
+  left: 60%;
+  transition-delay: 0.16s;
+}
+.nav-fill-blob:nth-child(4) {
+  left: 90%;
+  transition-delay: 0.24s;
+}
+.nav-item[data-highlighted="true"] .nav-fill-blob {
+  transform: translateZ(0) scale(1.7);
+}
+@supports (filter: url("#sidebar-fill")) {
+  .nav-fill-blob {
+    transform: translate3d(0, 150%, 0) scale(1.4);
+  }
+  .nav-item[data-highlighted="true"] .nav-fill-blob {
+    transform: translateZ(0) scale(1.4);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-item,
+  .nav-fill-blob {
+    transition: none;
+  }
 }
 .nav-text,
 .profile-details,
@@ -699,6 +757,30 @@
   background: var(--color-brand);
   border-color: var(--color-brand-focus);
 }
+/* Match the catalogue pills without changing dropdown contents or filter state. */
+.filter-controls :is(.chip, .filter-value) {
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  transition:
+    color 0.18s,
+    transform 0.12s;
+}
+.filter-controls :is(.chip, .filter-value):active {
+  transform: scale(0.96);
+}
+.filter-controls :is(.chip, .filter-value)::before {
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+  transition: background 0.18s;
+}
+.filter-controls
+  :is(.chip, .filter-value):hover:not([aria-pressed="true"])::before {
+  background: var(--color-neutral-300);
+}
+.filter-controls :is(.chip, .filter-value)[aria-pressed="true"]::before {
+  background: var(--color-brand);
+}
 .source-year-count {
   font-size: 11px;
   min-width: 16px;
@@ -708,6 +790,9 @@
   grid-column: 3;
   width: max-content;
   max-width: 100%;
+}
+.difficulty-group .chip {
+  font-weight: 700;
 }
 .mobile-filter-toggle.icon-button {
   display: none;

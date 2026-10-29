@@ -24,12 +24,15 @@ export function summarizeMockTests(tests: MockTest[]) {
   return {
     completed: completed.length,
     recent,
-    average: recent.length
-      ? Math.round(
-          recent.reduce((total, test) => total + test.result!.score, 0) /
-            recent.length,
-        )
-      : null,
+    average:
+      recent.length && recent.every((test) => test.result!.score !== null)
+        ? Math.round(
+            recent.reduce(
+              (total, test) => total + (test.result!.score ?? 0),
+              0,
+            ) / recent.length,
+          )
+        : null,
   };
 }
 

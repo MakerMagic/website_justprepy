@@ -122,6 +122,25 @@ describe("mock-test catalogue", () => {
     expect(html).not.toContain("Start Test");
     expect(mockTestActions(demoMockTests[3])).toEqual(["analyze", "retake"]);
   });
+  it("connects only main-page completed Analyze controls to their specific result route", () => {
+    const html = renderToStaticMarkup(
+      <MockTests
+        tests={demoMockTests}
+        profile={demoQuestionBank.profile}
+        telegramUrl={null}
+      />,
+    );
+    expect(html).toContain(
+      'href="/mock-tests/demo-mock-4/results?attempt=2026-10-20T12%3A00%3A00Z"',
+    );
+    expect(html.match(/>Start Test/g)).toHaveLength(3);
+    expect(html).toContain("Retake");
+    // Shared cards in unrelated contexts retain their explicit destination/handler contract.
+    const isolated = renderToStaticMarkup(
+      <MockTestCard test={demoMockTests[3]} onAction={() => {}} />,
+    );
+    expect(isolated).not.toContain("/results?attempt=");
+  });
   it("omits simulation labels from every card while retaining test titles and counts", () => {
     for (const test of demoMockTests) {
       const html = renderToStaticMarkup(

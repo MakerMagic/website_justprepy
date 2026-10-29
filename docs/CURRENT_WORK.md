@@ -13,6 +13,26 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- Public `/subscription` page renders inside `PublicSiteShell` (no sidebar) with the Free/Pro
+  cards shared with the pop-up through `renderSubscriptionPlans`, plus a "Not sure yet?" demo-call
+  block. The shell's header Subscribe and footer Subscription link to it; the sidebar pop-up is
+  unchanged. `DEMO_CALL_URL` in `subscription.config.ts` is empty (no booking page or URL exists
+  yet), so the button is unlinked and labelled as not open until one is supplied.
+
+- Mock Test taking at /mock-tests/[testId]/take reuses the practice workspace.
+  Owner-approved browser-only demo attempts preserve answers, flags, completed sections and section positions;
+  full tests start with Mathematics, followed sequentially by combined CT/PS, each numbered 1–30.
+  The manual section switcher is removed and the active section name appears inline next to Exit;
+  completing Mathematics via Finish Section locks it permanently and opens CT/PS Question 1,
+  while the final section uses Finish Test.
+  Only three authored Critical Thinking practice examples exist: they repeat across demo
+  slots (including Mathematics), explicitly disclosed in the interface. No real exam content
+  or production assessment service is connected. The unpausable elapsed timer includes time
+  away; no expiry/auto-submission policy is invented. Finish Test confirms and evaluates demo keys
+  into the existing Results page; official and section points remain unavailable because
+  no scoring policy exists. Save & Exit resumes the same browser attempt in the active section; Retake retains
+  completed history. Browser data is non-authoritative and is not synced between devices.
+
 - Analytics at `/analytics` ports the supplied illustrative data, SVG charts and
   four sections inside PracticeShell. Existing sidebar navigation includes Analytics;
   period/subject controls, dual-axis tooltips, annual activity heatmap, topic-fill
@@ -97,7 +117,7 @@ workflow guided density, data integrity, responsive behavior and visual review.
   fixtures only; detailed analytics remains an explicit preview boundary. No ranking
   backend or analytics infrastructure is implemented.
 
-- `/mock-tests` reuses `PracticeShell` and the extracted shared `StatisticCard`; desktop/mobile navigation links to the catalogue with the correct active state. Typed illustrative test records drive completion/type filters, counts, recent-score statistics and full/sectional cards. Start, Analyze and Retake retain explicit unavailable-preview notices; no mock-test engine, analysis route or persisted results are implemented.
+- `/mock-tests` reuses `PracticeShell` and the extracted shared `StatisticCard`; desktop/mobile navigation links to the catalogue with the correct active state. Typed illustrative test records drive completion/type filters, counts, recent-score statistics and full/sectional cards. Completed Analyze links open `/mock-tests/[testId]/results` for the matching completion timestamp. The Results page ports the supplied summary, section analytics, filters, placeholder review dialogs and reveal animations; semantic statistic cards reuse the shared style and compact section spacing. Mock Test #4 has owner-authorized, explicitly illustrative question/timing details consistent with its existing 211/240 result. Missing or invalid detailed records remain unavailable. Start and Retake retain unavailable-preview notices; no mock-test engine or persisted result service is implemented.
 
 - `/practice` reuses the finalized sidebar and extracted header through `PracticeShell`. It provides passage/answers, an elapsed demo timer, per-question selections/bookmarks, demo-only checking, a difficulty/status navigator and a two-pane explanation dialog with isolated answer reveal. Failed evaluations remain retryable; first-attempt success is correct, success after a failed evaluation is partly correct, and unresolved failure remains wrong while selecting a retry. Both dialogs use the same session state; shared content/answer renderers support LaTeX-to-native-MathML and image parts. Topic previews link to it. The owner explicitly requested the existing sidebar/Telegram header here; this preview is an exception to the immersive-shell default, not a new mock-exam policy.
 - Public `/login` and `/signup` auth previews share a responsive form shell, local validation, password visibility controls, and original SVG landscape. Authentication, Google, recovery and legal content remain explicitly unconnected; credentials are never transmitted or persisted.
@@ -108,7 +128,7 @@ workflow guided density, data integrity, responsive behavior and visual review.
 - Functional status, saved, difficulty, source and draft/apply year filtering.
 - Only Oxford and BMAT appear as independent source/year selectors. Applied years are preserved per source. Availability remains illustrative; underlying fixture contracts are unchanged.
 - Topic progress and set previews derive from typed fixtures supplied through page props.
-- Header Telegram CTA has a configurable, currently absent destination. Statistics open fixture-derived summaries; topic actions retain previews. Subscription plans open in a modal; Settings/sign-out remain unavailable.
+- Header Telegram CTA opens `https://t.me/justprepy` in a new tab. Statistics open fixture-derived summaries; topic actions retain previews. Subscription plans open in a modal; Settings/sign-out remain unavailable.
 
 ## Data boundary
 
@@ -119,10 +139,10 @@ navigation opens an explicit preview limitation; Settings/sign-out remain disabl
 
 ## Local preview
 
-The LAN preview at `192.168.1.2:3000` is explicitly allowed in `next.config.ts`.
+The LAN previews at `192.168.1.2:3000` and `192.168.1.4:3000` are explicitly allowed in `next.config.ts`.
 Next's dev HMR/debug transport otherwise rejects this origin and React hydration
 stalls: native popovers open at fallback coordinates and React hover handlers do
-not run. Keep this allowance scoped to the actual development host.
+not run. Keep this allowance scoped to the actual development hosts.
 
 ## Validation
 

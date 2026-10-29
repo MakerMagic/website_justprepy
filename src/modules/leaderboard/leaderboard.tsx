@@ -20,6 +20,7 @@ import type { LeaderboardSnapshot } from "./leaderboard.types";
 import { LeaderboardIcon } from "./leaderboard-icons";
 import "../questions/practice-modals.css";
 import "./leaderboard.css";
+import "../../components/more-analytics.css";
 
 const number = new Intl.NumberFormat("en-US");
 // A client-day snapshot avoids server/client date differences during hydration.
@@ -218,7 +219,7 @@ export function Leaderboard({
             />
           </div>
           <div className="leaderboard-analytics">
-            <Link href="/analytics" className="button secondary">
+            <Link href="/analytics" className="more-analytics-action">
               More Analytics
               <Icon name="arrow" size={15} />
             </Link>

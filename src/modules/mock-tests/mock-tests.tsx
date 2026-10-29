@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatisticCard } from "../../components/statistic-card";
 import { PracticeShell } from "../questions/practice-shell";
@@ -16,6 +16,17 @@ import {
   mockTestActions,
   summarizeMockTests,
 } from "./mock-tests.logic";
+import {
+  demoAttemptResult,
+  demoTakeHref,
+  demoResultsHref,
+  type DemoMockAttempt,
+} from "./mock-test-attempt.logic";
+import {
+  readDemoAttempts,
+  demoAttemptEvent,
+} from "./mock-test-attempt.storage";
+import { mockTestResultsHref } from "./mock-test-results.logic";
 import type { MockAction, MockFilters, MockTest } from "./mock-tests.types";
 import "../questions/practice-modals.css";
 import "./mock-tests.css";
@@ -38,10 +49,12 @@ export function MockTestCard({
   test,
   onAction,
   entranceDelay = 0,
+  resumeHref,
 }: {
   test: MockTest;
   onAction: (test: MockTest, action: MockAction) => void;
   entranceDelay?: number;
+  resumeHref?: string;
 }) {
   return (
     <article
@@ -111,13 +124,16 @@ export function MockTestCard({
           Your Score
         </span>
         <strong>
-          {test.result?.score ?? "?"}
+          {test.result ? (test.result.score ?? "—") : "?"}
           <span> / {test.maxScore}</span>
         </strong>
       </div>
       <div className="mock-card-actions">
         {mockTestActions(test).map((action) => {
-          const label = actionLabels[action];
+          const label =
+            resumeHref && (action === "start" || action === "retake")
+              ? "Resume Test"
+              : actionLabels[action];
           const className = `button ${action === "analyze" ? "accent" : action === "retake" ? "secondary" : "primary"}`;
           const contents = (
             <>
@@ -147,7 +163,10 @@ export function MockTestCard({
               )}
             </>
           );
-          const destination = test.destinations?.[action];
+          const destination =
+            (action === "start" || action === "retake") && resumeHref
+              ? resumeHref
+              : test.destinations?.[action];
           return destination ? (
             <Link key={action} href={destination} className={className}>
               {contents}
@@ -189,8 +208,48 @@ export function MockTests({
     setFilterRevision((current) => current + 1);
   };
   const [preview, setPreview] = useState<Preview | null>(null);
-  const filtered = filterMockTests(tests, filters);
-  const stats = summarizeMockTests(tests);
+  const [attempts, setAttempts] = useState<Record<string, DemoMockAttempt[]>>(
+    {},
+  );
+  useEffect(() => {
+    const refresh = () => {
+      try {
+        setAttempts(
+          Object.fromEntries(
+            tests.map((test) => [test.id, readDemoAttempts(test)]),
+          ),
+        );
+      } catch {
+        /* Keep catalogue available when demo storage is blocked. */
+      }
+    };
+    void Promise.resolve().then(refresh);
+    window.addEventListener("storage", refresh);
+    window.addEventListener(demoAttemptEvent, refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener(demoAttemptEvent, refresh);
+    };
+  }, [tests]);
+  const displayTests = tests.map((test) => {
+    const completed = attempts[test.id]?.find((a) => a.completedAt !== null);
+    const result = completed ? demoAttemptResult(test, completed) : null;
+    return {
+      ...(result ?? test),
+      destinations: {
+        start: demoTakeHref(test.id),
+        retake: demoTakeHref(test.id) + "?mode=retake",
+        ...(completed
+          ? { analyze: demoResultsHref(completed) }
+          : test.result
+            ? { analyze: mockTestResultsHref(test)! }
+            : {}),
+        ...test.destinations,
+      },
+    };
+  });
+  const filtered = filterMockTests(displayTests, filters);
+  const stats = summarizeMockTests(displayTests);
   const reset = () => changeFilters({ ...defaultMockFilters });
   const previewTitle =
     preview?.kind === "stat"
@@ -322,7 +381,27 @@ export function MockTests({
               {filtered.map((test, index) => (
                 <MockTestCard
                   key={test.id}
-                  test={test}
+                  test={
+                    test.result
+                      ? {
+                          ...test,
+                          destinations: {
+                            ...test.destinations,
+                            analyze:
+                              test.destinations?.analyze ??
+                              mockTestResultsHref(test)!,
+                          },
+                        }
+                      : test
+                  }
+                  resumeHref={(() => {
+                    const active = attempts[test.id]?.find(
+                      (a) => a.completedAt === null,
+                    );
+                    return active
+                      ? demoTakeHref(test.id, active.id)
+                      : undefined;
+                  })()}
                   entranceDelay={index * 50}
                   onAction={(test, action) =>
                     setPreview({ kind: "action", test, action })

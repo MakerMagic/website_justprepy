@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Inter } from "next/font/google";
+import { renderSubscriptionPlans } from "./subscription-plans";
 import "./subscription-modal.css";
 
 const inter = Inter({
@@ -11,37 +12,7 @@ const inter = Inter({
   variable: "--font-subscription",
 });
 
-const freeFeatures = [
-  "Limited Mock Tests",
-  "Limited Questions",
-  "Constrained Vocabulary Practice",
-  "Basic Analytics",
-];
-const proFeatures = [
-  "1500+ Questions",
-  "All Explanations Available",
-  "Unlimited Mock Tests",
-  "500+ Vocabulary Words",
-  "Advanced Performance Analytics for You",
-];
-// The supplied implementation has no checkout destination.
-const CHECKOUT_URL = "";
-
-function PlanCheck() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <circle cx="12" cy="12" r="11" fill="#3DD86D" />
-      <path
-        d="m7 12.5 3.2 3.2L17 8.8"
-        fill="none"
-        stroke="#0e0e0e"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
+export const subscriptionFontVariable = inter.variable;
 
 export function SubscriptionModal({
   open,
@@ -236,56 +207,11 @@ export function SubscriptionModal({
         >
           Prepare for NUET with justprepy.
         </p>
-        <div className="subscription-plans">
-          <section
-            className="subscription-plan subscription-free"
-            aria-labelledby={id + "-free"}
-          >
-            <h3 id={id + "-free"}>Free</h3>
-            <div className="subscription-price">
-              0<span>₸</span>
-            </div>
-            <ul>
-              {freeFeatures.map((feature) => (
-                <li key={feature}>
-                  <i aria-hidden="true" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <div className="subscription-current" role="status">
-              Currently using
-            </div>
-          </section>
-          <section
-            className="subscription-plan subscription-pro"
-            aria-labelledby={id + "-pro"}
-          >
-            <h3 id={id + "-pro"}>Pro</h3>
-            <div className="subscription-price">
-              10,000<span>₸</span>
-            </div>
-            <ul>
-              {proFeatures.map((feature) => (
-                <li key={feature}>
-                  <PlanCheck />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <button
-              className="subscription-subscribe"
-              type="button"
-              data-checkout={CHECKOUT_URL}
-              onClick={() => setMessage("Checkout is not connected yet.")}
-            >
-              <span>Subscribe</span>
-            </button>
-            <p className="subscription-status" role="status" aria-live="polite">
-              {message}
-            </p>
-          </section>
-        </div>
+        {renderSubscriptionPlans({
+          idPrefix: id,
+          message,
+          onSubscribe: () => setMessage("Checkout is not connected yet."),
+        })}
       </div>
     </dialog>
   );

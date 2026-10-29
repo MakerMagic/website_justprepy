@@ -161,18 +161,19 @@
   color: var(--color-text-secondary);
 }
 .mock-difficulty {
+  font-family: var(--font-ui);
   padding: 2px 8px;
   border-radius: 5px;
   font-size: 11px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: capitalize;
   white-space: nowrap;
 }
 .mock-difficulty[data-state="excluded"] {
   color: var(--color-text-secondary);
   background: var(--color-neutral-100);
-  font-weight: 500;
+  font-weight: 700;
 }
 .mock-test-meta {
   display: flex;

@@ -44,7 +44,7 @@ const subjects: Subject[] = [
 /** Source/year availability is illustrative configuration, not verified historical coverage.
  * Deterministic illustrative metadata. No real exam questions, answers or student records. */
 export const demoQuestionBank: QuestionBankData = {
-  telegramUrl: null,
+  telegramUrl: "https://t.me/justprepy",
   profile: { name: "MakerMagicNow", initials: "MM", plan: "Pro" },
   sources: [
     {

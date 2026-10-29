@@ -1,6 +1,12 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
@@ -32,6 +38,21 @@ const navigation = [
   { label: "Contact us", icon: "help", href: "/contact" },
   { label: "Earn money", icon: "earn", href: "/earn" },
 ];
+function NavigationFill({ filterId }: { filterId: string }) {
+  return (
+    <span className="nav-fill" aria-hidden="true">
+      <span
+        className="nav-fill-blobs"
+        style={{ filter: `url("#${filterId}")` }}
+      >
+        <span className="nav-fill-blob" />
+        <span className="nav-fill-blob" />
+        <span className="nav-fill-blob" />
+        <span className="nav-fill-blob" />
+      </span>
+    </span>
+  );
+}
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
   const pathname = usePathname();
   const activeHref =
@@ -41,6 +62,11 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
     pathname === "/analytics"
       ? pathname
       : "/";
+  const fillId = "sidebar-fill-" + useId().replaceAll(":", "");
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const highlightedItem = hoveredItem ?? activeHref;
+  const leaveItem = (id: string) =>
+    setHoveredItem((current) => (current === id ? null : current));
   const [touchOpen, setTouchOpen] = useState(false);
   const [keyboard, setKeyboard] = useState(false);
   const [pointerInside, setPointerInside] = useState(false);
@@ -145,8 +171,10 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
           if (
             !(event.relatedTarget instanceof Node) ||
             !event.currentTarget.contains(event.relatedTarget)
-          )
+          ) {
             setPointerInside(false);
+            setHoveredItem(null);
+          }
         }}
         onFocusCapture={() => setFocusInside(true)}
         onBlurCapture={(event) => {
@@ -162,6 +190,28 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
             setTouchOpen(false);
         }}
       >
+        <svg
+          className="nav-fill-definitions"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <defs>
+            <filter id={fillId}>
+              <feGaussianBlur
+                in="SourceGraphic"
+                result="blur"
+                stdDeviation="10"
+              />
+              <feColorMatrix
+                in="blur"
+                mode="matrix"
+                values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 21 -7"
+                result="goo"
+              />
+              <feBlend in2="goo" in="SourceGraphic" result="mix" />
+            </filter>
+          </defs>
+        </svg>
         <Link
           href="/"
           className="sidebar-logo"
@@ -210,21 +260,37 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
                 <Link
                   className={`nav-item${item.href === activeHref ? " is-active" : ""}`}
                   href={item.href}
+                  data-highlighted={item.href === highlightedItem}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== "touch")
+                      setHoveredItem(item.href);
+                  }}
+                  onPointerLeave={() => leaveItem(item.href)}
+                  onPointerCancel={() => leaveItem(item.href)}
                   aria-current={item.href === activeHref ? "page" : undefined}
                   title={item.label}
                   onClick={() => setTouchOpen(false)}
                 >
                   <Icon name={item.icon} />
                   <span className="nav-text">{item.label}</span>
+                  <NavigationFill filterId={fillId} />
                 </Link>
               ) : (
                 <button
                   type="button"
                   className="nav-item"
+                  data-highlighted={item.label === highlightedItem}
+                  onPointerEnter={(event) => {
+                    if (event.pointerType !== "touch")
+                      setHoveredItem(item.label);
+                  }}
+                  onPointerLeave={() => leaveItem(item.label)}
+                  onPointerCancel={() => leaveItem(item.label)}
                   onClick={() => setUnavailable(item.label)}
                 >
                   <Icon name={item.icon} />
                   <span className="nav-text">{item.label}</span>
+                  <NavigationFill filterId={fillId} />
                 </button>
               )}
             </div>

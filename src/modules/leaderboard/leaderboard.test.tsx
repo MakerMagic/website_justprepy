@@ -17,7 +17,10 @@ import { StatisticCard } from "../../components/statistic-card";
 import { LeaderboardIcon } from "./leaderboard-icons";
 
 const route = vi.hoisted(() => ({ pathname: "/leaderboard" }));
-vi.mock("next/navigation", () => ({ usePathname: () => route.pathname }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => route.pathname,
+  useRouter: () => ({ push: vi.fn() }),
+}));
 const user = (
   id: string,
   solved: number,
@@ -278,7 +281,9 @@ describe("illustrative leaderboard", () => {
     for (const rank of [1, 2, 3]) {
       expect(html).toContain(`data-rank="${rank}"`);
     }
-    for (const row of demoLeaderboard.users) {
+    for (const row of demoLeaderboard.users.filter(
+      (user) => user.id !== demoLeaderboard.currentUserId,
+    )) {
       expect(html).toContain(`class="leaderboard-user-title">${row.title}`);
     }
     expect(

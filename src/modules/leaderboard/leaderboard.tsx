@@ -1,4 +1,6 @@
 "use client";
+import { ProfileTitle } from "../settings/profile-title";
+import { useDemoProfile } from "../settings/settings-profile";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
@@ -83,6 +85,7 @@ export function Leaderboard({
   profile: QuestionBankData["profile"];
   telegramUrl: string | null;
 }) {
+  const savedProfile = useDemoProfile(profile.name);
   const [snapshot, setSnapshot] = useState(data);
   const [refreshedAt, setRefreshedAt] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -289,11 +292,17 @@ export function Leaderboard({
                                 <span className="leaderboard-you">YOU</span>
                               )}
                             </span>
-                            {user.title && (
-                              <span className="leaderboard-user-title">
-                                {user.title}
-                              </span>
-                            )}
+                            {self
+                              ? savedProfile.title && (
+                                  <span className="leaderboard-user-title">
+                                    <ProfileTitle id={savedProfile.title} />
+                                  </span>
+                                )
+                              : user.title && (
+                                  <span className="leaderboard-user-title">
+                                    {user.title}
+                                  </span>
+                                )}
                           </span>
                         </div>
                       </th>

@@ -116,3 +116,36 @@ The source contract is governed by `CONTENT_CONTRACT.md`.
 - Performance thresholds requiring caches or background work.
 
 Do not resolve these by installing libraries or inventing schemas without an implementation requirement and supporting decision.
+
+## Current browser-only Mock Test analytics adapter
+
+The current Mock Test flow has no authenticated identity, published exam pool,
+server assessment or official points policy. Its existing demo attempt adapter
+uses immutable per-attempt localStorage records behind mock-test-attempt.storage.ts.
+This is device/browser/origin-local, editable demo storage, never a production database.
+
+New attempts optionally capture versioned analytics inputs: the stable local demo
+profile owner (not the editable nickname or an authenticated user ID), test section
+configuration, composite question IDs, source revision fingerprints, assigned subjects,
+known source-matched topics, and observed question dwell milliseconds. Manual Finish
+and timeout share one finalization boundary and freeze the existing evaluation in the
+same attempt record. Results and advanced analytics read that evaluation; derived
+counts, percentages and changes are not additional writable copies. Retakes retain
+separate IDs. Web Locks plus immutable completion prevent duplicate finalization.
+
+Dwell time is checkpointed by the existing timer and before navigation/exit/submission.
+It measures visible question time; hidden pages, time after exit and time before a
+refresh/resume observation are excluded. Total exam elapsed time still includes time
+away and retains its configured deadline. Week/month timing means rolling 7/30-day
+windows ending at the selected completion, weighted by observed question samples.
+No unobserved zero samples or future completions enter an average.
+
+Previous comparison uses the closest strictly earlier completion with a known matching
+demo owner and section configuration, across catalogue test IDs. Legacy records remain
+readable, immutable and unmodified; absent ownership/timing/taxonomy is unavailable,
+not backfilled. Catalogue example results are explicitly labelled and never become
+synthetic attempt history. Section points are compared only when both exist; otherwise
+available correct-answer accuracy is explicitly labelled separately from scaled score.
+The reused CT examples in Mathematics slots do not gain invented Mathematics topics.
+A future backend must supply authenticated ownership, server time, published question
+revisions and authoritative scoring through the same read model/adapter boundary.

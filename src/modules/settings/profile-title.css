@@ -1,0 +1,41 @@
+.profile-title {
+  font: inherit;
+}
+.profile-title .t-plain {
+  color: var(--profile-title-ink, var(--color-ink-900, #14171f));
+}
+.profile-title .t-green {
+  color: var(--profile-title-green, #1a9f4b);
+}
+.profile-title .t-blue {
+  color: #2f7de1;
+}
+.profile-title .t-mono {
+  color: var(--profile-title-ink, var(--color-ink-900, #14171f));
+  letter-spacing: 0.03em;
+}
+.profile-title .t-bold {
+  color: var(--profile-title-ink, var(--color-ink-900, #14171f));
+  font-weight: 700;
+}
+.profile-title .t-g1,
+.profile-title .t-g2,
+.profile-title .t-g3 {
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.profile-title .t-g1 {
+  background-image: linear-gradient(90deg, #12a89a, #2bcb63);
+}
+.profile-title .t-g2 {
+  background-image: linear-gradient(90deg, #d98a00, #f2641f);
+}
+.profile-title .t-g3 {
+  background-image: linear-gradient(90deg, #1a9f4b, #2f7de1, #8a5cf5);
+}
+.settings-page {
+  --profile-title-ink: var(--ink);
+  --profile-title-green: var(--gdk);
+}

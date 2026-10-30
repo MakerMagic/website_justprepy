@@ -1,5 +1,9 @@
 import {
   validateDemoAttempt,
+  finishDemoAttempt,
+  attemptDeadline,
+  demoAttemptResult,
+  DEMO_ATTEMPT_OWNER,
   type DemoMockAttempt,
 } from "./mock-test-attempt.logic";
 import type { MockTest } from "./mock-tests.types";
@@ -16,7 +20,12 @@ export function readDemoAttempts(
     if (!key?.startsWith(prefix + test.id + ":")) continue;
     try {
       const candidate: unknown = JSON.parse(storage.getItem(key) ?? "null");
-      if (validateDemoAttempt(candidate, test)) attempts.push(candidate);
+      if (
+        validateDemoAttempt(candidate, test) &&
+        (!candidate.analytics ||
+          candidate.analytics.ownerId === DEMO_ATTEMPT_OWNER)
+      )
+        attempts.push(candidate);
     } catch {
       /* Ignore corrupt demo records; never overwrite them silently. */
     }
@@ -42,4 +51,57 @@ export function saveDemoAttempt(
   storage.setItem(key, JSON.stringify(attempt));
   if (typeof window !== "undefined")
     window.dispatchEvent(new Event(demoAttemptEvent));
+}
+
+/** One idempotent finalization boundary for manual Finish, timeout and expired resume.
+ * Web Locks serialize competing browser tabs; the existing single storage key retains one result.
+ * This is the existing demo boundary, never a replacement for server assessment transactions.
+ */
+export async function finalizeDemoAttempt(
+  test: MockTest,
+  attempt: DemoMockAttempt,
+  now: number,
+  storage: Storage = localStorage,
+): Promise<DemoMockAttempt> {
+  const finalize = () => {
+    const raw = storage.getItem(prefix + test.id + ":" + attempt.id);
+    const saved: unknown = JSON.parse(raw ?? "null");
+    if (!validateDemoAttempt(saved, test) || saved.id !== attempt.id)
+      throw Error(
+        "The saved attempt is unavailable. Your answers have not been submitted.",
+      );
+    if (saved.completedAt !== null) return saved;
+    let completed = finishDemoAttempt(
+      saved,
+      Math.min(now, attemptDeadline(test, saved)),
+    );
+    if (completed.analytics)
+      completed = {
+        ...completed,
+        analytics: {
+          ...completed.analytics,
+          result: demoAttemptResult(test, completed)!.result!,
+        },
+      };
+    saveDemoAttempt(completed, storage);
+    return completed;
+  };
+  if (typeof navigator !== "undefined" && navigator.locks)
+    return navigator.locks.request(
+      prefix + test.id + ":" + attempt.id,
+      finalize,
+    );
+  return finalize();
+}
+
+/** Query boundary for same-profile completed history; no generated catalogue history is mixed in. */
+export function readCompletedAttemptHistory(
+  tests: readonly MockTest[],
+  storage: Storage = localStorage,
+) {
+  return tests.flatMap((test) =>
+    readDemoAttempts(test, storage)
+      .filter((attempt) => attempt.completedAt !== null)
+      .map((attempt) => ({ test, attempt })),
+  );
 }

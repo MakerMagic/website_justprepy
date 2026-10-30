@@ -76,7 +76,10 @@ vi.mock("react", async (original) => {
 vi.mock("next/font/google", () => ({
   Inter: () => ({ variable: "subscription-font" }),
 }));
-vi.mock("next/navigation", () => ({ usePathname: () => "/vocabulary" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/vocabulary",
+  useRouter: () => ({ push: vi.fn() }),
+}));
 vi.mock("next/dynamic", () => ({
   default: () =>
     function SubscriptionBoundary() {
@@ -468,7 +471,7 @@ describe("existing subscription entry points", () => {
     );
     const trigger = findButton(page.nodes, "Subscription");
     expect(trigger.props.disabled).toBe(false);
-    expect(findButton(page.nodes, "Settings").props.disabled).toBe(true);
+    expect(findButton(page.nodes, "Settings").props.disabled).toBe(false);
     expect(findButton(page.nodes, "Sign out").props.disabled).toBe(true);
     const hidePopover = vi.fn();
     trigger.props.onClick!({

@@ -596,8 +596,9 @@
   gap: 12px;
   border: 0;
   border-radius: 14px;
-  background: var(--color-ink-900);
-  color: var(--color-white);
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-ink-900);
   text-align: left;
   white-space: nowrap;
   overflow: hidden;
@@ -609,7 +610,7 @@
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: var(--color-ink-700);
+  background: #000;
   color: var(--color-white);
   font-size: 12px;
   font-weight: 600;
@@ -624,7 +625,7 @@
   font-weight: 600;
 }
 .profile-details > span {
-  color: var(--color-neutral-300);
+  color: var(--color-text-secondary);
   font-size: 12px;
 }
 .profile-trigger > svg {

@@ -9,11 +9,14 @@ import {
 } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { flushSync } from "react-dom";
 import type { QuestionBankData } from "./question-bank.types";
 import { Icon } from "./icon";
 import { Popover } from "./popover";
+import { ProfileTitle } from "../settings/profile-title";
+import { useDemoProfile } from "../settings/settings-profile";
+import { initials } from "../settings/settings.logic";
 import { SubscriptionCard } from "./subscription-card";
 
 const SubscriptionModal = dynamic(
@@ -54,7 +57,9 @@ function NavigationFill({ filterId }: { filterId: string }) {
   );
 }
 export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
+  const demoProfile = useDemoProfile(profile.name);
   const pathname = usePathname();
+  const router = useRouter();
   const activeHref =
     pathname === "/leaderboard" ||
     pathname === "/mock-tests" ||
@@ -310,10 +315,23 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
             className="account-popover"
             trigger={
               <>
-                <span className="avatar">{profile.initials}</span>
+                <span className="avatar">
+                  {demoProfile.avatar ? (
+                    <Image
+                      src={demoProfile.avatar}
+                      alt=""
+                      width={36}
+                      height={36}
+                      unoptimized
+                      style={{ borderRadius: "50%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    initials(demoProfile.nickname)
+                  )}
+                </span>
                 <span className="profile-details">
-                  <strong>{profile.name}</strong>
-                  <span>Demo account</span>
+                  <strong>{demoProfile.nickname}</strong>
+                  <ProfileTitle id={demoProfile.title} />
                 </span>
                 <Icon name="down" size={16} />
               </>
@@ -321,7 +339,7 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
           >
             <>
               <div className="account-summary">
-                <strong>{profile.name}</strong>
+                <strong>{demoProfile.nickname}</strong>
                 <span className="status-badge">{profile.plan}</span>
               </div>
               <div className="account-actions">
@@ -333,8 +351,12 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
                   <button
                     key={item.name}
                     type="button"
-                    disabled={item.name !== "Subscription"}
+                    disabled={item.name === "Sign out"}
                     onClick={(event) => {
+                      if (item.name === "Settings") {
+                        router.push("/settings");
+                        return;
+                      }
                       if (item.name !== "Subscription") return;
                       subscriptionOrigin.current = "account";
                       event.currentTarget
@@ -350,7 +372,7 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
                 ))}
               </div>
               <p className="unavailable-note">
-                Settings and sign out are unavailable in this demo.
+                Sign out is unavailable in this demo.
               </p>
             </>
           </Popover>

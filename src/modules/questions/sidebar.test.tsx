@@ -9,7 +9,10 @@ type Harness = {
 };
 const runtime = vi.hoisted(() => ({ active: null as Harness | null }));
 const route = vi.hoisted(() => ({ pathname: "/" }));
-vi.mock("next/navigation", () => ({ usePathname: () => route.pathname }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => route.pathname,
+  useRouter: () => ({ push: vi.fn() }),
+}));
 // Exercise the real sidebar's pointer handlers without adding a DOM dependency.
 vi.mock("react", async (original) => {
   const actual = await original<typeof import("react")>();

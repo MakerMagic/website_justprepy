@@ -6,7 +6,10 @@ import { contactChannels, contactNotices } from "./contact.config";
 import { Sidebar } from "../questions/sidebar";
 import { demoQuestionBank } from "../questions/question-bank.fixtures";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 describe("public contact page", () => {
   it("renders the reference public header, three contact cards and complete footer without extra artwork", () => {

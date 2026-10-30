@@ -3,8 +3,12 @@
 import Link from "next/link";
 import { Inter } from "next/font/google";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { MockTestAnalytics } from "./mock-test-analytics";
+import type { DemoMockAttempt } from "./mock-test-attempt.logic";
 import { StatisticCard } from "../../components/statistic-card";
 import { Icon } from "../questions/icon";
+import { ExplanationModal } from "../questions/explanation-modal";
+import type { CompletedMockReviews } from "./mock-test-review.logic";
 import { PracticeDialog } from "../questions/practice-dialog";
 import type { MockTest, MockTestResultDetails } from "./mock-tests.types";
 import {
@@ -15,6 +19,7 @@ import {
   type ResultFilters,
 } from "./mock-test-results.logic";
 import "../questions/question-bank.css";
+import "../questions/question-solver.css";
 import "../questions/practice-modals.css";
 import "./mock-test-results.css";
 import "../../components/more-analytics.css";
@@ -26,8 +31,7 @@ const inter = Inter({
   variable: "--font-results",
 });
 type ResultQuestion = MockTestResultDetails["questions"][number];
-type ResultModal =
-  { kind: "analytics" } | { kind: "question"; question: ResultQuestion };
+type ResultModal = { kind: "question"; question: ResultQuestion };
 
 function ResultsSummary({ model }: { model: MockResultModel }) {
   return (
@@ -197,8 +201,10 @@ function ResultSections({
 function ResultNavigator({
   model,
   onQuestion,
+  reviews,
 }: {
   model: MockResultModel;
+  reviews: CompletedMockReviews;
   onQuestion: (question: ResultQuestion) => void;
 }) {
   const [filters, setFilters] = useState<ResultFilters>({
@@ -287,16 +293,18 @@ function ResultNavigator({
                   className={"q " + status.short}
                   aria-label={
                     "Question " +
-                    question.number +
+                    (reviews[question.id]?.question.localNumber ??
+                      question.number) +
                     ", " +
-                    section.name +
+                    (reviews[question.id]?.question.section ?? section.name) +
                     ", " +
                     status.label
                   }
                   aria-haspopup="dialog"
                   onClick={() => onQuestion(question)}
                 >
-                  {question.number}
+                  {reviews[question.id]?.question.localNumber ??
+                    question.number}
                 </button>
               );
             })
@@ -323,14 +331,31 @@ function ResultNavigator({
 export function MockTestResults({
   test,
   illustrative = false,
+  reviews = {},
+  attempt,
 }: {
   test: MockTest;
   illustrative?: boolean;
+  reviews?: CompletedMockReviews;
+  attempt?: DemoMockAttempt;
 }) {
   const model = useMemo(() => mockResultModel(test), [test]);
   const root = useRef<HTMLDivElement>(null);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [modal, setModal] = useState<ResultModal | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [reviewId, setReviewId] = useState<string | null>(null);
+  const [reviewOpen, setReviewOpen] = useState(false);
+  const [revealAnswer, setRevealAnswer] = useState(false);
+  const [savedQuestions, setSavedQuestions] = useState<Record<string, boolean>>(
+    {},
+  );
+  const review = reviewId ? reviews[reviewId] : undefined;
+  const reviewSection = review
+    ? Object.values(reviews).filter(
+        (item) => item.question.examSection === review.question.examSection,
+      )
+    : [];
   const close = () => setModalOpen(false);
   const show = (content: ResultModal) => {
     setModal(content);
@@ -378,81 +403,131 @@ export function MockTestResults({
     ? model.sections.find((section) => section.id === question.section)
     : null;
   return (
-    <div ref={root} className={"mock-results " + inter.variable}>
-      <main className="w" id="main-content">
-        <Link className="back" href="/mock-tests">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M19 12H5m6-6-6 6 6 6" />
-          </svg>
-          Back to Mock Tests
-          <span className="sid">Session #{model.sessionId}</span>
-        </Link>
-        <h1>{test.title} results</h1>
-        {illustrative && (
-          <p className="result-data-note">Illustrative test result details.</p>
-        )}
-        <ResultsSummary model={model} />
-        <ResultSections
-          model={model}
-          onMore={() => show({ kind: "analytics" })}
-        />
-        <ResultNavigator
-          model={model}
-          onQuestion={(question) => show({ kind: "question", question })}
-        />
-      </main>
-      <PracticeDialog
-        open={modalOpen}
-        onClose={close}
-        titleId="mock-result-modal-title"
-        className="results-modal"
-        initialFocus=".results-close-icon"
-      >
-        <button
-          className="x results-close-icon"
-          type="button"
-          aria-label="Close"
-          onClick={close}
+    <>
+      <div ref={root} className={"mock-results " + inter.variable}>
+        <main className="w" id="main-content">
+          <Link className="back" href="/mock-tests">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M19 12H5m6-6-6 6 6 6" />
+            </svg>
+            Back to Mock Tests
+            <span className="sid">Session #{model.sessionId}</span>
+          </Link>
+          <h1>{test.title} results</h1>
+          {illustrative && (
+            <p className="result-data-note">
+              Illustrative test result details.
+            </p>
+          )}
+          <ResultsSummary model={model} />
+          <ResultSections model={model} onMore={() => setAnalyticsOpen(true)} />
+          <ResultNavigator
+            model={model}
+            reviews={reviews}
+            onQuestion={(question) => {
+              if (reviews[question.id]) {
+                setReviewId(question.id);
+                setRevealAnswer(false);
+                setReviewOpen(true);
+              } else show({ kind: "question", question });
+            }}
+          />
+        </main>
+        <PracticeDialog
+          open={modalOpen}
+          onClose={close}
+          titleId="mock-result-modal-title"
+          className="results-modal"
+          initialFocus=".results-close-icon"
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.4"
-            strokeLinecap="round"
+          <button
+            className="x results-close-icon"
+            type="button"
+            aria-label="Close"
+            onClick={close}
           >
-            <path d="M5 5l14 14M19 5 5 19" />
-          </svg>
-        </button>
-        <h2 id="mock-result-modal-title">
-          {question ? "Question " + question.number : "More Analytics"}
-        </h2>
-        {question && modalStatus ? (
-          <>
-            <span className={"result-status-chip " + modalStatus.short}>
-              {modalStatus.label}
-            </span>
-            <p>{modalSection?.name}</p>
-            <div className="ph">Question review will appear here.</div>
-          </>
-        ) : (
-          <>
-            <p>Expanded analytics for this session.</p>
-            <div className="ph">Expanded analytics will appear here.</div>
-          </>
-        )}
-        <button className="close2" type="button" onClick={close}>
-          Close
-        </button>
-      </PracticeDialog>
-    </div>
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+            >
+              <path d="M5 5l14 14M19 5 5 19" />
+            </svg>
+          </button>
+          <h2 id="mock-result-modal-title">
+            {question ? "Question " + question.number : "More Analytics"}
+          </h2>
+          {question && modalStatus ? (
+            <>
+              <span className={"result-status-chip " + modalStatus.short}>
+                {modalStatus.label}
+              </span>
+              <p>{modalSection?.name}</p>
+              <div className="ph">
+                The original question and explanation are unavailable for this
+                historical attempt.
+              </div>
+            </>
+          ) : (
+            <>
+              <p>
+                Question details are unavailable for this historical attempt.
+              </p>
+            </>
+          )}
+          <button className="close2" type="button" onClick={close}>
+            Close
+          </button>
+        </PracticeDialog>
+      </div>
+      <MockTestAnalytics
+        key={model.sessionId}
+        open={analyticsOpen}
+        onClose={() => setAnalyticsOpen(false)}
+        test={test}
+        attempt={attempt}
+        fontClass={inter.variable}
+      />
+      {review && (
+        <ExplanationModal
+          open={reviewOpen}
+          onClose={() => setReviewOpen(false)}
+          question={review.question}
+          index={review.question.localNumber - 1}
+          total={reviewSection.length}
+          response={{
+            ...review.response,
+            saved: savedQuestions[review.question.id] ?? false,
+          }}
+          feedback={review.feedback}
+          revealAnswer={revealAnswer}
+          onReveal={setRevealAnswer}
+          attemptAnswer={review.response.selected}
+          onNavigate={(index) => {
+            const target = reviewSection[index];
+            if (target) {
+              setReviewId(target.question.id);
+              setRevealAnswer(false);
+            }
+          }}
+          onSave={() => {
+            const id = review.question.id,
+              next = !(savedQuestions[id] ?? false);
+            setSavedQuestions((current) => ({ ...current, [id]: next }));
+            return next;
+          }}
+        />
+      )}
+    </>
   );
 }

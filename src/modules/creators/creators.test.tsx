@@ -11,7 +11,10 @@ import { NuetPage } from "../nuet/nuet-page";
 vi.mock("next/font/google", () => ({
   Inter: () => ({ variable: "reference-font" }),
 }));
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 function mainContent(html: string) {
   return html.match(/<main[^>]*>([\s\S]*?)<\/main>/)![1];

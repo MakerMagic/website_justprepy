@@ -7,7 +7,10 @@ import { demoQuestionBank } from "../questions/question-bank.fixtures";
 import { Vocabulary, VocabularyPresetCard } from "./vocabulary";
 import { demoVocabulary } from "./vocabulary.fixtures";
 const route = vi.hoisted(() => ({ pathname: "/vocabulary" }));
-vi.mock("next/navigation", () => ({ usePathname: () => route.pathname }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => route.pathname,
+  useRouter: () => ({ push: vi.fn() }),
+}));
 describe("Vocabulary screenshot integration", () => {
   it("recreates exactly three presets with the shared shell and no Filters section", () => {
     const html = renderToStaticMarkup(

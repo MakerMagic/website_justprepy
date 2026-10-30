@@ -271,6 +271,12 @@
   background: var(--color-question-status-correct-bg);
 }
 .explanation-dialog {
+  --practice-reading-family: "Segoe UI Variable Text", var(--font-ui);
+  --practice-reading-weight: 500;
+  --practice-answer-weight: 450;
+  --practice-section-weight: 650;
+  --practice-difficulty-weight: 700;
+  font-family: var(--font-ui);
   width: 1080px;
   height: 800px;
 }

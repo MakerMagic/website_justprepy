@@ -13,6 +13,35 @@ workflow guided density, data integrity, responsive behavior and visual review.
 
 ## Implemented
 
+- Results More Analytics opens the source-matched four-section Advanced Mock Test
+  Analytics native dialog. Answer distribution reads the exact completed evaluation;
+  topic accuracy and period timing use saved source-matched metadata and observed dwell
+  samples. New browser-only attempts snapshot existing evaluation and analytics inputs
+  through the same manual/timeout finalization boundary. Earlier-comparable selection
+  requires known demo ownership and identical section configuration. Legacy missing data,
+  unknown official points and unmapped demo Mathematics topics remain unavailable.
+  No backend, authenticated identity, invented scores or synthetic history is introduced.
+
+- Saved profile titles share one renderer and source in Settings, Sidebar and the
+  matching current-user Leaderboard row, including gradients/emoji. Missing titles stay empty.
+  Mock Test total-duration expiry shares manual finalization, caps elapsed time at the configured
+  deadline, restores expired attempts into Results, and preserves sequential section locks.
+  Browser Web Locks and the existing immutable attempt key coordinate duplicate finalization.
+  Completed demo Results open the existing Question Bank ExplanationModal using composite
+  question IDs, section-local numbering and original authored demo feedback. Historical
+  illustrative completions without question records show an unavailable notice. Production
+  auth, authoritative server time, grading and cross-device persistence remain unconnected.
+
+- `/settings` ports the supplied Settings layout, profile title picker, avatar canvas
+  cropping, save/cancel, seven-day nickname lock and confirmation motion. It has no shared
+  header/sidebar/footer; the existing profile menu Settings action opens it on all app pages.
+  No authentication, registration email or billing account service exists. This route exposes
+  only the existing demo profile, clearly labelled, with versioned browser-only nickname,
+  title and cropped avatar preferences shared with the sidebar. Real account access control,
+  server persistence and cross-device synchronization remain pending. Subscription dates and
+  refund eligibility stay unavailable; cancellation and deletion never simulate success.
+  Legal links use the existing unavailable-preview behavior because no legal routes exist.
+
 - Public `/subscription` page renders inside `PublicSiteShell` (no sidebar) with the Free/Pro
   cards shared with the pop-up through `renderSubscriptionPlans`, plus a "Not sure yet?" demo-call
   block. The shell's header Subscribe and footer Subscription link to it; the sidebar pop-up is
@@ -28,7 +57,7 @@ workflow guided density, data integrity, responsive behavior and visual review.
   Only three authored Critical Thinking practice examples exist: they repeat across demo
   slots (including Mathematics), explicitly disclosed in the interface. No real exam content
   or production assessment service is connected. The unpausable elapsed timer includes time
-  away; no expiry/auto-submission policy is invented. Finish Test confirms and evaluates demo keys
+  away; the configured total duration now automatically finalizes expired attempts. Finish Test confirms and evaluates demo keys
   into the existing Results page; official and section points remain unavailable because
   no scoring policy exists. Save & Exit resumes the same browser attempt in the active section; Retake retains
   completed history. Browser data is non-authoritative and is not synced between devices.

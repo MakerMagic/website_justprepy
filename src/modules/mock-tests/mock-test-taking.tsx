@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { AnimationItem } from "lottie-web";
 import { Icon } from "../questions/icon";
 import { PracticeContentView } from "../questions/practice-content";
@@ -22,12 +22,21 @@ import {
   elapsedSeconds,
   examSectionNames,
   examSections,
-  finishDemoAttempt,
+  attemptExpired,
+  attemptDeadline,
   type AttemptChange,
   type DemoMockAttempt,
   type ExamQuestion,
 } from "./mock-test-attempt.logic";
-import { readDemoAttempts, saveDemoAttempt } from "./mock-test-attempt.storage";
+import {
+  readDemoAttempts,
+  saveDemoAttempt,
+  finalizeDemoAttempt,
+} from "./mock-test-attempt.storage";
+import {
+  observeQuestionTime,
+  type QuestionTimingCursor,
+} from "./mock-test-timing.logic";
 import "../questions/question-bank.css";
 import "../questions/question-solver.css";
 import "../questions/practice-modals.css";
@@ -68,8 +77,10 @@ function buildFlagParticlesAnimationData(source: Record<string, unknown>) {
 export function FlagQuestionButton({
   flagged,
   onToggle,
+  disabled = false,
 }: {
   flagged: boolean;
+  disabled?: boolean;
   onToggle: () => boolean | void;
 }) {
   const surface = useRef<HTMLSpanElement>(null);
@@ -164,6 +175,7 @@ export function FlagQuestionButton({
     <button
       type="button"
       className="save-question icon-button mock-flag"
+      disabled={disabled}
       aria-label={label}
       aria-pressed={flagged}
       data-bursting={bursting ? "true" : undefined}
@@ -178,14 +190,7 @@ export function FlagQuestionButton({
     </button>
   );
 }
-function ExamTimer({ attempt }: { attempt: DemoMockAttempt }) {
-  const [now, setNow] = useState<number | null>(null);
-  useEffect(() => {
-    void Promise.resolve().then(() => setNow(Date.now()));
-    const timer = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
-  const seconds = elapsedSeconds(attempt, now ?? attempt.startedAt);
+function ExamTimer({ seconds }: { seconds: number | null }) {
   return (
     <div
       className="practice-timer"
@@ -209,7 +214,7 @@ function ExamTimer({ attempt }: { attempt: DemoMockAttempt }) {
         Timer<span className="timer-colon">:</span>
       </span>
       <span className="timer-value">
-        {now === null
+        {seconds === null
           ? "—"
           : `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`}
       </span>
@@ -318,10 +323,13 @@ export function MockTestTaking({
   const router = useRouter();
   const [attempt, setAttempt] = useState(initialAttempt);
   const latest = useRef(attempt);
+  const timingCursor = useRef<QuestionTimingCursor | null>(null);
   const [modal, setModal] = useState<
     "navigator" | "finish-section" | "finish" | "exit" | null
   >(null);
   const [error, setError] = useState("");
+  const [now, setNow] = useState<number | null>(null);
+  const [finalizing, setFinalizing] = useState(false);
   const submitting = useRef(false);
   const heading = useRef<HTMLHeadingElement>(null);
   const readingArea = useRef<HTMLDivElement>(null);
@@ -364,26 +372,114 @@ export function MockTestTaking({
       return false;
     }
   }
-  function change(action: AttemptChange) {
-    return commit(changeDemoAttempt(latest.current, questions, action));
+  const recordTime = useCallback(
+    (time: number) => {
+      try {
+        // A timing checkpoint must not overwrite a newer answer, navigation or completion from another view.
+        const saved = readDemoAttempts(test).find(
+          (row) => row.id === latest.current.id,
+        );
+        if (!saved) throw Error("Saved attempt unavailable");
+        const observed = observeQuestionTime(
+          saved,
+          timingCursor.current,
+          time,
+          document.visibilityState !== "hidden",
+          attemptDeadline(test, saved),
+        );
+        if (observed.attempt !== saved) saveDemoAttempt(observed.attempt);
+        latest.current = observed.attempt;
+        setAttempt(observed.attempt);
+        timingCursor.current = observed.cursor;
+        return true;
+      } catch {
+        setError(
+          "Could not save question timing. Your existing answers remain saved; please retry.",
+        );
+        return false;
+      }
+    },
+    [test],
+  );
+  function change(action: AttemptChange, time: number) {
+    if (submitting.current || latest.current.completedAt !== null) return false;
+    if (attemptExpired(test, latest.current, time)) {
+      void finish(time);
+      return false;
+    }
+    if (!recordTime(time)) return false;
+    const next = changeDemoAttempt(latest.current, questions, action);
+    if (!commit(next)) return false;
+    timingCursor.current = {
+      id: next.currentId,
+      at: time,
+      visible: document.visibilityState !== "hidden",
+    };
+    return true;
   }
-  function navigate(id: string) {
-    if (!change({ kind: "navigate", id })) return;
+  function navigate(id: string, time: number) {
+    if (!change({ kind: "navigate", id }, time)) return;
     setModal(null);
     focusQuestionTop();
   }
-  function finishSection() {
-    if (!change({ kind: "finish-section" })) return;
+  function finishSection(time: number) {
+    if (!change({ kind: "finish-section" }, time)) return;
     setModal(null);
     focusQuestionTop();
   }
-  function finish(now: number) {
-    if (submitting.current) return;
-    submitting.current = true;
-    const completed = finishDemoAttempt(latest.current, now);
-    if (commit(completed)) router.push(demoResultsHref(completed));
-    else submitting.current = false;
-  }
+  const finish = useCallback(
+    async (time: number) => {
+      if (submitting.current || !recordTime(time)) return;
+      submitting.current = true;
+      setFinalizing(true);
+      try {
+        const completed = await finalizeDemoAttempt(test, latest.current, time);
+        latest.current = completed;
+        setAttempt(completed);
+        setModal(null);
+        router.replace(demoResultsHref(completed));
+      } catch (reason) {
+        setError(
+          reason instanceof Error
+            ? reason.message
+            : "Could not submit this attempt. Please retry.",
+        );
+        submitting.current = false;
+        setFinalizing(false);
+      }
+    },
+    [test, router, recordTime],
+  );
+  useEffect(() => {
+    const tick = () => {
+      const time = Date.now();
+      setNow(time);
+      if (!submitting.current && latest.current.completedAt === null)
+        recordTime(time);
+      if (
+        latest.current.completedAt !== null ||
+        attemptExpired(test, latest.current, time)
+      )
+        void finish(time);
+    };
+    void Promise.resolve().then(tick);
+    const timer = window.setInterval(tick, 1000);
+    window.addEventListener("focus", tick);
+    window.addEventListener("storage", tick);
+    document.addEventListener("visibilitychange", tick);
+    window.addEventListener("pagehide", tick);
+    return () => {
+      window.clearInterval(timer);
+      window.removeEventListener("focus", tick);
+      window.removeEventListener("storage", tick);
+      document.removeEventListener("visibilitychange", tick);
+      window.removeEventListener("pagehide", tick);
+    };
+  }, [test, finish, recordTime]);
+  const locked =
+    finalizing ||
+    attempt.completedAt !== null ||
+    (now !== null && attemptExpired(test, attempt, now));
   return (
     <div className="question-bank-app mock-exam" data-ui>
       <a className="skip-link" href="#main-content">
@@ -409,13 +505,16 @@ export function MockTestTaking({
               {examSectionNames[activeSection]}
             </span>
           </div>
-          <ExamTimer attempt={attempt} />
+          <ExamTimer
+            seconds={now === null ? null : elapsedSeconds(attempt, now)}
+          />
           <div className="solver-tools">
             <FlagQuestionButton
+              disabled={locked}
               flagged={attempt.flags.includes(question.id)}
               onToggle={() => {
                 const next = !latest.current.flags.includes(question.id);
-                return change({ kind: "flag", id: question.id })
+                return change({ kind: "flag", id: question.id }, Date.now())
                   ? next
                   : latest.current.flags.includes(question.id);
               }}
@@ -454,7 +553,7 @@ export function MockTestTaking({
             <h1 id="question-prompt" ref={heading} tabIndex={-1}>
               <PracticeContentView content={question.prompt} />
             </h1>
-            <fieldset className="answer-options">
+            <fieldset className="answer-options" disabled={locked}>
               <legend className="sr-only">
                 Choose one answer. Select it again to clear your answer.
               </legend>
@@ -468,14 +567,17 @@ export function MockTestTaking({
                   data-checked={false}
                   aria-pressed={attempt.answers[question.id] === option.id}
                   onClick={() =>
-                    change({
-                      kind: "answer",
-                      id: question.id,
-                      option:
-                        attempt.answers[question.id] === option.id
-                          ? null
-                          : option.id,
-                    })
+                    change(
+                      {
+                        kind: "answer",
+                        id: question.id,
+                        option:
+                          attempt.answers[question.id] === option.id
+                            ? null
+                            : option.id,
+                      },
+                      Date.now(),
+                    )
                   }
                 >
                   <span className="answer-letter" aria-hidden="true">
@@ -496,8 +598,10 @@ export function MockTestTaking({
               type="button"
               className="question-arrow"
               aria-label="Previous question"
-              disabled={sectionIndex === 0}
-              onClick={() => navigate(sectionQuestions[sectionIndex - 1].id)}
+              disabled={locked || sectionIndex === 0}
+              onClick={() =>
+                navigate(sectionQuestions[sectionIndex - 1].id, Date.now())
+              }
             >
               <Icon name="arrow" size={18} />
             </button>
@@ -518,8 +622,10 @@ export function MockTestTaking({
               type="button"
               className="question-arrow"
               aria-label="Next question"
-              disabled={isLastInSection}
-              onClick={() => navigate(sectionQuestions[sectionIndex + 1].id)}
+              disabled={locked || isLastInSection}
+              onClick={() =>
+                navigate(sectionQuestions[sectionIndex + 1].id, Date.now())
+              }
             >
               <Icon name="arrow" size={18} />
             </button>
@@ -528,6 +634,7 @@ export function MockTestTaking({
             <button
               type="button"
               className="button mock-finish"
+              disabled={locked}
               onClick={() =>
                 setModal(isFinalSection ? "finish" : "finish-section")
               }
@@ -541,7 +648,7 @@ export function MockTestTaking({
           onClose={() => setModal(null)}
           questions={sectionQuestions}
           attempt={attempt}
-          onNavigate={navigate}
+          onNavigate={(id) => navigate(id, Date.now())}
         />
         <PracticeDialog
           open={
@@ -582,9 +689,14 @@ export function MockTestTaking({
               type="button"
               className="button mock-confirm-danger"
               onClick={() => {
-                if (modal === "finish-section") finishSection();
+                if (attemptExpired(test, latest.current, Date.now())) {
+                  void finish(Date.now());
+                  return;
+                }
+                if (modal === "finish-section") finishSection(Date.now());
                 else if (modal === "finish") finish(Date.now());
-                else if (commit(latest.current)) router.push("/mock-tests");
+                else if (recordTime(Date.now()) && commit(latest.current))
+                  router.push("/mock-tests");
               }}
             >
               {modal === "finish-section"
@@ -615,7 +727,7 @@ export function MockTestEntry({
   useEffect(() => {
     if (started.current) return;
     started.current = true;
-    void Promise.resolve().then(() => {
+    void Promise.resolve().then(async () => {
       try {
         const existing = readDemoAttempts(test);
         let next = attemptId
@@ -638,6 +750,11 @@ export function MockTestEntry({
             Date.now(),
           );
           saveDemoAttempt(next);
+        }
+        if (attemptExpired(test, next, Date.now())) {
+          const completed = await finalizeDemoAttempt(test, next, Date.now());
+          router.replace(demoResultsHref(completed));
+          return;
         }
         setAttempt(next);
         router.replace(demoTakeHref(test.id, next.id));

@@ -14,7 +14,10 @@ import { MockTestCard, MockTests } from "./mock-tests";
 import type { MockFilters, MockTest } from "./mock-tests.types";
 
 const route = vi.hoisted(() => ({ pathname: "/mock-tests" }));
-vi.mock("next/navigation", () => ({ usePathname: () => route.pathname }));
+vi.mock("next/navigation", () => ({
+  usePathname: () => route.pathname,
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 describe("mock-test catalogue", () => {
   it("has consistent, replaceable illustrative records", () => {

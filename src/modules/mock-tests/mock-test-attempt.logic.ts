@@ -15,6 +15,72 @@ export interface ExamQuestion extends PracticeQuestion {
   examSection: ExamSection;
   localNumber: number;
 }
+/** Single local demo identity; never an authenticated user ID. */
+export const DEMO_ATTEMPT_OWNER = "local-demo-profile";
+export interface AttemptQuestionMetadata {
+  id: string;
+  sourceId: string;
+  sourceRevision: string;
+  section: ExamSection;
+  subject: "ct" | "ps" | "m";
+  topic: string | null;
+}
+export interface AttemptAnalyticsCapture {
+  version: 1;
+  ownerId: string;
+  configuration: MockTest["type"];
+  test?: Pick<
+    MockTest,
+    | "title"
+    | "type"
+    | "subjects"
+    | "durationMinutes"
+    | "questionCount"
+    | "maxScore"
+  >;
+  questions: AttemptQuestionMetadata[];
+  questionTimeMs: Record<string, number>;
+  observedThrough?: number;
+  /** Frozen evaluation from the existing demo assessment, not a second scoring implementation. */
+  result?: NonNullable<MockTest["result"]>;
+}
+function sourceRevision(question: ExamQuestion) {
+  const value = JSON.stringify([
+    question.prompt,
+    question.passage,
+    question.options,
+    demoPracticeFeedback[question.sourceId],
+  ]);
+  let hash = 2166136261;
+  for (const character of value)
+    hash = Math.imul(hash ^ character.charCodeAt(0), 16777619);
+  return (hash >>> 0).toString(16);
+}
+export function attemptQuestionMetadata(
+  question: ExamQuestion,
+): AttemptQuestionMetadata {
+  const subject =
+    question.examSection === "math"
+      ? "m"
+      : question.section === "Problem Solving"
+        ? "ps"
+        : "ct";
+  const sourceMatches =
+    question.section ===
+    (subject === "m"
+      ? "Mathematics"
+      : subject === "ps"
+        ? "Problem Solving"
+        : "Critical Thinking");
+  return {
+    id: question.id,
+    sourceId: question.sourceId,
+    sourceRevision: sourceRevision(question),
+    section: question.examSection,
+    subject,
+    topic: sourceMatches ? question.topic : null,
+  };
+}
 export interface DemoMockAttempt {
   version: 1;
   id: string;
@@ -26,6 +92,7 @@ export interface DemoMockAttempt {
   sectionPositions: Partial<Record<ExamSection, string>>;
   answers: Record<string, string>;
   flags: string[];
+  analytics?: AttemptAnalyticsCapture;
 }
 export function examSections(test: MockTest): ExamSection[] {
   return test.type === "full" ? ["math", "crit-ps"] : [test.type];
@@ -85,6 +152,21 @@ export function createDemoAttempt(
     sectionPositions: { [first.examSection]: first.id },
     answers: {},
     flags: [],
+    analytics: {
+      version: 1,
+      ownerId: DEMO_ATTEMPT_OWNER,
+      configuration: test.type,
+      test: {
+        title: test.title,
+        type: test.type,
+        subjects: { ...test.subjects },
+        durationMinutes: test.durationMinutes,
+        questionCount: test.questionCount,
+        maxScore: test.maxScore,
+      },
+      questions: demoExamQuestions(test).map(attemptQuestionMetadata),
+      questionTimeMs: {},
+    },
   };
 }
 export type AttemptChange =
@@ -146,6 +228,24 @@ export function changeDemoAttempt(
   else answers[question.id] = change.option;
   return { ...attempt, answers };
 }
+export function attemptDeadline(
+  test: Pick<MockTest, "durationMinutes">,
+  attempt: Pick<DemoMockAttempt, "startedAt"> &
+    Partial<Pick<DemoMockAttempt, "analytics">>,
+) {
+  return (
+    attempt.startedAt +
+    (attempt.analytics?.test?.durationMinutes ?? test.durationMinutes) * 60_000
+  );
+}
+export function attemptExpired(
+  test: Pick<MockTest, "durationMinutes">,
+  attempt: Pick<DemoMockAttempt, "startedAt" | "completedAt"> &
+    Partial<Pick<DemoMockAttempt, "analytics">>,
+  now: number,
+) {
+  return attempt.completedAt === null && now >= attemptDeadline(test, attempt);
+}
 export function elapsedSeconds(attempt: DemoMockAttempt, now: number) {
   return Math.max(
     0,
@@ -166,6 +266,12 @@ export function demoAttemptResult(
   attempt: DemoMockAttempt,
 ): MockTest | null {
   if (attempt.completedAt === null || attempt.testId !== test.id) return null;
+  if (attempt.analytics?.result)
+    return {
+      ...test,
+      ...attempt.analytics.test,
+      result: attempt.analytics.result,
+    };
   return {
     ...test,
     result: {
@@ -206,6 +312,85 @@ export function validateDemoAttempt(
     completedSections.length < sections.length &&
     completedSections.every((section, index) => sections[index] === section);
   if (!validCompletedSections) return false;
+  if (a.analytics !== undefined) {
+    const capture = a.analytics;
+    if (
+      !capture ||
+      capture.version !== 1 ||
+      typeof capture.ownerId !== "string" ||
+      !capture.ownerId ||
+      capture.configuration !== test.type ||
+      (capture.test !== undefined &&
+        (!capture.test ||
+          capture.test.type !== capture.configuration ||
+          typeof capture.test.title !== "string" ||
+          !Number.isFinite(capture.test.maxScore) ||
+          capture.test.maxScore <= 0 ||
+          !Number.isFinite(capture.test.durationMinutes) ||
+          capture.test.durationMinutes <= 0 ||
+          capture.test.questionCount !== questions.length ||
+          !capture.test.subjects ||
+          ![
+            capture.test.subjects.criticalThinking,
+            capture.test.subjects.problemSolving,
+            capture.test.subjects.mathematics,
+          ].every(
+            (v) => v === null || ["easy", "medium", "hard"].includes(v),
+          ))) ||
+      !Array.isArray(capture.questions) ||
+      capture.questions.length !== questions.length ||
+      new Set(capture.questions.map((q) => q.id)).size !== questions.length ||
+      !capture.questions.every(
+        (q) =>
+          q &&
+          byId.has(q.id) &&
+          q.sourceId === byId.get(q.id)?.sourceId &&
+          q.section === byId.get(q.id)?.examSection &&
+          ["ct", "ps", "m"].includes(q.subject) &&
+          typeof q.sourceRevision === "string" &&
+          (q.topic === null || typeof q.topic === "string"),
+      ) ||
+      (capture.observedThrough !== undefined &&
+        (!Number.isFinite(capture.observedThrough) ||
+          capture.observedThrough < a.startedAt)) ||
+      !capture.questionTimeMs ||
+      typeof capture.questionTimeMs !== "object" ||
+      Array.isArray(capture.questionTimeMs) ||
+      !Object.entries(capture.questionTimeMs).every(
+        ([id, ms]) =>
+          byId.has(id) &&
+          Number.isFinite(ms) &&
+          ms >= 0 &&
+          ms <= test.durationMinutes * 60000,
+      )
+    )
+      return false;
+    if (capture.result !== undefined) {
+      const result = capture.result,
+        rows = result?.details?.questions;
+      if (
+        a.completedAt === null ||
+        !result ||
+        result.completedAt !== new Date(a.completedAt).toISOString() ||
+        result.details?.sessionId !== a.id ||
+        !(
+          result.score === null ||
+          (Number.isFinite(result.score) &&
+            result.score >= 0 &&
+            result.score <= test.maxScore)
+        ) ||
+        !Array.isArray(rows) ||
+        rows.length !== questions.length ||
+        new Set(rows.map((q) => q.id)).size !== questions.length ||
+        !rows.every(
+          (q) =>
+            byId.has(q.id) &&
+            ["correct", "incorrect", "omitted"].includes(q.status),
+        )
+      )
+        return false;
+    }
+  }
   const activeSection = activeExamSection({ completedSections }, sections);
   return (
     a.version === 1 &&

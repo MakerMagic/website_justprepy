@@ -23,6 +23,7 @@ export function ExplanationModal({
   onNavigate,
   onSave,
   bookmarkPending = false,
+  attemptAnswer,
 }: {
   open: boolean;
   onClose: () => void;
@@ -36,6 +37,8 @@ export function ExplanationModal({
   onNavigate: (index: number) => void;
   onSave: () => boolean | void | Promise<boolean | void>;
   bookmarkPending?: boolean;
+  /** Completed-attempt context only; never changes the Show Answer/reveal policy. */
+  attemptAnswer?: string | null;
 }) {
   return (
     <PracticeDialog
@@ -71,6 +74,9 @@ export function ExplanationModal({
             Topic: {question.topic}
             {question.source && <> · {question.source}</>}
           </p>
+          {attemptAnswer !== undefined && (
+            <p>Your answer: {attemptAnswer ?? "Omitted"}</p>
+          )}
         </div>
         <div className="review-controls">
           <label className="practice-switch">

@@ -34,7 +34,6 @@ export function VocabularyPractice({
 }) {
   const [session, setSession] = useState(() => startPractice(entries));
   const currentSession = useRef(session);
-  const [pulses, setPulses] = useState<Readonly<Record<string, number>>>({});
   const mainRef = useRef<HTMLDivElement>(null);
   const slotRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -137,24 +136,12 @@ export function VocabularyPractice({
     if (!busy.current) commit({ type: "finish" });
   }
   function toggleSave(entry: PracticeEntry) {
-    if (!savedKeys.has(entry.key))
-      setPulses((previous) => ({
-        ...previous,
-        [entry.key]: (previous[entry.key] ?? 0) + 1,
-      }));
     onSave(entry, !savedKeys.has(entry.key));
   }
   function saveAll() {
-    const missed = missedEntries(currentSession.current);
-    setPulses((previous) => {
-      const next = { ...previous };
-      missed.forEach((entry) => {
-        if (!savedKeys.has(entry.key))
-          next[entry.key] = (next[entry.key] ?? 0) + 1;
-      });
-      return next;
-    });
-    missed.forEach((entry) => onSave(entry, true));
+    missedEntries(currentSession.current).forEach((entry) =>
+      onSave(entry, true),
+    );
   }
   useEffect(() => {
     function keydown(event: KeyboardEvent) {
@@ -198,7 +185,6 @@ export function VocabularyPractice({
             total={session.queue.length}
             missed={missedEntries(session)}
             savedKeys={savedKeys}
-            pulses={pulses}
             onToggleSave={toggleSave}
             onSaveAll={saveAll}
             onRedo={() => commit({ type: "redo" })}
@@ -289,7 +275,6 @@ export function VocabularyPractice({
                       <VocabularyBookmark
                         entry={current}
                         saved={savedKeys.has(current.key)}
-                        pulse={pulses[current.key]}
                         onToggle={toggleSave}
                       />
                       <div className="vpr-body">

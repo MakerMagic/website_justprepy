@@ -33,7 +33,7 @@ function subscribeMobile(callback: () => void) {
   return () => media.removeEventListener("change", callback);
 }
 const navigation = [
-  { label: "Question Bank", icon: "book", href: "/" },
+  { label: "Question Bank", icon: "book", href: "/app" },
   { label: "Mock Tests", icon: "test", href: "/mock-tests" },
   { label: "Vocabulary", icon: "vocabulary", href: "/vocabulary" },
   { label: "Leaderboard", icon: "chart", href: "/leaderboard", group: true },
@@ -66,7 +66,9 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
     pathname === "/vocabulary" ||
     pathname === "/analytics"
       ? pathname
-      : "/";
+      : pathname === "/"
+        ? "/"
+        : "/app";
   const fillId = "sidebar-fill-" + useId().replaceAll(":", "");
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
   const highlightedItem = hoveredItem ?? activeHref;
@@ -218,7 +220,7 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
           </defs>
         </svg>
         <Link
-          href="/"
+          href="/app"
           className="sidebar-logo"
           aria-label="JustPrepy question bank"
         >
@@ -417,7 +419,7 @@ export function Sidebar({ profile }: { profile: QuestionBankData["profile"] }) {
         aria-label="Mobile navigation"
         inert={mobile && touchOpen}
       >
-        <Link href="/" aria-current={activeHref === "/" ? "page" : undefined}>
+        <Link href="/app" aria-current={activeHref === "/app" ? "page" : undefined}>
           <Icon name="book" />
           <span>Question Bank</span>
         </Link>

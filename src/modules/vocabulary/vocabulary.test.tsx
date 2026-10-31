@@ -12,7 +12,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
 }));
 describe("Vocabulary screenshot integration", () => {
-  it("recreates exactly three presets with the shared shell and no Filters section", () => {
+  it("renders the five configured presets with the shared shell and no Filters section", () => {
     const html = renderToStaticMarkup(
       <Vocabulary
         data={demoVocabulary}
@@ -27,35 +27,51 @@ describe("Vocabulary screenshot integration", () => {
       "Retention Rate",
       "84%",
       "Presets",
-      "3 Available",
+      "5 Available",
       "My Words",
-      "High-Frequency NUET Core",
-      "Advanced Tone &amp; Fallacies",
-      "42 Words available",
-      "320 Words available",
-      "185 Words available",
+      "Essential Words",
+      "Nature Words",
+      "Maths Basics",
+      "Maths Formulas",
+      "Essential maths formulas for the NUET.",
+      "Words saved by you.",
+      "Core vocabulary needed to understand and work with different types of texts.",
+      "Essential vocabulary related to natural phenomena and the natural world.",
+      "Essential mathematical vocabulary for understanding and solving maths problems.",
+      "13 Words available",
+      "5 Words available",
+      "0 Words available",
       "NUET Preparation",
       "Join Our Telegram Channel",
     ])
       expect(html).toContain(text);
-    expect(html.match(/class="vocabulary-preset"/g)).toHaveLength(3);
+    expect(html.match(/class="vocabulary-preset"/g)).toHaveLength(5);
     expect(html.match(/class="stat-decoration"/g)).toHaveLength(2);
     expect(html).toContain('data-vocabulary-icon="book"');
     expect(html).toContain('data-vocabulary-icon="growth"');
     expect(html).toContain('data-vocabulary-icon="presets"');
-    expect(html.match(/data-vocabulary-icon="tag"/g)).toHaveLength(3);
-    expect(html.match(/type="checkbox"/g)).toHaveLength(3);
+    expect(html.match(/data-vocabulary-icon="tag"/g)).toHaveLength(5);
+    expect(html.match(/type="checkbox"/g)).toHaveLength(5);
     expect(html).not.toContain('type="radio"');
     expect(html.match(/checked=""/g)).toHaveLength(1);
     expect(html).toMatch(
       /<input(?=[^>]*value="my-words")(?=[^>]*checked="")[^>]*>/,
     );
     expect(html).toContain('class="sidebar"');
-    expect(html.match(/aria-label="Inspect Words in /g)).toHaveLength(3);
+    expect(html.match(/aria-label="Inspect Words in /g)).toHaveLength(5);
     expect(html).not.toContain("Word lists are not connected");
     expect(html).not.toContain("Vocabulary practice is not available");
     expect(html).toMatch(/class="button vocabulary-practice"/);
     expect(html).not.toContain("Unit 3 words");
+    expect(demoVocabulary.presets.map((preset) => preset.id)).toEqual([
+      "my-words",
+      "nuet-core",
+      "nature",
+      "math_basics",
+      "math_formulas",
+    ]);
+    expect(html).not.toContain("tone-fallacies");
+    expect(html.match(/0 Words available/g)).toHaveLength(3);
     expect(html).not.toContain("Filter Words");
     expect(html).not.toContain('class="filters-panel"');
     expect(html).not.toMatch(/>Active<|>Standard<|>Hard</);
@@ -129,7 +145,7 @@ describe("Vocabulary screenshot integration", () => {
   });
   it("adds Vocabulary under Practice while retaining existing active destinations", () => {
     for (const pathname of [
-      "/",
+      "/app",
       "/practice",
       "/mock-tests",
       "/leaderboard",
@@ -143,7 +159,7 @@ describe("Vocabulary screenshot integration", () => {
         html.match(/<a[^>]*class="nav-item is-active"[^>]*>/g) ?? [];
       expect(active).toHaveLength(1);
       expect(active[0]).toContain(
-        'href="' + (pathname === "/practice" ? "/" : pathname) + '"',
+        'href="' + (pathname === "/practice" || pathname === "/app" ? "/app" : pathname) + '"',
       );
       expect(html).toContain('href="/vocabulary"');
       expect(html.indexOf('title="Mock Tests"')).toBeLessThan(

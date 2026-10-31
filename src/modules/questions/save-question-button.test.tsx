@@ -294,4 +294,32 @@ describe("shared animated question bookmark", () => {
     expect(lottie.loadAnimation).not.toHaveBeenCalled();
     expect(h.render({ saved: true }).props.children[1]).toBeTruthy();
   });
+  it("uses the same player and saved state for word actions with contextual accessible labels", async () => {
+    const labels = {
+      save: "Save lucid to My Words",
+      remove: "Remove lucid from My Words",
+      saveError: "Could not save word.",
+      removeError: "Could not remove saved word.",
+    };
+    const action = vi.fn(() => true);
+    const h = mount({ saved: false, labels, onToggle: action });
+    await loaded();
+    expect(h.render().props).toMatchObject({ "aria-label": labels.save });
+    await h.click();
+    expect(action).toHaveBeenCalledTimes(1);
+    expect(animations[0].goToAndPlay).toHaveBeenCalledWith(0, true);
+    expect(h.render({ saved: true }).props).toMatchObject({
+      "aria-label": labels.remove,
+      "aria-pressed": true,
+    });
+  });
+  it("disables unavailable-content bookmarks without claiming an operation is pending", async () => {
+    const onToggle = vi.fn();
+    const h = mount({ saved: false, disabled: true, onToggle });
+    await loaded();
+    await h.click();
+    expect(h.render().props.disabled).toBe(true);
+    expect(h.render().props["aria-busy"]).toBe(false);
+    expect(onToggle).not.toHaveBeenCalled();
+  });
 });

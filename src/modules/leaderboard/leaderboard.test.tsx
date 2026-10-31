@@ -398,8 +398,8 @@ describe("illustrative leaderboard", () => {
     const practiceNowHref = links.find(([, , content]) =>
       content.includes("Practice Now"),
     )?.[1];
-    expect(questionBankHref).toBe("/");
-    expect(practiceNowHref).toBe(questionBankHref);
+    expect(questionBankHref).toBe("/app");
+    expect(practiceNowHref).toBe("/");
     expect(main).not.toContain('href="/practice"');
     expect(main).not.toContain("filter");
     expect(html).toContain("NUET Preparation");
@@ -410,14 +410,15 @@ describe("illustrative leaderboard", () => {
     expect(html).toContain("Your ranking is not available");
     expect(html).not.toContain('data-current-user="true"');
   });
-  it.each(["/", "/practice", "/mock-tests", "/leaderboard"])(
+  it.each(["/app", "/practice", "/mock-tests", "/leaderboard"])(
     "selects only the correct sidebar destination at %s",
     (pathname) => {
       route.pathname = pathname;
       const html = renderToStaticMarkup(
         <Sidebar profile={demoQuestionBank.profile} />,
       );
-      const active = pathname === "/practice" ? "/" : pathname;
+      const active =
+        pathname === "/practice" || pathname === "/app" ? "/app" : pathname;
       const links =
         html.match(/<a[^>]*class="nav-item is-active"[^>]*>/g) ?? [];
       expect(links).toHaveLength(1);

@@ -3,15 +3,27 @@
 import { useEffect, useRef, useState } from "react";
 import type { AnimationItem } from "lottie-web";
 import { Icon } from "./icon";
+import "./save-question-button.css";
+
+const questionLabels = {
+  save: "Save question",
+  remove: "Remove saved question",
+  saveError: "Could not save question.",
+  removeError: "Could not remove saved question.",
+};
 
 /** One bookmark control for the solving toolbar and the question review. */
 export function SaveQuestionButton({
   saved,
   pending = false,
+  disabled = false,
   onToggle,
+  labels = questionLabels,
 }: {
   saved: boolean;
+  labels?: typeof questionLabels;
   pending?: boolean;
+  disabled?: boolean;
   onToggle: () => boolean | void | Promise<boolean | void>;
 }) {
   const surface = useRef<HTMLSpanElement>(null);
@@ -25,7 +37,7 @@ export function SaveQuestionButton({
   const [working, setWorking] = useState(false);
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
-  const label = saved ? "Remove saved question" : "Save question";
+  const label = saved ? labels.remove : labels.save;
 
   useEffect(() => {
     currentSaved.current = saved;
@@ -100,7 +112,7 @@ export function SaveQuestionButton({
   }, []);
 
   async function toggle() {
-    if (busy.current || pending) return;
+    if (busy.current || pending || disabled) return;
     busy.current = true;
     setWorking(true);
     setError("");
@@ -121,11 +133,7 @@ export function SaveQuestionButton({
       }
     } catch {
       if (mounted.current)
-        setError(
-          saved
-            ? "Could not remove saved question."
-            : "Could not save question.",
-        );
+        setError(saved ? labels.removeError : labels.saveError);
     } finally {
       busy.current = false;
       if (mounted.current) setWorking(false);
@@ -138,7 +146,7 @@ export function SaveQuestionButton({
       aria-label={label}
       aria-pressed={saved}
       aria-busy={pending || working}
-      disabled={pending || working}
+      disabled={disabled || pending || working}
       title={label}
       onClick={toggle}
     >

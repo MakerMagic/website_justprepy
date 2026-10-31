@@ -112,6 +112,15 @@
 .vpr-slot {
   height: clamp(300px, 48vh, 400px);
 }
+@media (min-width: 641px) {
+  .vpr-wrap:has(.vpr-stage) {
+    padding-bottom: 28px;
+  }
+  .vpr-slot {
+    /* Reserve space for the header, progress, actions and bottom padding. */
+    height: clamp(298px, calc(100dvh - 298px), 558px);
+  }
+}
 .vpr-card {
   position: relative;
   width: 100%;
@@ -187,54 +196,13 @@
   max-width: 52ch;
 }
 .vpr-mark {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  display: grid;
-  place-items: center;
-  transition:
-    background 0.18s,
-    color 0.18s,
-    transform 0.12s;
-}
-.vpr-mark:hover {
-  background: var(--sunken);
-  color: var(--ink);
-}
-.vpr-mark:active {
-  transform: scale(0.92);
-}
-.vpr-mark svg {
-  fill: none;
-  transition: fill 0.2s;
-}
-.vpr-mark.vpr-on {
-  color: var(--accent-text);
-}
-.vpr-mark.vpr-on svg {
-  fill: currentColor;
-}
-.vpr-mark.vpr-pop svg {
-  animation: vpr-pop 0.32s cubic-bezier(0.3, 1.6, 0.5, 1);
+  display: inline-flex;
+  flex-shrink: 0;
 }
 .vpr-back .vpr-mark {
   position: absolute;
   top: 20px;
   right: 20px;
-}
-@keyframes vpr-pop {
-  0% {
-    transform: scale(0.7);
-  }
-  60% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 .vpr-under {
   margin: 20px 68px 0;

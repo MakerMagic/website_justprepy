@@ -216,14 +216,14 @@ describe("mock-test catalogue", () => {
     expect(html).toContain("Illustrative tests and results");
     expect(html).toContain("NUET Preparation");
   });
-  it.each(["/", "/practice", "/mock-tests"])(
+  it.each(["/app", "/practice", "/mock-tests"])(
     "keeps navigation consistent at %s",
     (pathname) => {
       route.pathname = pathname;
       const html = renderToStaticMarkup(
         <Sidebar profile={demoQuestionBank.profile} />,
       );
-      const active = pathname === "/mock-tests" ? "/mock-tests" : "/";
+      const active = pathname === "/mock-tests" ? "/mock-tests" : "/app";
       const desktop =
         html.match(/<a[^>]*class="nav-item is-active"[^>]*>/g) ?? [];
       expect(desktop).toHaveLength(1);

@@ -8,7 +8,7 @@ type Harness = {
   cursor: number;
 };
 const runtime = vi.hoisted(() => ({ active: null as Harness | null }));
-const route = vi.hoisted(() => ({ pathname: "/" }));
+const route = vi.hoisted(() => ({ pathname: "/app" }));
 vi.mock("next/navigation", () => ({
   usePathname: () => route.pathname,
   useRouter: () => ({ push: vi.fn() }),
@@ -99,7 +99,7 @@ function mount() {
   };
 }
 beforeEach(() => {
-  route.pathname = "/";
+  route.pathname = "/app";
 });
 afterEach(() => {
   runtime.active = null;
@@ -107,7 +107,7 @@ afterEach(() => {
 });
 
 describe("exclusive sidebar visual highlight", () => {
-  it.each(["/", "/mock-tests", "/vocabulary", "/leaderboard", "/analytics"])(
+  it.each(["/app", "/mock-tests", "/vocabulary", "/leaderboard", "/analytics"])(
     "initializes only the actual route %s",
     (pathname) => {
       route.pathname = pathname;
@@ -132,10 +132,10 @@ describe("exclusive sidebar visual highlight", () => {
     ]) {
       h.item(href).props.onPointerEnter?.({ pointerType: "mouse" });
       expect(h.highlights()).toEqual([href]);
-      expect(h.active()).toEqual(["/"]);
-      expect(route.pathname).toBe("/");
+      expect(h.active()).toEqual(["/app"]);
+      expect(route.pathname).toBe("/app");
       h.item(href).props.onPointerLeave?.();
-      expect(h.highlights()).toEqual(["/"]);
+      expect(h.highlights()).toEqual(["/app"]);
     }
   });
   it("does not let a late leave event clear the newer hover during rapid movement", () => {
@@ -145,7 +145,7 @@ describe("exclusive sidebar visual highlight", () => {
     h.item("/mock-tests").props.onPointerLeave?.();
     expect(h.highlights()).toEqual(["/vocabulary"]);
     h.item("/vocabulary").props.onPointerCancel?.();
-    expect(h.highlights()).toEqual(["/"]);
+    expect(h.highlights()).toEqual(["/app"]);
   });
   it("restores the new active route after navigation instead of the old route", () => {
     const h = mount();
@@ -171,13 +171,13 @@ describe("exclusive sidebar visual highlight", () => {
       currentTarget: { contains: () => false },
     });
     expect(h.aside().props["data-expanded"]).toBe(false);
-    expect(h.highlights()).toEqual(["/"]);
+    expect(h.highlights()).toEqual(["/app"]);
   });
   it("does not latch a hover on touch or change the route highlight on keyboard focus", () => {
     const h = mount();
     h.item("/mock-tests").props.onPointerEnter?.({ pointerType: "touch" });
     h.aside().props.onFocusCapture?.();
-    expect(h.highlights()).toEqual(["/"]);
-    expect(h.active()).toEqual(["/"]);
+    expect(h.highlights()).toEqual(["/app"]);
+    expect(h.active()).toEqual(["/app"]);
   });
 });

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { FormEvent, MouseEvent } from "react";
+import { signInWithGoogle } from "@/modules/identity/auth.service";
 import { AuthIcon, GoogleMark } from "./auth-icon";
 import {
   validateAuthForm,
@@ -103,11 +104,47 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const signup = mode === "signup";
   const [errors, setErrors] = useState<AuthErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [oauthError, setOauthError] = useState<string | null>(null);
   const [notice, setNotice] = useState<keyof typeof notices | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      if (err) {
+        if (err === "oauth_cancelled") {
+          setOauthError("Google sign-in was cancelled.");
+        } else if (err === "auth_exchange_failed") {
+          setOauthError("Unable to complete Google sign-in. Please try again.");
+        } else if (err === "missing_code") {
+          setOauthError("Authentication code was missing. Please try again.");
+        } else {
+          setOauthError("Authentication failed. Please try again.");
+        }
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (notice && !dialog.current?.open) dialog.current?.showModal();
   }, [notice]);
+
+  async function handleGoogleSignIn() {
+    setOauthError(null);
+    setGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+    } catch (err) {
+      setGoogleLoading(false);
+      setOauthError(
+        err instanceof Error
+          ? err.message
+          : "Could not initiate Google sign-in. Please check your configuration.",
+      );
+    }
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -149,11 +186,25 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       <button
         className="auth-google"
         type="button"
-        onClick={() => setNotice("google")}
+        disabled={googleLoading}
+        onClick={handleGoogleSignIn}
       >
         <GoogleMark />
-        <span>Sign {signup ? "up" : "in"} with Google</span>
+        <span>
+          {googleLoading
+            ? "Connecting to Google..."
+            : `Sign ${signup ? "up" : "in"} with Google`}
+        </span>
       </button>
+      {oauthError && (
+        <p
+          className="auth-field-error"
+          role="alert"
+          style={{ marginTop: "8px", textAlign: "center" }}
+        >
+          {oauthError}
+        </p>
+      )}
       <div className="auth-divider">
         <span>Or continue with {signup ? "email" : "email or username"}</span>
       </div>

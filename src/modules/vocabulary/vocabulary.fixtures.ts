@@ -10,7 +10,7 @@ export type VocabularyData = {
   retentionRate: number;
   presets: readonly VocabularyPreset[];
 };
-// Screenshot-derived illustrative view data; no vocabulary records or study engine.
+// Preset presentation only. Available counts are derived from the current word state.
 export const demoVocabulary: VocabularyData = {
   wordsLearned: 148,
   retentionRate: 84,
@@ -18,24 +18,36 @@ export const demoVocabulary: VocabularyData = {
     {
       id: "my-words",
       title: "My Words",
-      description:
-        "Personal collection of vocabulary items saved during Mock Tests and Question Bank practice.",
-      wordCount: 42,
+      description: "Words saved by you.",
+      wordCount: 13,
       custom: true,
     },
     {
       id: "nuet-core",
-      title: "High-Frequency NUET Core",
+      title: "Essential Words",
       description:
-        "Essential academic words and logical connectors most commonly tested in TSA & NUET exams.",
-      wordCount: 320,
+        "Core vocabulary needed to understand and work with different types of texts.",
+      wordCount: 5,
     },
     {
-      id: "tone-fallacies",
-      title: "Advanced Tone & Fallacies",
+      id: "nature",
+      title: "Nature Words",
       description:
-        "Nuanced evaluative words, fallacies terminology, and subtle authorial tone descriptors.",
-      wordCount: 185,
+        "Essential vocabulary related to natural phenomena and the natural world.",
+      wordCount: 0,
+    },
+    {
+      id: "math_basics",
+      title: "Maths Basics",
+      description:
+        "Essential mathematical vocabulary for understanding and solving maths problems.",
+      wordCount: 0,
+    },
+    {
+      id: "math_formulas",
+      title: "Maths Formulas",
+      description: "Essential maths formulas for the NUET.",
+      wordCount: 0,
     },
   ],
 };

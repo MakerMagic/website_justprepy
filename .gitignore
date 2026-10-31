@@ -47,6 +47,7 @@ next-env.d.ts
 
 # Additional local environment files
 .env*
+!.env.example
 
 # pnpm debug logs
 .pnpm-debug.log*

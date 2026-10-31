@@ -39,6 +39,7 @@ vi.mock("react", async (original) => {
       ];
     },
     useRef: (current: unknown) => {
+      if (!runtime.active) return actual.useRef(current);
       const h = runtime.active!;
       return (h.slots[h.cursor++] ??= { current });
     },
@@ -49,6 +50,7 @@ vi.mock("react-dom", async (original) => ({
   ...(await original<typeof import("react-dom")>()),
   flushSync: (fn: () => unknown) => fn(),
 }));
+import { SaveQuestionButton } from "../questions/save-question-button";
 import { VocabularyPractice } from "./vocabulary-practice";
 import {
   VocabularyPracticeSummary,
@@ -266,21 +268,25 @@ describe("reference practice interactions and motion", () => {
       .render()
       .find((n) => n.type === VocabularyBookmark)! as typeof bookmark;
     expect(bookmark.props.saved).toBe(true);
-    expect(bookmark.props.pulse).toBe(1);
+    const control = elements(VocabularyBookmark(bookmark.props)).find(
+      (node) => node.type === SaveQuestionButton,
+    )! as ReactElement<Parameters<typeof SaveQuestionButton>[0]>;
+    expect(control.props.saved).toBe(true);
+    expect(control.props.labels?.remove).toContain("My Words");
     expect(app.button("Show meaning").props.inert).toBe(true);
     bookmark.props.onToggle(bookmark.props.entry);
     expect(isWordSaved(app.words(), app.entries[0].key)).toBe(false);
   });
-  it("retains reference sizes/motion and keeps root CSS away from the landing Practice button", () => {
+  it("fits the taller desktop card to the viewport while retaining compact sizing and motion", () => {
     const css = readFileSync(
       new URL("./vocabulary-practice.css", import.meta.url),
       "utf8",
     );
     expect(css).toContain("height: clamp(300px, 48vh, 400px)");
+    expect(css).toContain("@media (min-width: 641px)");
+    expect(css).toContain("height: clamp(298px, calc(100dvh - 298px), 558px)");
     expect(css).toContain("transform 0.6s cubic-bezier(0.3, 0.7, 0.2, 1)");
-    expect(css).toContain(
-      "animation: vpr-pop 0.32s cubic-bezier(0.3, 1.6, 0.5, 1)",
-    );
+    expect(css).not.toContain("@keyframes vpr-pop");
     expect(css).toContain("prefers-reduced-motion");
     expect(css).toContain("font: 400 16px/1.5 var(--font-ui)");
     expect(css).not.toMatch(/\.vocabulary-practice\s*\{/);
@@ -316,6 +322,12 @@ describe("existing Vocabulary integration", () => {
       word: "custom word",
       meaning: "custom meaning",
     });
+    const personalCard = render().find(
+      (n) =>
+        n.type === VocabularyPresetCard &&
+        (n.props as { preset?: { id: string } }).preset?.id === "my-words",
+    )! as ReactElement<Parameters<typeof VocabularyPresetCard>[0]>;
+    expect(personalCard.props.preset.wordCount).toBe(14);
     render().find(
       (n) =>
         n.type === "button" &&
@@ -348,6 +360,39 @@ describe("existing Vocabulary integration", () => {
     const presets = nodes.filter(
       (n) => n.type === VocabularyPresetCard,
     ) as ReactElement<Parameters<typeof VocabularyPresetCard>[0]>[];
-    expect(presets.map((p) => p.props.selected)).toEqual([true, true, false]);
+    expect(presets.map((p) => p.props.selected)).toEqual([
+      true,
+      true,
+      false,
+      false,
+      false,
+    ]);
+  });
+  it("uses the real shared bookmark action for saving/removing without duplicate words or learning changes", () => {
+    const app = mountPractice();
+    app.button("Show meaning").props.onClick!();
+    function control() {
+      const bookmark = app
+        .render()
+        .find((n) => n.type === VocabularyBookmark)! as ReactElement<
+        Parameters<typeof VocabularyBookmark>[0]
+      >;
+      return elements(VocabularyBookmark(bookmark.props)).find(
+        (n) => n.type === SaveQuestionButton,
+      )! as ReactElement<Parameters<typeof SaveQuestionButton>[0]>;
+    }
+    const before = app.records.length;
+    expect(control().props.onToggle()).toBe(true);
+    expect(isWordSaved(app.words(), app.entries[0].key)).toBe(true);
+    expect(control().props.saved).toBe(true);
+    expect(control().props.onToggle()).toBe(false);
+    expect(control().props.onToggle()).toBe(true);
+    expect(
+      app
+        .words()
+        .words["my-words"].filter((w) => w.sourceKey === app.entries[0].key),
+    ).toHaveLength(1);
+    expect(app.records.length).toBe(before);
+    expect(app.button("Show meaning").props.inert).toBe(true);
   });
 });

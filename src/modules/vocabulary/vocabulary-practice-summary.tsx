@@ -1,44 +1,36 @@
 import type { PracticeEntry } from "./vocabulary-practice-state";
+import { SaveQuestionButton } from "../questions/save-question-button";
 
 export function VocabularyBookmark({
   entry,
   saved,
-  pulse = 0,
   onToggle,
 }: {
   entry: PracticeEntry;
   saved: boolean;
-  pulse?: number;
   onToggle: (entry: PracticeEntry) => void;
 }) {
   return (
-    <button
-      type="button"
-      className={
-        "vpr-mark" + (saved ? " vpr-on" : "") + (pulse ? " vpr-pop" : "")
-      }
-      aria-label={"Save " + entry.word.word}
-      aria-pressed={saved}
+    <span
+      className="vpr-mark"
       data-save={entry.key}
-      onClick={(event) => {
-        event.stopPropagation();
-        onToggle(entry);
-      }}
+      onClick={(event) => event.stopPropagation()}
     >
-      <svg
-        key={pulse}
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M6 4h12v17l-6-4-6 4z" />
-      </svg>
-    </button>
+      <SaveQuestionButton
+        key={entry.key}
+        saved={saved}
+        labels={{
+          save: "Save " + entry.word.word + " to My Words",
+          remove: "Remove " + entry.word.word + " from My Words",
+          saveError: "Could not save word.",
+          removeError: "Could not remove saved word.",
+        }}
+        onToggle={() => {
+          onToggle(entry);
+          return !saved;
+        }}
+      />
+    </span>
   );
 }
 export function VocabularyPracticeSummary({
@@ -46,7 +38,6 @@ export function VocabularyPracticeSummary({
   total,
   missed,
   savedKeys,
-  pulses,
   onToggleSave,
   onSaveAll,
   onRedo,
@@ -56,7 +47,6 @@ export function VocabularyPracticeSummary({
   total: number;
   missed: readonly PracticeEntry[];
   savedKeys: ReadonlySet<string>;
-  pulses: Readonly<Record<string, number>>;
   onToggleSave: (entry: PracticeEntry) => void;
   onSaveAll: () => void;
   onRedo: () => void;
@@ -164,7 +154,6 @@ export function VocabularyPracticeSummary({
                 <VocabularyBookmark
                   entry={entry}
                   saved={savedKeys.has(entry.key)}
-                  pulse={pulses[entry.key]}
                   onToggle={onToggleSave}
                 />
               </div>

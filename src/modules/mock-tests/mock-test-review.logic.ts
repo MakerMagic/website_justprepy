@@ -5,6 +5,7 @@ import type {
 import { demoPracticeFeedback } from "../questions/practice.fixtures";
 import {
   demoExamQuestions,
+  attemptQuestionMetadata,
   examSectionNames,
   validateDemoAttempt,
   type DemoMockAttempt,
@@ -25,31 +26,42 @@ export function completedDemoReviews(
   if (attempt.completedAt === null || !validateDemoAttempt(attempt, test))
     return {};
   return Object.fromEntries(
-    demoExamQuestions(test).map((question) => {
-      const selected = attempt.answers[question.id] ?? null,
-        feedback = demoPracticeFeedback[question.sourceId];
-      return [
-        question.id,
-        {
-          question: {
-            ...question,
-            section: examSectionNames[question.examSection],
-          },
-          feedback,
-          response: {
-            selected,
-            checked: selected !== null,
-            saved: false,
-            attempts: selected ? [selected] : [],
-            outcome:
-              selected && feedback
-                ? selected === feedback.correctOptionId
-                  ? "correct"
-                  : "wrong"
-                : undefined,
-          },
-        } satisfies CompletedQuestionReview,
-      ];
-    }),
+    demoExamQuestions(test)
+      .filter((question) => {
+        const recorded = attempt.analytics?.questions.find(
+          (row) => row.id === question.id,
+        );
+        return (
+          !recorded ||
+          recorded.sourceRevision ===
+            attemptQuestionMetadata(question).sourceRevision
+        );
+      })
+      .map((question) => {
+        const selected = attempt.answers[question.id] ?? null,
+          feedback = demoPracticeFeedback[question.sourceId];
+        return [
+          question.id,
+          {
+            question: {
+              ...question,
+              section: examSectionNames[question.examSection],
+            },
+            feedback,
+            response: {
+              selected,
+              checked: selected !== null,
+              saved: false,
+              attempts: selected ? [selected] : [],
+              outcome:
+                selected && feedback
+                  ? selected === feedback.correctOptionId
+                    ? "correct"
+                    : "wrong"
+                  : undefined,
+            },
+          } satisfies CompletedQuestionReview,
+        ];
+      }),
   );
 }

@@ -143,7 +143,7 @@ const trigger = {
 const event = { currentTarget: trigger };
 
 describe("existing preset inspector UI integration", () => {
-  it.each([0, 1, 2])(
+  it.each([0, 1, 2, 3, 4])(
     "shows only preset %s words, and exposes management only for My Words",
     (index) => {
       const app = mount(index),
@@ -154,10 +154,10 @@ describe("existing preset inspector UI integration", () => {
       const words = view
         .filter((el) => el.props["data-word-id"])
         .map((el) => el.props["data-word-id"]);
-      expect(words).toHaveLength(index === 0 ? 13 : index === 1 ? 5 : 3);
-      expect(words).toContain(
-        index === 0 ? "luxuriant" : index === 1 ? "diligent" : "candid",
-      );
+      expect(words).toHaveLength(index === 0 ? 13 : index === 1 ? 5 : 0);
+      if (index < 2)
+        expect(words).toContain(index === 0 ? "luxuriant" : "diligent");
+      else expect(html).toContain("No words yet");
       expect(Boolean(app.button("Add Word"))).toBe(index === 0);
       expect(
         view.filter((el) => el.props["aria-label"]?.startsWith("Delete "))

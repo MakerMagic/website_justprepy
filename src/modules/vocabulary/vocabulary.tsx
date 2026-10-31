@@ -284,7 +284,10 @@ export function Vocabulary({
               {data.presets.map((preset) => (
                 <VocabularyPresetCard
                   key={preset.id}
-                  preset={preset}
+                  preset={{
+                    ...preset,
+                    wordCount: (words.words[preset.id] ?? []).length,
+                  }}
                   selected={selectedIds.includes(preset.id)}
                   onSelect={togglePreset}
                   onInspect={(item) =>

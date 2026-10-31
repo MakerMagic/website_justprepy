@@ -156,11 +156,20 @@ If there were no files in a category, state "None".
 | Backend, API, persistence, ingestion | `docs/BACKEND_DATA.md` |
 | Frontend, components, rendering, state | `docs/FRONTEND.md` |
 | Visual design or UI consistency | `docs/DESIGN_SYSTEM.md` → `docs/design.md` when available |
-| Authentication, authorization, sensitive data | `docs/SECURITY.md` |
+| Authentication, authorization, sensitive data | `docs/SECURITY.md`, `docs/AUTH_IMPLEMENTATION_CONTRACT.md` |
 | Implementation, testing, dependencies, completion | `docs/DEVELOPMENT.md` |
-| Active task, milestone, blockers, next steps | `docs/CURRENT_WORK.md` |
+| Active task, milestone, blockers, next steps | `docs/CURRENT_WORK.md` (`docs/CURRENT_WORK_OLD.md` is historical reference only) |
 
 Read additional documents only when a task crosses their responsibility boundaries.
+
+For every task involving authentication, OAuth, sessions, users, profiles, nickname validation, onboarding, protected routes, or related database security, read `docs/AUTH_IMPLEMENTATION_CONTRACT.md` before planning or editing. Follow its approved requirements and task order (A → B → D → C → E → F). Work on one separately approved implementation task at a time. Do not treat old chat messages as more authoritative than the current repository documentation.
+
+Work-tracking rules:
+- `docs/CURRENT_WORK.md` is the authoritative active task tracker.
+- `docs/CURRENT_WORK_OLD.md` is historical reference only and should be consulted when previous context is relevant.
+- Do not treat archived work as an active instruction.
+- Follow the approved task execution order.
+- Execute only one separately approved implementation task at a time.
 
 ## Project invariants
 

@@ -1,24 +1,25 @@
-import type { Metadata } from "next";
-import { QuestionSolver } from "@/modules/questions/question-solver";
-import {
-  demoPracticeFeedback,
-  demoPracticeQuestions,
-} from "@/modules/questions/practice.fixtures";
-import { demoQuestionBank } from "@/modules/questions/question-bank.fixtures";
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: "Question practice | JustPrepy",
-  description:
-    "Try the JustPrepy question-solving interface with illustrative practice questions.",
-};
+export default async function LegacyPracticePage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const params = searchParams ? await searchParams : undefined
+  const search = params ? new URLSearchParams() : null
 
-export default function PracticePage() {
-  return (
-    <QuestionSolver
-      questions={demoPracticeQuestions}
-      feedback={demoPracticeFeedback}
-      profile={demoQuestionBank.profile}
-      telegramUrl={demoQuestionBank.telegramUrl}
-    />
-  );
+  if (params && search) {
+    for (const [key, value] of Object.entries(params)) {
+      if (typeof value === 'string') {
+        search.set(key, value)
+      } else if (Array.isArray(value)) {
+        for (const item of value) {
+          search.append(key, item)
+        }
+      }
+    }
+  }
+
+  const query = search && search.toString() ? `?${search.toString()}` : ''
+  redirect(`/app/question-bank/practice${query}`)
 }

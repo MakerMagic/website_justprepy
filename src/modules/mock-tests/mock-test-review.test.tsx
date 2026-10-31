@@ -63,7 +63,6 @@ describe("Completed Mock Test explanations", () => {
       onReveal: () => {},
       onNavigate: () => {},
       onSave: () => {},
-      attemptAnswer: null,
     };
     const hidden = renderToStaticMarkup(
         <ExplanationModal {...props} revealAnswer={false} />,
@@ -73,7 +72,7 @@ describe("Completed Mock Test explanations", () => {
       );
     expect(hidden).toContain("explanation-dialog");
     expect(hidden).toContain("Show Answer");
-    expect(hidden).toContain("Your answer: Omitted");
+    expect(hidden).not.toContain("Your answer:");
     expect(hidden).not.toContain('data-result="correct"');
     expect(shown).toContain('data-result="correct"');
     expect(shown).toContain(review.feedback!.explanation);
@@ -83,5 +82,73 @@ describe("Completed Mock Test explanations", () => {
     expect(missing).toContain(
       "An explanation is not available for this question.",
     );
+  });
+  for (const catalogueTest of demoMockTests)
+    it(
+      catalogueTest.id +
+        ": resolves every completed question by its original composite ID",
+      () => {
+        const attempt = finishDemoAttempt(
+            createDemoAttempt(catalogueTest, "demo-attempt-all-review", 1000),
+            2000,
+          ),
+          before = JSON.stringify(attempt),
+          questions = demoExamQuestions(catalogueTest),
+          reviews = completedDemoReviews(catalogueTest, attempt);
+        expect(Object.keys(reviews)).toHaveLength(questions.length);
+        for (const question of questions) {
+          expect(reviews[question.id].question.id).toBe(question.id);
+          expect(reviews[question.id].question.options).toEqual(
+            question.options,
+          );
+          expect(reviews[question.id].feedback).toEqual(
+            demoPracticeFeedback[question.sourceId],
+          );
+        }
+        expect(JSON.stringify(attempt)).toBe(before);
+      },
+    );
+  it("does not substitute current content when a captured question revision differs", () => {
+    const attempt = finishDemoAttempt(
+      createDemoAttempt(test, "demo-attempt-revision", 1000),
+      2000,
+    );
+    attempt.analytics!.questions[0].sourceRevision = "different";
+    const reviews = completedDemoReviews(test, attempt);
+    expect(reviews[qs[0].id]).toBeUndefined();
+    expect(Object.keys(reviews)).toHaveLength(59);
+  });
+  it("shows missing historical content in the actual explanation component without fake options or enabled reveal", () => {
+    const html = renderToStaticMarkup(
+      <ExplanationModal
+        open={false}
+        onClose={() => {}}
+        question={undefined}
+        unavailableQuestion={{
+          id: "historical-q-41",
+          number: 41,
+          section: "Mathematics",
+        }}
+        index={0}
+        total={20}
+        response={{
+          selected: null,
+          checked: false,
+          saved: false,
+          attempts: [],
+        }}
+        feedback={undefined}
+        revealAnswer={false}
+        onReveal={() => {}}
+        onSave={() => {}}
+        onNavigate={() => {}}
+      />,
+    );
+    expect(html).toContain("explanation-dialog");
+    expect(html).toContain("The original question content is unavailable");
+    expect(html).toContain("historical-q-41");
+    expect(html).not.toContain("answer-option");
+    expect(html).toMatch(/role="switch"[^>]*disabled/);
+    expect(html).not.toContain("results-modal");
   });
 });

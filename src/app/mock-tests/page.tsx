@@ -1,20 +1,25 @@
-import type { Metadata } from "next";
-import { MockTests } from "@/modules/mock-tests/mock-tests";
-import { demoMockTests } from "@/modules/mock-tests/mock-tests.fixtures";
-import { demoQuestionBank } from "@/modules/questions/question-bank.fixtures";
+import { redirect } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: "Mock Tests | JustPrepy",
-  description:
-    "Browse full simulations and focused Critical Thinking, Problem Solving and Mathematics mock tests.",
-};
+export default async function LegacyMockTestsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
+}) {
+  const params = searchParams ? await searchParams : undefined
+  const search = params ? new URLSearchParams() : null
 
-export default function MockTestsPage() {
-  return (
-    <MockTests
-      tests={demoMockTests}
-      profile={demoQuestionBank.profile}
-      telegramUrl={demoQuestionBank.telegramUrl}
-    />
-  );
+  if (params && search) {
+    for (const [key, value] of Object.entries(params)) {
+      if (typeof value === 'string') {
+        search.set(key, value)
+      } else if (Array.isArray(value)) {
+        for (const item of value) {
+          search.append(key, item)
+        }
+      }
+    }
+  }
+
+  const query = search && search.toString() ? `?${search.toString()}` : ''
+  redirect(`/app/mock-tests${query}`)
 }

@@ -23,11 +23,11 @@ export function ExplanationModal({
   onNavigate,
   onSave,
   bookmarkPending = false,
-  attemptAnswer,
+  unavailableQuestion,
 }: {
   open: boolean;
   onClose: () => void;
-  question: PracticeQuestion;
+  question: PracticeQuestion | undefined;
   index: number;
   total: number;
   response: PracticeResponse;
@@ -37,8 +37,8 @@ export function ExplanationModal({
   onNavigate: (index: number) => void;
   onSave: () => boolean | void | Promise<boolean | void>;
   bookmarkPending?: boolean;
-  /** Completed-attempt context only; never changes the Show Answer/reveal policy. */
-  attemptAnswer?: string | null;
+  /** Metadata-only fallback, never a fabricated question or answer key. */
+  unavailableQuestion?: { id: string; number: number; section?: string };
 }) {
   return (
     <PracticeDialog
@@ -53,15 +53,23 @@ export function ExplanationModal({
           data-state={practiceStatus(response, feedback)}
           aria-hidden="true"
         >
-          {index + 1}
+          {question ? index + 1 : (unavailableQuestion?.number ?? index + 1)}
         </span>
         <div className="review-context">
           <div className="review-title-row">
-            <h2 id="review-title">Question {index + 1} Review</h2>
-            {question.section && (
-              <span className="review-section">{question.section}</span>
+            <h2 id="review-title">
+              Question{" "}
+              {question
+                ? index + 1
+                : (unavailableQuestion?.number ?? index + 1)}{" "}
+              Review
+            </h2>
+            {(question?.section ?? unavailableQuestion?.section) && (
+              <span className="review-section">
+                {question?.section ?? unavailableQuestion?.section}
+              </span>
             )}
-            {question.difficulty && (
+            {question?.difficulty && (
               <span
                 className="review-difficulty"
                 data-state={question.difficulty}
@@ -71,12 +79,15 @@ export function ExplanationModal({
             )}
           </div>
           <p>
-            Topic: {question.topic}
-            {question.source && <> · {question.source}</>}
+            {question ? (
+              <>
+                Topic: {question.topic}
+                {question.source && <> · {question.source}</>}
+              </>
+            ) : (
+              "Question content unavailable"
+            )}
           </p>
-          {attemptAnswer !== undefined && (
-            <p>Your answer: {attemptAnswer ?? "Omitted"}</p>
-          )}
         </div>
         <div className="review-controls">
           <label className="practice-switch">
@@ -85,15 +96,16 @@ export function ExplanationModal({
               type="checkbox"
               role="switch"
               checked={revealAnswer}
-              disabled={!feedback}
+              disabled={!question || !feedback}
               onChange={(event) => onReveal(event.target.checked)}
             />
             <span className="switch-track" aria-hidden="true" />
           </label>
           <SaveQuestionButton
-            key={question.id}
+            key={question?.id ?? unavailableQuestion?.id}
             saved={response.saved}
             pending={bookmarkPending}
+            disabled={!question}
             onToggle={onSave}
           />
           <button
@@ -117,28 +129,40 @@ export function ExplanationModal({
           <PracticeDialogClose onClose={onClose} />
         </div>
       </header>
-      <div className="review-columns" key={question.id}>
+      <div
+        className="review-columns"
+        key={question?.id ?? unavailableQuestion?.id}
+      >
         <section className="review-question" aria-label="Question preview">
-          {question.passage.length > 0 && (
-            <div className="review-passage">
-              <h3>Passage</h3>
-              {question.passage.map((paragraph, i) => (
-                <p key={i}>
-                  <PracticeContentView content={paragraph} />
-                </p>
-              ))}
-            </div>
+          {question ? (
+            <>
+              {question.passage.length > 0 && (
+                <div className="review-passage">
+                  <h3>Passage</h3>
+                  {question.passage.map((paragraph, i) => (
+                    <p key={i}>
+                      <PracticeContentView content={paragraph} />
+                    </p>
+                  ))}
+                </div>
+              )}
+              <h3 className="review-prompt">
+                <PracticeContentView content={question.prompt} />
+              </h3>
+              <PracticeAnswers
+                question={question}
+                response={response}
+                feedback={feedback}
+                revealed={revealAnswer}
+                preview
+              />
+            </>
+          ) : (
+            <p>
+              The original question content is unavailable for this historical
+              attempt.
+            </p>
           )}
-          <h3 className="review-prompt">
-            <PracticeContentView content={question.prompt} />
-          </h3>
-          <PracticeAnswers
-            question={question}
-            response={response}
-            feedback={feedback}
-            revealed={revealAnswer}
-            preview
-          />
         </section>
         <section
           className="review-explanation"
@@ -168,7 +192,9 @@ export function ExplanationModal({
               <p>An explanation is not available for this question.</p>
             )}
           </div>
-          <p className="review-question-id">{question.id}</p>
+          <p className="review-question-id">
+            {question?.id ?? unavailableQuestion?.id}
+          </p>
         </section>
       </div>
     </PracticeDialog>

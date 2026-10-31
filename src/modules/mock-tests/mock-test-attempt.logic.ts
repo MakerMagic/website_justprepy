@@ -424,4 +424,4 @@ export function validateDemoAttempt(
 export const demoResultsHref = (attempt: DemoMockAttempt) =>
   `/mock-tests/${encodeURIComponent(attempt.testId)}/results?attempt=${encodeURIComponent(attempt.id)}`;
 export const demoTakeHref = (testId: string, attemptId?: string) =>
-  `/mock-tests/${encodeURIComponent(testId)}/take${attemptId ? "?attempt=" + encodeURIComponent(attemptId) : ""}`;
+  `/app/mock-tests/${encodeURIComponent(testId)}/take${attemptId ? "?attempt=" + encodeURIComponent(attemptId) : ""}`;

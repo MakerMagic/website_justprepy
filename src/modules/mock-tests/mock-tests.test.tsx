@@ -173,6 +173,30 @@ describe("mock-test catalogue", () => {
       ),
     ).toContain('aria-haspopup="dialog"');
   });
+  it("renders canonical /app destinations when start or resume take hrefs are provided", () => {
+    const test = {
+      ...demoMockTests[0],
+      destinations: {
+        start: "/app/mock-tests/demo-mock-1/take",
+        retake: "/app/mock-tests/demo-mock-1/take?mode=retake",
+      },
+    };
+    const startHtml = renderToStaticMarkup(
+      <MockTestCard test={test} onAction={() => {}} />,
+    );
+    expect(startHtml).toContain('href="/app/mock-tests/demo-mock-1/take"');
+
+    const resumeHtml = renderToStaticMarkup(
+      <MockTestCard
+        test={test}
+        resumeHref="/app/mock-tests/demo-mock-1/take?attempt=active-1"
+        onAction={() => {}}
+      />,
+    );
+    expect(resumeHtml).toContain(
+      'href="/app/mock-tests/demo-mock-1/take?attempt=active-1"',
+    );
+  });
   it("uses one shared statistic control with the original Question Bank anatomy", () => {
     const html = renderToStaticMarkup(
       <StatisticCard
